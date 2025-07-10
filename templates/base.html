@@ -7,14 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Disco DeDisco" />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="{% static '/styles/base.css' %}">
     <title>Disco Inferno | {% block title %}{% endblock %}</title>
+    <script src="{% static '/scripts/base.js' %}" defer></script>
 </head>
 <body>
-    
+    {% include 'partials/_topbar.html' %}
+    {% include 'partials/_navbar.html' %}
+    {% include 'partials/_header.html' %}
+    {% block content %} {% endblock %}
+    {% include 'partials/_footer.html' %}
 </body>
 </html>
-{% include 'partials/_topbar.html' %}
-{% include 'partials._navbar.html' %}
-{% include 'partials._header.html' %}
-{% block content %} {% endblock %}
-{% include 'partials._footer.html' %}
