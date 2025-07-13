@@ -84,8 +84,8 @@
 }
 
 html {
-    background-color: rgba(var(--quaTi));
-    color: rgba(var(--sexTi));
+    background-color: rgba(var(--terRd), 1);
+    color: rgba(var(--priOr), 1);
     font-family: "adobe-garamond-pro", serif;
     font-weight: 400;
     font-style: normal;
@@ -93,6 +93,7 @@ html {
 }
 
 h1 {
+    color: rgba(var(--priYl), 1);
     font-family: "estro-mn", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -117,6 +118,12 @@ h3 {
     font-size: 1.8rem;
     text-align: center;
     
+}
+
+.icon-title {
+    text-align: center;
+    padding-top: 2.5rem;
+    margin-bottom: -2rem;
 }
 
 .canvas-container {
@@ -157,7 +164,7 @@ h3 {
 
 .nav-link {
     text-decoration: none;
-    color: rgba(var(--priAd));
+    color: rgba(var(--priYl), 1);
     font-family: "adobe-garamond-pro", serif;
     font-weight: 400;
     font-style: normal;
@@ -170,8 +177,8 @@ h3 {
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
     list-style: none;
-    background-color: rgba(var(--priAd));
-    color: rgba(var(--quaAd));
+    background-color: rgba(var(--priOr), 1);
+    color: rgba(var(--terId), 1);
     border-radius: 0.5rem;
 }
 
@@ -181,7 +188,7 @@ h3 {
     &::before {
         display: inline-block;
         padding-right: 0.5rem;
-        color: rgba(var(--quaAd));
+        color: rgba(var(--terRd), 1);
         content: ">";
     }
 }
