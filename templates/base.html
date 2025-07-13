@@ -2,21 +2,33 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Disco DeDisco" />
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
-    <link rel="stylesheet" href="https://use.typekit.net/xyl4lwg.css">
-    <title>Disco Inferno | {% block title %}{% endblock %}</title>
-    <script src="{% static '/scripts/base.js' %}" defer></script>
-</head>
-<body>
-    {% include 'partials/_topbar.html' %}
-    {% include 'partials/_navbar.html' %}
-    {% include 'partials/_header.html' %}
-    {% block content %} {% endblock %}
-    {% include 'partials/_footer.html' %}
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="author" content="Disco DeDisco" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="stylesheet" href="{% static 'styles/base.css' %}" />
+        <link rel="stylesheet" href="https://use.typekit.net/xyl4lwg.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        />
+        <title>Disco Inferno | {% block title %}{% endblock %}</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.js"></script>
+        <script src="{% static 'scripts/base.js' %}" defer></script>
+    </head>
+    <body>
+        <!-- Topbar -->
+        {% include 'partials/_topbar.html' %}
+        <!-- Navbar -->
+        {% include 'partials/_navbar.html'%}
+        <!-- Header -->
+        {% include 'partials/_header.html' %}
+
+        <!-- Main Body -->
+        {% block content %} {% endblock%}
+        
+        <!-- Footer -->
+        {% include 'partials/_footer.html' %}
+    </body>
 </html>

@@ -8,84 +8,84 @@
 }
 
 :root {
-    /* Hex Variable Index */
+    /* rgbA Variable Index */
     /* Metals */
-    --priAd: rgb(207, 228, 237);
-    --priFe: rgb(80, 80, 75);
-    --priCu: rgb(184, 115, 51);
-    --priAg: rgb(192, 192, 192);
-    --priAu: rgb(218, 165, 32);
-    --priNi: rgb(141, 142, 140);
-    --priPd: rgb(188, 193, 165);
-    --priPt: rgb(229, 228, 226);
-    --priTi: rgb(91, 121, 142);
-    --secAd: rgb(164, 180, 186);
-    --secFe: rgb(59, 60, 57);
-    --secCu: rgb(152, 94, 38);
-    --secAg: rgb(160, 160, 161);
-    --secAu: rgb(181, 138, 31);
-    --secNi: rgb(118, 120, 118);
-    --secPd: rgb(155, 160, 138);
-    --secPt: rgb(189, 190, 189);
-    --secTi: rgb(75, 101, 119);
-    --terAd: rgb(119, 131, 135);
-    --terFe: rgb(36, 37, 34);
-    --terCu: rgb(119, 73, 24);
-    --terAg: rgb(128, 129, 130);
-    --terAu: rgb(144, 110, 19);
-    --terNi: rgb(93, 95, 94);
-    --terPd: rgb(124, 129, 111);
-    --terPt: rgb(152, 153, 153);
-    --terTi: rgb(57, 79, 94);
-    --quaAd: rgb(75, 81, 84);
-    --quaFe: rgb(130, 130, 124);
-    --quaTi: rgb(38, 57, 69);
-    --quiAd: rgb(226, 244, 253);
-    --quiFe: rgb(181, 181, 172);
-    --quiTi: rgb(9, 28, 39);
-    --sexTi: rgb(124, 166, 191);
+    --priAd: 207, 228, 237;
+    --priFe: 80, 80, 75;
+    --priCu: 184, 115, 51;
+    --priAg: 192, 192, 192;
+    --priAu: 218, 165, 32;
+    --priNi: 141, 142, 140;
+    --priPd: 188, 193, 165;
+    --priPt: 229, 228, 226;
+    --priTi: 91, 121, 142;
+    --secAd: 164, 180, 186;
+    --secFe: 59, 60, 57;
+    --secCu: 152, 94, 38;
+    --secAg: 160, 160, 161;
+    --secAu: 181, 138, 31;
+    --secNi: 118, 120, 118;
+    --secPd: 155, 160, 138;
+    --secPt: 189, 190, 189;
+    --secTi: 75, 101, 119;
+    --terAd: 119, 131, 135;
+    --terFe: 36, 37, 34;
+    --terCu: 119, 73, 24;
+    --terAg: 128, 129, 130;
+    --terAu: 144, 110, 19;
+    --terNi: 93, 95, 94;
+    --terPd: 124, 129, 111;
+    --terPt: 152, 153, 153;
+    --terTi: 57, 79, 94;
+    --quaAd: 75, 81, 84;
+    --quaFe: 130, 130, 124;
+    --quaTi: 38, 57, 69;
+    --quiAd: 226, 244, 253;
+    --quiFe: 181, 181, 172;
+    --quiTi: 9, 28, 39;
+    --sexTi: 124, 166, 191;
     /* Chromas */
-    --priRd: rgb(233, 53, 37);
-    --priOr: rgb(225, 133, 40);
-    --priYl: rgb(255, 207, 52);
-    --priLm: rgb(151, 174, 60);
-    --priGn: rgb(0, 160, 75);
-    --priTk: rgb(0, 184, 162);
-    --priCy: rgb(13, 179, 200);
-    --priBl: rgb(20, 141, 205);
-    --priId: rgb(53, 74, 156);
-    --priVt: rgb(96, 58, 147);
-    --priFs: rgb(158, 61, 150);
-    --priMe: rgb(237, 30, 129);
-    --secRd: rgb(193, 43, 28);
-    --secOr: rgb(187, 111, 30);
-    --secYl: rgb(211, 172, 44);
-    --secLm: rgb(124, 145, 48);
-    --secGn: rgb(0, 135, 62);
-    --secTk: rgb(0, 154, 136);
-    --secCy: rgb(12, 150, 168);
-    --secBl: rgb(18, 119, 173);
-    --secId: rgb(44, 60, 131);
-    --secVt: rgb(80, 45, 124);
-    --secFs: rgb(133, 47, 126);
-    --secMe: rgb(196, 18, 108);
-    --terRd: rgb(155, 31, 15);
-    --terOr: rgb(150, 88, 17);
-    --terYl: rgb(168, 138, 33);
-    --terLm: rgb(97, 117, 36);
-    --terGn: rgb(0, 109, 48);
-    --terTk: rgb(0, 125, 110);
-    --terCy: rgb(0, 121, 136);
-    --terBl: rgb(8, 95, 140);
-    --terId: rgb(32, 44, 106);
-    --terVt: rgb(64, 30, 100);
-    --terFs: rgb(107, 31, 101);
-    --terMe: rgb(158, 1, 86);
+    --priRd: 233, 53, 37;
+    --priOr: 225, 133, 40;
+    --priYl: 255, 207, 52;
+    --priLm: 151, 174, 60;
+    --priGn: 0, 160, 75;
+    --priTk: 0, 184, 162;
+    --priCy: 13, 179, 200;
+    --priBl: 20, 141, 205;
+    --priId: 53, 74, 156;
+    --priVt: 96, 58, 147;
+    --priFs: 158, 61, 150;
+    --priMe: 237, 30, 129;
+    --secRd: 193, 43, 28;
+    --secOr: 187, 111, 30;
+    --secYl: 211, 172, 44;
+    --secLm: 124, 145, 48;
+    --secGn: 0, 135, 62;
+    --secTk: 0, 154, 136;
+    --secCy: 12, 150, 168;
+    --secBl: 18, 119, 173;
+    --secId: 44, 60, 131;
+    --secVt: 80, 45, 124;
+    --secFs: 133, 47, 126;
+    --secMe: 196, 18, 108;
+    --terRd: 155, 31, 15;
+    --terOr: 150, 88, 17;
+    --terYl: 168, 138, 33;
+    --terLm: 97, 117, 36;
+    --terGn: 0, 109, 48;
+    --terTk: 0, 125, 110;
+    --terCy: 0, 121, 136;
+    --terBl: 8, 95, 140;
+    --terId: 32, 44, 106;
+    --terVt: 64, 30, 100;
+    --terFs: 107, 31, 101;
+    --terMe: 158, 1, 86;
 }
 
 html {
-    background-color: var(--quaTi);
-    color: var(--sexTi);
+    background-color: rgba(var(--quaTi));
+    color: rgba(var(--sexTi));
     font-family: "adobe-garamond-pro", serif;
     font-weight: 400;
     font-style: normal;
@@ -117,6 +117,10 @@ h3 {
     font-size: 1.8rem;
     text-align: center;
     
+}
+
+.canvas-container {
+    text-align: center;
 }
 
 .title-wrapper {
@@ -153,7 +157,7 @@ h3 {
 
 .nav-link {
     text-decoration: none;
-    color: var(--priAd);
+    color: rgba(var(--priAd));
     font-family: "adobe-garamond-pro", serif;
     font-weight: 400;
     font-style: normal;
@@ -166,8 +170,8 @@ h3 {
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
     list-style: none;
-    background-color: var(--priAd);
-    color: var(--quaAd);
+    background-color: rgba(var(--priAd));
+    color: rgba(var(--quaAd));
     border-radius: 0.5rem;
 }
 
@@ -177,7 +181,7 @@ h3 {
     &::before {
         display: inline-block;
         padding-right: 0.5rem;
-        color: var(--quaAd);
+        color: rgba(var(--quaAd));
         content: ">";
     }
 }
