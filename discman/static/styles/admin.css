@@ -1,0 +1,20 @@
+
+
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --header-bg-light: var(--quiTi) !important; 
+    }
+    header#header {
+        background-color: var(--header-bg-light) !important;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --header-bg: var(--quiTi); 
+    }
+    header#header {
+        background-color: var(--header-bg);
+    }
+}

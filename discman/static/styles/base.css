@@ -1,0 +1,183 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    touch-action: pan-y;
+}
+
+:root {
+    /* Hex Variable Index */
+    /* Metals */
+    --priAd: rgb(207, 228, 237);
+    --priFe: rgb(80, 80, 75);
+    --priCu: rgb(184, 115, 51);
+    --priAg: rgb(192, 192, 192);
+    --priAu: rgb(218, 165, 32);
+    --priNi: rgb(141, 142, 140);
+    --priPd: rgb(188, 193, 165);
+    --priPt: rgb(229, 228, 226);
+    --priTi: rgb(91, 121, 142);
+    --secAd: rgb(164, 180, 186);
+    --secFe: rgb(59, 60, 57);
+    --secCu: rgb(152, 94, 38);
+    --secAg: rgb(160, 160, 161);
+    --secAu: rgb(181, 138, 31);
+    --secNi: rgb(118, 120, 118);
+    --secPd: rgb(155, 160, 138);
+    --secPt: rgb(189, 190, 189);
+    --secTi: rgb(75, 101, 119);
+    --terAd: rgb(119, 131, 135);
+    --terFe: rgb(36, 37, 34);
+    --terCu: rgb(119, 73, 24);
+    --terAg: rgb(128, 129, 130);
+    --terAu: rgb(144, 110, 19);
+    --terNi: rgb(93, 95, 94);
+    --terPd: rgb(124, 129, 111);
+    --terPt: rgb(152, 153, 153);
+    --terTi: rgb(57, 79, 94);
+    --quaAd: rgb(75, 81, 84);
+    --quaFe: rgb(130, 130, 124);
+    --quaTi: rgb(38, 57, 69);
+    --quiAd: rgb(226, 244, 253);
+    --quiFe: rgb(181, 181, 172);
+    --quiTi: rgb(9, 28, 39);
+    --sexTi: rgb(124, 166, 191);
+    /* Chromas */
+    --priRd: rgb(233, 53, 37);
+    --priOr: rgb(225, 133, 40);
+    --priYl: rgb(255, 207, 52);
+    --priLm: rgb(151, 174, 60);
+    --priGn: rgb(0, 160, 75);
+    --priTk: rgb(0, 184, 162);
+    --priCy: rgb(13, 179, 200);
+    --priBl: rgb(20, 141, 205);
+    --priId: rgb(53, 74, 156);
+    --priVt: rgb(96, 58, 147);
+    --priFs: rgb(158, 61, 150);
+    --priMe: rgb(237, 30, 129);
+    --secRd: rgb(193, 43, 28);
+    --secOr: rgb(187, 111, 30);
+    --secYl: rgb(211, 172, 44);
+    --secLm: rgb(124, 145, 48);
+    --secGn: rgb(0, 135, 62);
+    --secTk: rgb(0, 154, 136);
+    --secCy: rgb(12, 150, 168);
+    --secBl: rgb(18, 119, 173);
+    --secId: rgb(44, 60, 131);
+    --secVt: rgb(80, 45, 124);
+    --secFs: rgb(133, 47, 126);
+    --secMe: rgb(196, 18, 108);
+    --terRd: rgb(155, 31, 15);
+    --terOr: rgb(150, 88, 17);
+    --terYl: rgb(168, 138, 33);
+    --terLm: rgb(97, 117, 36);
+    --terGn: rgb(0, 109, 48);
+    --terTk: rgb(0, 125, 110);
+    --terCy: rgb(0, 121, 136);
+    --terBl: rgb(8, 95, 140);
+    --terId: rgb(32, 44, 106);
+    --terVt: rgb(64, 30, 100);
+    --terFs: rgb(107, 31, 101);
+    --terMe: rgb(158, 1, 86);
+}
+
+html {
+    background-color: var(--quaTi);
+    color: var(--sexTi);
+    font-family: "adobe-garamond-pro", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-feature-settings: "onum";
+}
+
+h1 {
+    font-family: "estro-mn", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 8rem;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 0.75;
+}
+
+h2 {
+    font-family: r41-estro, sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+h3 {
+    font-family: r41-estro, sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 1.8rem;
+    text-align: center;
+    
+}
+
+.title-wrapper {
+    text-align: center;
+}
+
+.wheel-title {
+    position: relative;
+    display: inline-block;
+    margin: auto;
+    text-align: left;
+}
+
+.main-title {
+    display: block;
+    font-family: "estro-mn", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 8rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.the-title {
+    position: absolute;
+    left: 0.25rem;
+    top: -2.5rem;
+}
+
+.link-wrapper {
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--priAd);
+    font-family: "adobe-garamond-pro", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-feature-settings: "onum";
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: var(--priAd);
+    color: var(--quaAd);
+    border-radius: 0.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+    padding-left: 0.5rem;
+
+    &::before {
+        display: inline-block;
+        padding-right: 0.5rem;
+        color: var(--quaAd);
+        content: ">";
+    }
+}

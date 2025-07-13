@@ -1,8 +1,33 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Wheel{% endblock %}
 {% block content %}
 <section>
-    <h1>Wheel</h1>
+    <div class="title-wrapper">
+        <div class="wheel-title">
+            <h2 class="the-title">the</h2>
+            <h1 class="main-title">Wheel</h1>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<section id="bc">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="breadcrumb-item active">Wheel</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section>
+    
 </section>
 
 {% include 'partials/_alerts.html' %}

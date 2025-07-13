@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Index{% endblock %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
 {% block content %}
 <section>
-    <h1>Howdy</h1>
+    <h3>Welcome to the</h3>
+    <h1>Disco</h1>
+    <h1>Inferno</h1>
+</section>
+
+<section class="link-wrapper">
+    <a class="nav-link" href="wheel">Spin the Wheel</a>
 </section>
 
 {% include 'partials/_alerts.html' %}
