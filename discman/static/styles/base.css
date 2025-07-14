@@ -178,7 +178,7 @@ h3 {
     margin-bottom: 1rem;
     list-style: none;
     background-color: rgba(var(--priOr), 1);
-    color: rgba(var(--terId), 1);
+    color: rgba(var(--terRd), 1);
     border-radius: 0.5rem;
 }
 

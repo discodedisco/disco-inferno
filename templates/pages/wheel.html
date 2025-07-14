@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block title %}Wheel{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'styles/chart.css' %}">
+{% endblock %}
+
 {% block content %}
 <section>
     <div class="title-wrapper">
@@ -28,27 +33,39 @@
 
 <section>
     <div class="container canvas-container" id="canvas-container">
+        <div id="chart"></div>
         <!-- <canvas id="wheel-canvas" width="500px" height="350px" style="background-color: rgba(var(--quiAd), 1);"></canvas> -->
          <ul>
-            <li class="list-item-test">Howdy 1</li>
-            <li class="list-item-test">Howdy 2</li>
-            <li class="list-item-test">Howdy 3</li>
+            <!-- <li class="list-item-test">Howdy 1</li> -->
+            <!-- <li class="list-item-test">Howdy 2</li> -->
+            <!-- <li class="list-item-test">Howdy 3</li> -->
             <!-- <li class="list-item-test">Howdy 4</li> -->
             <!-- <li class="list-item-test">Howdy 5</li> -->
             <!-- <li class="list-item-test">Howdy 6</li> -->
             <!-- <li class="list-item-test">Howdy 7</li> -->
             <!-- <li class="list-item-test">Howdy 8</li> -->
-         </ul>
-        <svg width="500" height="500">
+        </ul>
+        <!-- <svg width="500" height="500"> -->
             <!-- <rect x="25" y="25" width="100" height="100" fill="rgba(237, 30, 129, 1)" stroke="rgba(var(--sexTi), 0.5)" stroke-width="10"></rect> -->
             <!-- <circle cx="150" cy="250" r="100" fill="var(--priFs)" stroke="rgba(var(--sexTi), 0.5)" stroke-width="10"></circle> -->
             <!-- <line x1="75" y1="75" x2="150" y2="250" stroke="rgba(var(--secYl))" stroke-width="10"></line> -->
             <!-- <path d="M100,100 L300,150" fill="none" stroke="var(--terRd)" stroke-width="10"></path> -->
-        </svg>
+        <!-- </svg> -->
     </div>
 </section>
 
-<script src="{% static 'scripts/wheelie.js' %}" defer></script>
+<!-- <script>
+    const spinsterDataLocation = "{% static 'data/spinster.json' %}"
+</script>
+<script>
+    const loomerDataLocation = "{% static 'data/loomer.csv' %}"
+</script>
+<script src="{% static 'scripts/wheelie.js' %}"></script> -->
+<script>
+    const weatherDataLocation = "{% static 'data/weather.json' %}"
+</script>
+
+<script src="{% static 'scripts/chart.js' %}"></script>
 
 {% include 'partials/_alerts.html' %}
 

@@ -13,6 +13,7 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         />
+        {% block extrastyle %}{% endblock %}
         <title>Disco Inferno | {% block title %}{% endblock %}</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.js"></script>
         <script src="{% static 'scripts/base.js' %}" defer></script>

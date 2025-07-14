@@ -1,0 +1,20 @@
+#chart{
+  width: 500px;
+  height: 500px;
+  background-color: rgba(var(--priOr), 1);
+  margin: 25px auto;
+  position: relative
+}
+
+#tooltip {
+  text-align: center;
+  border: 1px solid rgba(var(--priYl), 1);
+  position: absolute;
+  padding: 10px;
+  background-color: rgba(var(--priRd), 1);
+  display: none;
+}
+
+#tooltip .metric-date {
+  text-decoration: underline;
+}
