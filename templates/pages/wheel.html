@@ -33,7 +33,10 @@
 
 <section>
     <div class="container canvas-container" id="canvas-container">
-        <div id="chart"></div>
+        <div id="chart">
+            <h4>Linear Scale</h1>
+            <div class="chart" id="heatmap-1"></div>
+        </div>
         <!-- <canvas id="wheel-canvas" width="500px" height="350px" style="background-color: rgba(var(--quiAd), 1);"></canvas> -->
          <ul>
             <!-- <li class="list-item-test">Howdy 1</li> -->
@@ -61,11 +64,15 @@
     const loomerDataLocation = "{% static 'data/loomer.csv' %}"
 </script>
 <script src="{% static 'scripts/wheelie.js' %}"></script> -->
-<script>
+<!-- <script>
     const weatherDataLocation = "{% static 'data/weather.json' %}"
+</script> -->
+<script>
+    const heatDataLocation = "{% static 'data/heat.json' %}"
 </script>
 
-<script src="{% static 'scripts/chart.js' %}"></script>
+<script src="{% static 'scripts/tamale.js' %}"></script>
+<!-- <script src="{% static 'scripts/chart.js' %}"></script> -->
 
 {% include 'partials/_alerts.html' %}
 

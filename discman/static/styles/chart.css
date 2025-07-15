@@ -7,11 +7,29 @@
   border-radius: 5rem;
   overflow: hidden;
   box-shadow: -10px 10px 1px 1px rgba(var(--quiTi), 0.25);
+
+  /* comment out the below when displaying weather.json data */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  h4 {
+    color: var(--priYl);
+  }
   
   &:active {
     box-shadow: 3px -3px 1px 1px rgba(var(--quiTi), 0.25);
   }
 }
+
+#heatmap-1 {
+  width: 481px;
+  height: 121px;
+  background-color: rgba(var(--terRd), 1);
+  margin: 25px auto;
+}
+
 
 #tooltip {
   text-align: center;
