@@ -3,7 +3,14 @@
   height: 500px;
   background-color: rgba(var(--priOr), 1);
   margin: 25px auto;
-  position: relative
+  position: relative;
+  border-radius: 5rem;
+  overflow: hidden;
+  box-shadow: -10px 10px 1px 1px rgba(var(--quiTi), 0.25);
+  
+  &:active {
+    box-shadow: 3px -3px 1px 1px rgba(var(--quiTi), 0.25);
+  }
 }
 
 #tooltip {
@@ -17,4 +24,10 @@
 
 #tooltip .metric-date {
   text-decoration: underline;
+}
+
+.axis {
+  color: rgba(var(--priAd), 1);
+  font-size: 1rem;
+  shape-rendering: geometricPrecision;
 }
