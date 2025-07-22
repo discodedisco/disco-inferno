@@ -1,51 +1,83 @@
-#chart{
-  width: 500px;
-  height: 500px;
-  background-color: rgba(var(--priOr), 1);
-  margin: 25px auto;
-  position: relative;
-  border-radius: 5rem;
-  overflow: hidden;
-  box-shadow: -10px 10px 1px 1px rgba(var(--quiTi), 0.25);
+#chart {
+    width: 500px;
+    height: 500px;
+    background-color: rgba(var(--priOr), 1);
+    margin: 25px auto;
+    position: relative;
+    border-radius: 5rem;
+    overflow: hidden;
+    box-shadow: -10px 10px 1px 1px rgba(var(--quiTi), 0.25);
 
-  /* comment out the below when displaying weather.json data */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  
-  h4 {
-    color: var(--priYl);
-  }
-  
-  &:active {
-    box-shadow: 3px -3px 1px 1px rgba(var(--quiTi), 0.25);
-  }
+    /* comment out the below when displaying weather.json data */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &:active {
+        box-shadow: 3px -3px 1px 1px rgba(var(--quiTi), 0.25);
+    }
+}
+
+.bar-labels {
+    text-anchor: middle;
+    font-size: 16px;
+    /* font-family: sans-serif; */
+    fill: rgba(var(--terRd), 1);
+}
+
+select {
+    margin: 25px auto 0;
+    display: block;
+    font-size: 20px;
+}
+
+.mean-line {
+    stroke: rgba(var(--priRd), 1);
+    stroke-dasharray: 6;
+    stroke-width: 2px;
+}
+
+.dot-hovered {
+    stroke: rgba(var(--priYl), 1);
+    fill: rgba(var(--priRd), 1);
 }
 
 #heatmap-1 {
-  width: 481px;
-  height: 121px;
-  background-color: rgba(var(--terRd), 1);
-  margin: 25px auto;
+    width: 481px;
+    height: 121px;
+    background-color: rgba(var(--terRd), 1);
+    margin: 25px auto;
 }
 
-
 #tooltip {
-  text-align: center;
-  border: 1px solid rgba(var(--priYl), 1);
-  position: absolute;
-  padding: 10px;
-  background-color: rgba(var(--priRd), 1);
-  display: none;
+    text-align: center;
+    border: 1px solid rgba(var(--priYl), 1);
+    position: absolute;
+    padding: 10px;
+    background-color: rgba(var(--priRd), 1);
+    color: rgba(var(--priYl), 1);
+    display: none;
+    /* overflow: visible; */
 }
 
 #tooltip .metric-date {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .axis {
-  color: rgba(var(--priAd), 1);
-  font-size: 1rem;
-  shape-rendering: geometricPrecision;
+    color: rgba(var(--priYl), 1);
+    font-size: 1rem;
+    shape-rendering: geometricPrecision;
+}
+
+@media (max-width: 578px) {
+    #chart {
+        width: 350px;
+        height: 350px;
+    }
+
+    h1 {
+        font-size: 6rem;
+    }
 }

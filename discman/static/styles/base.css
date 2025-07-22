@@ -120,6 +120,10 @@ h3 {
     
 }
 
+h4 {
+  color: rgba(var(--priYl), 1);
+}
+
 .icon-title {
     text-align: center;
     padding-top: 2.5rem;
@@ -191,5 +195,23 @@ h3 {
         padding-right: 0.5rem;
         color: rgba(var(--terRd), 1);
         content: ">";
+    }
+}
+
+@media (max-width: 578px) {
+    h1 {
+        font-size: 5rem;
+    }
+    
+    .main-title {
+        font-size: 6rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
     }
 }

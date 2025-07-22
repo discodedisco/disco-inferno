@@ -41,8 +41,7 @@
             <option value="cloudCover">Cloudcover</option>
             <option value="ozone">Ozone</option>
         </select> -->
-        <div id="chart"></div>
-        <!-- <div id="chart-backup">
+        <div id="chart">
             <div id="tooltip">
                 <div class="metric-date">
                 </div>
@@ -53,15 +52,15 @@
                     Temperature: <span></span>
                 </div>
             </div>
-            <h4>Linear Scale</h4>
-            <div class="chart" id="heatmap-1"></div>
-            <h4>Quantize Scale</h4>
-            <div class="chart" id="heatmap-2"></div>
-            <h4>Quantile Scale</h4>
-            <div class="chart" id="heatmap-3"></div>
-            <h4>Threshold Scale</h4>
-            <div class="chart" id="heatmap-4"></div>
-        </div> -->
+            <!-- <h4>Linear Scale</h4>
+            <div class="chart" id="heatmap-1"></div> -->
+            <!-- <h4>Quantize Scale</h4>
+            <div class="chart" id="heatmap-2"></div> -->
+            <!-- <h4>Quantile Scale</h4>
+            <div class="chart" id="heatmap-3"></div> -->
+            <!-- <h4>Threshold Scale</h4>
+            <div class="chart" id="heatmap-4"></div> -->
+        </div>
         <!-- <canvas id="wheel-canvas" width="500px" height="350px" style="background-color: rgba(var(--quiAd), 1);"></canvas> -->
          <ul>
             <!-- <li class="list-item-test">Howdy 1</li> -->
@@ -90,11 +89,8 @@
 </script>
 <script src="{% static 'scripts/wheelie.js' %}"></script> -->
 <script>
-    const elementalDataLocation = "/api/elemental/"
-</script>
-<!-- <script>
     const weatherDataLocation = "{% static 'data/weather.json' %}"
-</script> -->
+</script>
 <!-- <script>
     const heatDataLocation = "{% static 'data/heat.json' %}"
 </script> -->
@@ -103,7 +99,9 @@
 </script> -->
 
 <!-- <script src="{% static 'scripts/ghost.js' %}?v={{ timestamp }}"></script> -->
-<script src="{% static 'scripts/spin.js' %}?v={{ timestamp }}"></script>
+<!-- <script src="{% static 'scripts/scoville.js' %}?v={{ timestamp }}"></script> -->
+<!-- <script src="{% static 'scripts/tamale.js' %}?v={{ timestamp }}"></script> -->
+<script src="{% static 'scripts/chart.js' %}?v={{ timestamp }}"></script>
 
 {% include 'partials/_alerts.html' %}
 
