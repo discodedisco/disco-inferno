@@ -1,3 +1,4 @@
 from django.db import models
+import swisseph as swe
 
-# Create your models here.
+swe.set_ephe_path('../../../libraries/swisseph-master')

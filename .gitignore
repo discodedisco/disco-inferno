@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
+# Disco's not-so-groovy test files
+/templates/pages/wheel-copy.html
+/discman/static-copy
+
 ### Django ###
 *.log
 *.pot

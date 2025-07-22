@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'accounts',
     'nativity',
     'pages',
+    'characters',
 ]
 
 MIDDLEWARE = [
