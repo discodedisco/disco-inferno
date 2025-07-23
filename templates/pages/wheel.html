@@ -37,8 +37,12 @@
     </div>
 </section>
 
-<script>
+<!-- <script>
     const elementalDataLocation = "/api/elemental/"
+</script> -->
+
+<script>
+    const signs = {{ signs_json|safe }};
 </script>
 
 <script src="{% static 'scripts/spin.js' %}?v={{ timestamp }}"></script>
