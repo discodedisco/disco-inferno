@@ -1,5 +1,5 @@
-const planets = {"Sun":339.14,"Moon":14.50,"Mercury":323.83,"Venus":297.58,"Mars":291.41,"Jupiter":90.83,"Saturn":292.03,"Uranus":278.74,"Neptune":283.97,"Pluto":227.76};
-const houses = {"cusps":[176.44,202.35,232.59,265.92,299.38,329.97,356.44,22.35,52.59,85.92,119.38,149.97],"asc":176.44,"mc":85.92};
+// const planets = {'Sun': 339.35306034182435, 'Moon': 17.540743571783214, 'Mercury': 324.17873587696073, 'Venus': 297.70346712723125, 'Mars': 291.5611222524487, 'Jupiter': 90.82747167382269, 'Saturn': 292.0445876717063, 'Uranus': 278.74902484669695, 'Neptune': 283.97077819645455, 'Pluto': 227.76350311547512};
+// const houses = {'cusps': [236.11325409849132, 270.466117232383, 304.8189803662746, 339.17184350016623, 4.818980366274616, 30.466117232383, 56.113254098491325, 90.466117232383, 124.81898036627462, 159.17184350016626, 184.81898036627462, 210.46611723238297], 'asc': 236.11325409849132, 'mc': 159.17184350016626};
 
 const container = document.getElementById('wheel-canvas');
 const size = Math.min(container.offsetWidth, window.innerHeight * 0.7);
@@ -27,10 +27,11 @@ const planetSymbols = {
 const signInner = r + 10;
 const signOuter = r + 30;
 
-function normalizeAngle(angle) {
-    return ((angle + 180) % 360) - 180;
-}
-const offset = normalizeAngle(houses.asc - 180);
+// function normalizeAngle(angle) {
+//     return ((angle + 180) % 360) - 180;
+// }
+// const offset = normalizeAngle(houses.asc - 180);
+const offset = houses.asc - 180;
 
 // Create svg
 const svg = d3
@@ -78,61 +79,66 @@ for (let i = 0; i < 12; i++) {
         ;
 }
 
-// Draw outer circle
-// svg
-//     .append('circle')
-//     .attr('cx', cx)
-//     .attr('cy', cy)
-//     .attr('r', r)
-//     .attr('fill', 'none')
-//     .attr('stroke', 'rgba(var(--priYl), 1)')
-//     .attr('stroke-width', 2.5)
-//     ;
-
-// House angles and arcs
-houses.cusps.forEach((deg, i, arr) => {
-    let start = (-deg + offset) * Math.PI / 180;
-    let end = (-arr[(i + 1) % 12] + offset) * Math.PI / 180;
-    if (end > start) {
-        end -= 2 * Math.PI;
-    }
-
-    const arc = d3
-        .arc()
-        .innerRadius(r - 20)
-        .outerRadius(r)
-        .startAngle(start)
-        .endAngle(end);
-        ;
-
-    svg
-        .append('path')
-        .attr('d', arc())
-        .attr('fill', 'none')
-        .attr('stroke', 'rgba(var(--priOr), 1)')
-        .attr('stroke-width', 2)
-        .attr('transform', `translate(${cx},${cy})`)
-        ;
-});
-
-// Draw house cusps
+// House calculations
 houses.cusps.forEach((deg, i) => {
-    const angle = (-deg + offset) * Math.PI / 180;
-    const x = cx + r * Math.cos(angle);
-    const y = cy + r * Math.sin(angle);
+    // Draw from center to edge
+    const angle = ((-deg + offset) % 360) * Math.PI / 180;
+    
+    // Draw lines
+    const innerRadius = r - 20;
+    const outerRadius = r;
+    const innerX = cx + innerRadius * Math.cos(angle);
+    const innerY = cy + innerRadius * Math.sin(angle);
+    const outerX = cx + outerRadius * Math.cos(angle);
+    const outerY = cy + outerRadius * Math.sin(angle);
+
     svg
         .append('line')
-        .attr('x1', cx)
-        .attr('y1', cy)
-        .attr('x2', x)
-        .attr('y2', y)
-        .attr('stroke', 'none')
+        .attr('x1', innerX)
+        .attr('y1', innerY)
+        .attr('x2', outerX)
+        .attr('y2', outerY)
+        .attr('stroke', 'rgba(var(--priOr), 1)')
+        // .attr('stroke', 'none')
         .attr('stroke-width', 2)
         ;
+    
+    // Inner ring
+    svg
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('r', innerRadius)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(var(--priOr), 0.8')
+        .attr('stroke-width', 2)
+        ;
+        
+    // Inner ring
+    svg
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(var(--priOr), 0.8')
+        .attr('stroke-width', 2)
+        ;
+
+// Draw house numbers    
+    // Calculate house no. position
+    const nextDeg = houses.cusps[(i + 1) % 12];
+    let midDeg = (deg + nextDeg) / 2;
+    // Handle cases where house crosses 0°
+    if (Math.abs(deg - nextDeg) > 180) {
+        midDeg = ((deg + nextDeg + 360) / 2) % 360;
+    }
+    const midAngle = ((-midDeg + offset) % 360) * Math.PI / 180;
+    
     svg
         .append('text')
-        .attr('x', cx + (r + 20) * Math.cos(angle))
-        .attr('y', cy + (r + 20) * Math.sin(angle))
+        .attr('x', cx + (r - 35) * Math.cos(midAngle))
+        .attr('y', cy + (r - 35) * Math.sin(midAngle))
         .attr('class', 'label')
         .attr('text-anchor', 'middle')
         .attr('font-size', 12)

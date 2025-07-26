@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load sass_tags %}
+
+{% block title %}New Player{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% sass_src 'styles/geocode.scss' %}">
+{% endblock %}
+
+{% block content %}
+<section id="register">
+    <div class="container">
+        <div class="row">
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>New Player</h1>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'register' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="first_name">Forename</label>
+                                <input type="text" name="first_name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Surname</label>
+                                <input type="text" name="last_name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Screenname</label>
+                                <input type="text" name="username" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Passphrase</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password2">Repeat Passphrase</label>
+                                <input type="password" name="password2" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_date">Birth Date</label>
+                                <input type="date" name="birth_date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_time">Birth Time</label>
+                                <input type="time" name="birth_time" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="is_dst">Daylight Saving Time (DST) in effect?</label>
+                                <select name="is_dst" id="dst-check">
+                                    <option value="">Auto-detect</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <input type="number" id="birth_lat" name="birth_lat" readonly step="0.000001">
+                            <input type="number" id="birth_lon" name="birth_lon" readonly step="0.000001">
+                            <div class="form-group">
+                                <label for="birth_location">Birth Location</label>
+                                <input type="text" id="birth_location" name="birth_location" placeholder="Type the first few characters of your birth city…." required>
+                                <small class="form-text text-muted">Select from suggestions</small>
+                            </div>
+                            <input type="submit" value="Register" class="btn btn-secondary btn-block">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'partials/_alerts.html' %}
+
+<script src="{% static 'scripts/geocode.js' %}"></script>
+
+{% endblock %}

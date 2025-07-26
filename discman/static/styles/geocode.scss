@@ -1,0 +1,19 @@
+.location-suggestions {
+    position: absolute;
+    background: rgba(var(--priOr), 0.1);
+    border: 1px solid rgba(var(--priYl), 1);
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+
+    div {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(var(--priOr), 0.33);
+            color: rgba(var(--priYl), 1);
+        }
+    }
+}

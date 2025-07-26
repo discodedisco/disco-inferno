@@ -1,4 +1,25 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from timezonefinder import TimezoneFinder
 import swisseph as swe
+
+def get_timezone_str(lat, lon):
+    tf = TimezoneFinder()
+    tz_str = tf.timezone_at(lat=lat, lng=lon)
+    return tz_str
+
+def get_utc_datetime(local_date, local_time, tz_str, is_dst=None):
+    dt_str = f'{local_date} {local_time}'
+    dt_naive = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+    
+    tz = ZoneInfo(tz_str)
+
+    if is_dst is not None and hasattr(dt_naive, 'fold'):
+        dt_naive = dt_naive.replace(fold=0 if is_dst else 1)
+    
+    dt_local = dt_naive.replace(tzinfo=tz)
+    dt_utc = dt_local.astimezone(ZoneInfo('UTC'))
+    return dt_utc
 
 SIGNS = [
     'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
@@ -31,11 +52,11 @@ def get_planet_positions(jd):
         positions[name] = pos[0]
     return positions
 
-def get_houses(jd, lat, lon, hsys='0'):
-    # hsys: 'P' = Placidus, 'K' = Koch, etc.
+def get_houses(jd, lat, lon, hsys='O'):
+    # hsys: 'P' = Placidus, 'K' = Koch, 'O' = Porphyry, etc.
     cusps, ascmc = swe.houses(jd, lat, lon, hsys.encode())
     return {
-        'cusps': cusps,
+        'cusps': list(cusps),
         'asc': ascmc[0],
         'mc': ascmc[1],
     }
