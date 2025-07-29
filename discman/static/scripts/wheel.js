@@ -41,6 +41,24 @@ const svg = d3
     .attr('height', height)
     ;
 
+// Groups (not yet in use)
+const signsGroup = svg
+    .append('g')
+    .attr('class', 'signs')
+    ;
+const housesGroup = svg
+    .append('g')
+    .attr('class', 'houses')
+    ;
+const planetsGroup = svg
+    .append('g')
+    .attr('class', 'planets')
+    ;
+const specialPointsGroup = svg
+    .append('g')
+    .attr('class', 'special-points')
+    ;
+
 // Draw sign arcs
 for (let i = 0; i < 12; i++) {
     const start = (-i * 30 + offset) * Math.PI / 180;
@@ -54,7 +72,7 @@ for (let i = 0; i < 12; i++) {
         .endAngle(end)
         ;
     
-    svg
+    signsGroup
         .append('path')
         .attr('d', arc())
         .attr('fill', 'rgba(var(--priOr), 0.15)')
@@ -67,7 +85,7 @@ for (let i = 0; i < 12; i++) {
     const mid = (-((i * 30) + 15) + offset) * Math.PI / 180;
     const x = cx + (signInner + signOuter) / 2 * Math.cos(mid);
     const y = cy + (signInner + signOuter) / 2 * Math.sin(mid);
-    svg
+    signsGroup
         .append('text')
         .attr('x', x)
         .attr('y', y + 5)
@@ -92,7 +110,7 @@ houses.cusps.forEach((deg, i) => {
     const outerX = cx + outerRadius * Math.cos(angle);
     const outerY = cy + outerRadius * Math.sin(angle);
 
-    svg
+    housesGroup
         .append('line')
         .attr('x1', innerX)
         .attr('y1', innerY)
@@ -104,7 +122,7 @@ houses.cusps.forEach((deg, i) => {
         ;
     
     // Inner ring
-    svg
+    housesGroup
         .append('circle')
         .attr('cx', cx)
         .attr('cy', cy)
@@ -114,8 +132,8 @@ houses.cusps.forEach((deg, i) => {
         .attr('stroke-width', 2)
         ;
         
-    // Inner ring
-    svg
+    // Outer ring
+    housesGroup
         .append('circle')
         .attr('cx', cx)
         .attr('cy', cy)
@@ -135,13 +153,14 @@ houses.cusps.forEach((deg, i) => {
     }
     const midAngle = ((-midDeg + offset) % 360) * Math.PI / 180;
     
-    svg
+    housesGroup
         .append('text')
         .attr('x', cx + (r - 35) * Math.cos(midAngle))
         .attr('y', cy + (r - 35) * Math.sin(midAngle))
         .attr('class', 'label')
         .attr('text-anchor', 'middle')
         .attr('font-size', 12)
+        .attr('fill', 'rgba(var(--priOr), 1)')
         .text(i + 1)
         ;
 });
@@ -151,14 +170,14 @@ Object.entries(planets).forEach(([name, deg]) => {
     const angle = (-deg + offset) * Math.PI / 180;
     const x = cx + (r - 10) * Math.cos(angle);
     const y = cy + (r - 10) * Math.sin(angle);
-    svg
+    planetsGroup
         .append('circle')
         .attr('cx', x)
         .attr('cy', y)
         .attr('r', 8)
         .attr('fill', 'rgba(var(--priYl), 1)')
         ;
-    svg
+    planetsGroup
         .append('text')
         .attr('x', x)
         .attr('y', y + 5)
@@ -174,12 +193,12 @@ Object.entries(planets).forEach(([name, deg]) => {
     const angle = (-deg + offset) * Math.PI / 180;
     const x = cx + r * Math.cos(angle);
     const y = cy + r * Math.sin(angle);
-    svg
+    specialPointsGroup
         .append('text')
         .attr('x', x)
-        .attr('y', y - 10)
+        .attr('y', y)
         .attr('class', 'label')
-        .attr('fill', 'rgba(var(--sexTi), 1)')
+        .attr('fill', 'rgba(var(--priAd), 1)')
         .attr("text-anchor", "middle")
         .attr("font-size", 14)
         .text(label)

@@ -55,7 +55,7 @@ def register(request):
             # Check username
             if User.objects.filter(username=username).exists():
                 messages.error(
-                    request, 'Screenname Already Extant (choose again!)')
+                    request, 'Username already exists (choose again!)')
                 return redirect('register')
             else:
                 if User.objects.filter(email=email).exists():
@@ -87,7 +87,7 @@ def register(request):
                     # Login after register
                     auth.login(request, user)
                     messages.success(
-                        request, 'Successfully logged in with new account')
+                        request, 'Successful new player start!')
                     return redirect('wheel')
         else:
             messages.error(request, 'Passphrases not identical; please revise')

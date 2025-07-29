@@ -82,6 +82,7 @@ def recalculate_chart(request):
         'signs_json': json.dumps(SIGNS),
         'timestamp': datetime.now().timestamp(),
         'char': char,
+        'selected_house_system': house_system,
     }
     
     return render(request, 'pages/wheel.html', context)

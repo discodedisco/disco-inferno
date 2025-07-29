@@ -4,3 +4,18 @@
     margin: 0 auto;
     aspect-ratio: 1 / 1;
 }
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0;
+}
+
+ul .navbar-nav {
+    display: flex;
+    align-items: center;
+    /* position: relative;
+    display: inline-block; */
+}

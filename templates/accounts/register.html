@@ -5,7 +5,11 @@
 {% block title %}New Player{% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% sass_src 'styles/geocode.scss' %}">
+<!-- <link rel="stylesheet" href="{% sass_src 'styles/geocode.scss' %}"> -->
+{% endblock %}
+
+{% block header %}
+<h1>New Player</h1>
 {% endblock %}
 
 {% block content %}
@@ -15,21 +19,21 @@
             <div class="column">
                 <div class="card">
                     <div class="card-header">
-                        <h1>New Player</h1>
+                        <!-- Currently no card header -->
                     </div>
                     <div class="card-body">
                         <form action="{% url 'register' %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="first_name">Forename</label>
+                                <label for="first_name">First Name</label>
                                 <input type="text" name="first_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="last_name">Surname</label>
+                                <label for="last_name">Last Name</label>
                                 <input type="text" name="last_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="username">Screenname</label>
+                                <label for="username">Username</label>
                                 <input type="text" name="username" class="form-control" required>
                             </div>
                             <div class="form-group">
@@ -37,11 +41,11 @@
                                 <input type="email" name="email" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="password">Passphrase</label>
+                                <label for="password">Password</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="password2">Repeat Passphrase</label>
+                                <label for="password2">Repeat Password</label>
                                 <input type="password" name="password2" class="form-control" required>
                             </div>
                             <div class="form-group">
@@ -60,14 +64,22 @@
                                     <option value="false">No</option>
                                 </select>
                             </div>
-                            <input type="number" id="birth_lat" name="birth_lat" readonly step="0.000001">
-                            <input type="number" id="birth_lon" name="birth_lon" readonly step="0.000001">
                             <div class="form-group">
-                                <label for="birth_location">Birth Location</label>
-                                <input type="text" id="birth_location" name="birth_location" placeholder="Type the first few characters of your birth city…." required>
-                                <small class="form-text text-muted">Select from suggestions</small>
+                                <label id="birth-location-label" for="birth_location">Birth Location
+                                    <input type="number" id="birth-lat" name="birth_lat" readonly step="0.000001" placeholder="Latitude">
+                                    <input type="number" id="birth-lon" name="birth_lon" readonly step="0.000001" placeholder="Longitude">
+                                </label>
+                                <div class="location-container">
+                                    <small class="form-text text-muted">Select from suggestions to populate lat/lon</small>
+                                    <input type="text" id="birth_location" name="birth_location" placeholder="Type the first few characters of your birth city…." class="form-control" required>
+                                    <div class="location-suggestions" style="display: none;"></div>
+                                </div>
                             </div>
-                            <input type="submit" value="Register" class="btn btn-secondary btn-block">
+                            <div class="form-group">
+                                <!-- <input type="number" id="birth-lat" name="birth_lat" readonly step="0.000001" placeholder="Latitude">
+                                <input type="number" id="birth-lon" name="birth_lon" readonly step="0.000001" placeholder="Longitude"> -->
+                            </div>
+                            <input type="submit" value="Ready Player!" id="ready-player-register" class="btn btn-secondary btn-block">
                         </form>
                     </div>
                 </div>
