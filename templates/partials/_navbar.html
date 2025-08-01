@@ -2,36 +2,29 @@
     <div class="container nav-container">
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
-                <li
-                    {% if 'wheel' in request.path %}
-                        class="nav-item active"
-                    {% else %}
-                        class="nav-item"
-                    {% endif %}
-                >
+                <li class="nav-item{% if 'wheel' in request.path %} hidden{% endif %}">
                     <a href="{% url 'wheel' %}" class="nav-link">
                         @{{ user.username }}'s Wheel
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="javascript:{document.getElementById('logout').submit()}">
+                <li class="nav-item{% if 'login' in request.path %} active{% endif %}">
+                    <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
-                    <form action="{% url 'logout' %}" method="POST" class="" id="logout">
+                    <form action="{% url 'logout' %}" method="POST" class="nav-link" id="logout">
                         {% csrf_token %}
                         <input type="hidden">
                     </form>
                 </li>
             {% else %}
-                <li
-                    {% if 'register' in request.path %}
-                        class="nav-item active"
-                    {% else %}
-                        class="nav-item"
-                    {% endif %}
-                >
+                <li class="nav-item{% if 'login' in request.path %} active{% endif %}">
                     <a href="{% url 'login' %}" class="nav-link">
                         <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </li>
+                <li class="nav-item{% if 'register' in request.path %} active{% endif %}">
+                    <a href="{% url 'register' %}" class="nav-link">
+                        <i class="fas fa-user-plus"></i> Register
                     </a>
                 </li>
             {% endif %}

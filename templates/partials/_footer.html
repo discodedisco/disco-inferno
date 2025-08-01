@@ -1,5 +1,12 @@
 <footer id="footer">
     <div class="container">
-        <br>
+        <a href="{% url 'index' %}" class="nav-link{% if request.path == '/' or request.path == '/index/' or request.resolver_math.url_name == 'index' %} hidden{% endif %}">
+            <h2 class="icon-title">
+                <i class="fa-solid fa-fire fa-2x"></i>
+            </h2>
+        </a>
+    </div>
+    <div class="container">
+        <p>&copy;Dis Co. <span class="year"></span></p>
     </div>
 </footer>

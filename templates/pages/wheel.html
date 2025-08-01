@@ -23,7 +23,9 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{% url 'index' %}">Home</a>
+                    <a href="{% url 'index' %}">
+                        <i class="fa-solid fa-fire"></i>
+                    </a>
                 </li>
                 <li class="breadcrumb-item active">@{{ user.username }}'s Wheel</li>
             </ol>
@@ -43,9 +45,12 @@
 </script> -->
 
 <script>
-    const planets = {{ planets_json|safe }};
-    const houses = {{ houses_json|safe }};
-    const signs = {{ signs_json|safe }};
+    window.wheelData = {
+        planets: {{ planets_json|safe }},
+        houses: {{ houses_json|safe }},
+        signs: {{ signs_json|safe }},
+        element_counts: {{ element_counts_json|safe }}
+    };
 </script>
 
 <script src="{% static 'scripts/spin.js' %}?v={{ timestamp }}"></script>

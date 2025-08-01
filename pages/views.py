@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from nativity.utils import SIGNS, get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
+from characters.utils import SIGNS, get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
 from characters.models import PlayerCharacter
 from datetime import datetime
 import json
@@ -39,14 +39,19 @@ def wheel(request):
         # Calculate planets and houses
         planets = get_planet_positions(jd)
         houses = get_houses(jd, char.birthplace_lat, char.birthplace_lon, hsys='P')
+        
+        # Get element totals
+        element_counts = char.get_element_totals()
 
         # Pass to template
         context = {
             'planets_json': json.dumps(planets),
             'houses_json': json.dumps(houses),
             'signs_json': json.dumps(SIGNS),
+            'element_counts_json': json.dumps(element_counts),
             'timestamp': datetime.now().timestamp(),
             'char': char,
+            # 'selected_house_system': house_system,
         }
         
         return render(request, 'pages/wheel.html', context)
@@ -75,12 +80,16 @@ def recalculate_chart(request):
     # Recalculate houses with selected system
     houses = get_houses(jd, char.birthplace_lat, char.birthplace_lon, hsys=house_system)
 
+    # Get element totals
+    element_counts = char.get_element_totals()
+
     # Pass to template w. refreshed data
     context = {
         'planets_json': json.dumps(get_planet_positions(jd)),
         'houses_json': json.dumps(houses),
         'signs_json': json.dumps(SIGNS),
         'timestamp': datetime.now().timestamp(),
+        'element_counts_json': json.dumps(element_counts),
         'char': char,
         'selected_house_system': house_system,
     }

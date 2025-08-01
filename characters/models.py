@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import datetime, time
 import swisseph as swe
-from nativity.utils import get_julian_day, get_planet_positions, get_houses, get_timezone_str, get_utc_datetime
+from characters.utils import get_julian_day, get_planet_positions, get_houses, get_timezone_str, get_utc_datetime, get_element_totals
 from django.core.exceptions import ValidationError
 
 class PlayerCharacter(models.Model):
@@ -58,3 +58,12 @@ class PlayerCharacter(models.Model):
     
     def __str__(self):
         return f"{self.username} | {self.first_name} {self.last_name}"
+    
+    def get_element_totals(self):
+        """Calculate element ratio for char's natal chart"""
+        # Get planets positions from above
+        planet_positions = self.get_planet_positions()
+        houses = self.get_houses()
+
+        return get_element_totals(planet_positions, houses)
+        

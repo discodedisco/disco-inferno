@@ -58,7 +58,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="is_dst">Daylight Saving Time (DST) in effect?</label>
-                                <select name="is_dst" id="dst-check">
+                                <select name="is_dst" id="dst-check" class="form-control">
                                     <option value="">Auto-detect</option>
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
@@ -66,8 +66,8 @@
                             </div>
                             <div class="form-group">
                                 <label id="birth-location-label" for="birth_location">Birth Location
-                                    <input type="number" id="birth-lat" name="birth_lat" readonly step="0.000001" placeholder="Latitude">
-                                    <input type="number" id="birth-lon" name="birth_lon" readonly step="0.000001" placeholder="Longitude">
+                                    <input type="number" id="birth-lat" name="birth_lat" class="form-control" readonly step="0.000001" placeholder="Latitude">
+                                    <input type="number" id="birth-lon" name="birth_lon" class="form-control" readonly step="0.000001" placeholder="Longitude">
                                 </label>
                                 <div class="location-container">
                                     <small class="form-text text-muted">Select from suggestions to populate lat/lon</small>
@@ -79,7 +79,11 @@
                                 <!-- <input type="number" id="birth-lat" name="birth_lat" readonly step="0.000001" placeholder="Latitude">
                                 <input type="number" id="birth-lon" name="birth_lon" readonly step="0.000001" placeholder="Longitude"> -->
                             </div>
-                            <input type="submit" value="Ready Player!" id="ready-player-register" class="btn btn-secondary btn-block">
+
+                            <div class="form-group">
+                                <label for="submit" style="visibility: hidden;">Ready Player Register</label>
+                                <input type="submit" value="Ready Player!" id="ready-player-register" class="btn">
+                            </div>
                         </form>
                     </div>
                 </div>

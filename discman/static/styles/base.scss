@@ -124,26 +124,63 @@ h4 {
   color: rgba(var(--priYl), 1);
 }
 
+.navbar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    list-style: none;
+    padding: 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    margin: 0.25rem 0.5rem;
+}
+
+#navbar {
+    display: block;
+    width: 100%;
+}
+
+.nav-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
 .icon-title {
     text-align: center;
     padding-top: 2.5rem;
-    margin-bottom: -2rem;
+    margin-bottom: 2rem;
 }
 
 .container {
     width: 100%;
 }
 
+
 .canvas-container {
     text-align: center;
     border-radius: 5px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: block;
 }
 
 .title-wrapper {
     text-align: center;
 }
 
-.wheel-title {
+.wheel-title,
+.login-title {
     position: relative;
     display: inline-block;
     margin: auto;
@@ -162,7 +199,7 @@ h4 {
 
 .the-title {
     position: absolute;
-    left: 0.25rem;
+    left: 2.5rem;
     top: -2.5rem;
 }
 
@@ -191,6 +228,13 @@ h4 {
     border-radius: 0.5rem;
 }
 
+.breadcrumb-item {
+    a {
+        text-decoration: none;
+        color: rgba(var(--priYl), 1);
+    }
+}
+
 .breadcrumb-item + .breadcrumb-item {
     padding-left: 0.5rem;
 
@@ -198,8 +242,12 @@ h4 {
         display: inline-block;
         padding-right: 0.5rem;
         color: rgba(var(--terRd), 1);
-        content: ">";
+        content: ":";
     }
+}
+
+.breadcrumb-item + .breadcrumb-item + .breadcrumb-item::before {
+    content: "::";
 }
 
 .card {
@@ -209,7 +257,7 @@ h4 {
 }
 
 /* Register */
-#register {
+#register, #login {
     .card {
         max-width: 75%;
     }
@@ -228,6 +276,7 @@ h4 {
     input {
         font-size: 1rem;
         user-select: none;
+        font-family: 'adobe-garamond-pro', serif;
     }
 
     label {
@@ -259,10 +308,13 @@ h4 {
     }
 
     input[type="submit"] {
+        font-family: 'estro-mn', serif;
         grid-column: 1 / -1;
         max-width: 200px;
         justify-self: center;
+        padding: 2.5rem 2rem;
         margin-top: 1rem;
+        border-radius: 3rem;
     }
 
     .form-text {
@@ -316,16 +368,26 @@ h4 {
     }
 }
 
-#ready-player-register {
+#ready-player-register, #ready-player-login {
     color: rgba(var(--priAd), 1);
     background-color: rgba(var(--sexTi), 1);
-    padding: 0.5rem 1rem;
-    border-radius: 0.75rem;
     font-size: 1rem;
     font-family: "estro-mn", sans-serif;
 
     &:active {
         background-color: rgba(var(--quaAd), 1);
+    }
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+footer {
+    text-align: center;
+
+    p {
+        align-items: center;
     }
 }
 

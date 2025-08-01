@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sass_processor',
     'accounts',
-    'nativity',
+    # 'nativity',
     'pages',
     'characters',
 ]

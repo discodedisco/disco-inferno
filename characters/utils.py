@@ -60,3 +60,45 @@ def get_houses(jd, lat, lon, hsys='O'):
         'asc': ascmc[0],
         'mc': ascmc[1],
     }
+    
+def get_element_totals(planet_positions, houses):
+    # Define elements by sign
+    elements_map = {
+        'Fire': ['Aries', 'Leo', 'Sagittarius'],
+        'Earth': ['Taurus', 'Virgo', 'Capricorn'],
+        'Air': ['Gemini', 'Libra', 'Aquarius'],
+        'Water': ['Cancer', 'Scorpio', 'Pisces'],
+        'Space': [],
+        'Time': [],
+    }
+    
+    # Init counts
+    element_counts = {element: 0 for element in elements_map}
+    
+    # Get signs for angles
+    asc_sign = get_sign(houses['asc'])
+    desc_sign = get_sign((houses['asc'] + 180) % 360)
+    mc_sign = get_sign(houses['mc'])
+    ic_sign = get_sign((houses['mc'] + 180) % 360)
+    
+    # Process planets by trad sign element
+    for planet, position in planet_positions.items():
+        sign = get_sign(position)
+
+        # Trad element
+        trad_found = False
+        for element, signs in elements_map.items():
+            if sign in signs:
+                element_counts[element] += 1
+                trad_found = True
+                break
+            
+        # Space (Asc. & Desc.)
+        if sign == asc_sign or sign == desc_sign:
+            element_counts['Space'] += 1
+
+        # Time (M.C. & I.C.)
+        if sign == mc_sign or sign == ic_sign:
+            element_counts['Time'] += 1
+    
+    return element_counts

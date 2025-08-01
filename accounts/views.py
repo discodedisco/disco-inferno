@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from characters.models import PlayerCharacter
-from nativity.utils import get_timezone_str
+from characters.utils import get_timezone_str
 
 
 def register(request):

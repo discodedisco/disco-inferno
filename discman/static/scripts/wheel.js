@@ -9,6 +9,11 @@ const r = size / 2 - 30;
 const cx = width / 2;
 const cy = height / 2;
 
+const planets = window.wheelData.planets;
+const houses = window.wheelData.houses;
+const signs = window.wheelData.signs;
+const element_counts = window.wheelData.element_counts;
+
 const planetSymbols = {
     Sun: "☉",
     Moon: "☽",
@@ -204,3 +209,197 @@ Object.entries(planets).forEach(([name, deg]) => {
         .text(label)
         ;
 });
+
+let totalElements = 0;
+
+// Draw element analyzer ring
+function drawElementRing(elementRatio) {
+    console.log("element data:", elementRatio);
+
+    const elementColors = {
+        'Fire': 'rgba(var(--priAg), 1)',
+        'Earth': 'rgba(var(--terPd), 1)',
+        'Air': 'rgba(var(--priCu),1)',
+        'Water': 'rgba(var(--terNi), 1)',
+        'Space': 'rgba(var(--priAu), 1)',
+        'Time': 'rgba(var(--terPt), 1)',
+    };
+
+    // Calculate percentages
+    totalElements = Object.values(elementRatio).reduce((a, b) => a + b, 0);
+    if (totalElements === 0) {
+        console.error("No element data found!");
+        return;
+    }
+
+    // Create pie-gen
+    const pie = d3
+        .pie()
+        .value(d => d.value)
+        .sort(null)
+        ;
+    
+    // Conver pie data
+    const pieData = pie(Object.entries(elementRatio).map(([key, value]) => ({ key, value })));
+
+    // Element ring params
+    const elementInner = r * 0.5;
+    const elementOuter = r * 0.6;
+    
+    // Create arc-gen
+    const elementArc = d3
+        .arc()
+        .innerRadius(elementInner)
+        .outerRadius(elementOuter)
+        ;
+    
+    // Create element ring group
+    const elementGroup = svg
+        .append('g')
+        .attr('class', 'element-ring')
+        .attr('transform', `translate(${cx},${cy})`)
+        ;
+    
+    // Draw arcs
+    elementGroup
+        .append('g')
+        .attr('class', 'element-arc-group')
+        .selectAll('.element-arc')
+        .data(pieData)
+        .join('path')
+        .attr('class', 'element-arc')
+        .attr('d', elementArc)
+        .attr('fill', d => elementColors[d.data.key])
+        .attr('stroke', 'rgba(var(--priOr), 1)')
+        .attr('stroke-width', 1)
+        // .append('title')
+        // .text(d => `${d.data.key}: ${d.data.value} (${Math.round(d.data.value / totalElements * 100)}%)`)
+        ;
+    
+    elementGroup
+        .append('g')
+        .attr('class', 'element-label-group')
+        .selectAll('.element-icon')
+        .data(pieData)
+        .join('text')
+        .attr('class', 'element-icon')
+        .attr('x', d => {
+            // Calculate position at middle of arc segment
+            const midAngle = d.startAngle + (d.endAngle - d.startAngle) / 2
+            const radius = (elementInner + elementOuter) / 2;
+            return radius * Math.sin(midAngle);
+        })
+        .attr('y', d => {
+            // Calculate position at middle of arc segment
+            const midAngle = d.startAngle + (d.endAngle - d.startAngle) / 2
+            const radius = (elementInner + elementOuter) / 2;
+            return -radius * Math.cos(midAngle);
+        })
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .attr('fill', 'rgba(var(--priAd), 1)')
+        .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1), 0 0 0.5rem rgba(255, 255, 255, 0.5')
+        .attr('font-size', '0.75rem')
+        .attr('font-family', 'FontAwesome')
+        .text(d => {
+            const icons = {
+                'Fire': '\uf06d',
+                'Earth': '\uf6fc',
+                'Air': '\uf72e',
+                'Water': '\uf043',
+                'Space': '\uf753',
+                'Time': '\uf017',
+            };
+            return icons[d.data.key];
+        })
+        .style('cursor', 'default')
+        ;
+}
+
+drawElementRing(element_counts);
+
+const tooltip = d3
+    .select('body')
+    .append('div')
+    .attr('class', 'element-tooltip')
+    .style('position', 'absolute')
+    .style('visibility', 'hidden')
+    .style('background', 'rgba(0, 0, 0, 0.75)')
+    .style('color', 'rgba(var(--priYl), 1)')
+    .style('padding', '0.5rem')
+    .style('border-radius', '0.25rem')
+    .style('font-size', '0.75rem')
+    .style('pointer-events', 'none')
+    .style('z-index', '1000')
+    ;
+
+svg
+    .select('.element-arc-group')
+    .selectAll('.element-arc')
+    .on('mouseover', function (e, d) {
+        const percent = Math.round(d.data.value / totalElements * 100);
+        tooltip
+            .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
+            .style('visibility', 'visible')
+            ;
+    })
+    .on('mousemove', function (e) {
+        tooltip
+            .style('top', (e.pageY - 10) + 'px')
+            .style('left', (e.pageX + 10) + 'px')
+            ;
+    })
+    .on('mouseout', function () {
+        tooltip.style('visibility', 'hidden');
+    })
+    // Mobile support
+    .on('touchstart', function (e, d) {
+        e.preventDefault();
+        const percent = Math.round(d.data.value / totalElements * 100);
+        tooltip
+            .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
+            .style('visibility', 'visible')
+            .style('top', (e.touches[0].pageY - 30) + 'px')
+            .style('left', (e.touches[0].pageX + 10) + 'px')
+            ;
+        // Auto-hide after delay
+        setTimeout(() => {
+            tooltip.style('visibility', 'hidden');
+        }, 2000);
+    })
+    ;
+
+svg
+    .select('.element-label-group')
+    .selectAll('.element-icon')
+    .on('mouseover', function (e, d) {
+        const percent = Math.round(d.data.value / totalElements * 100);
+        tooltip
+            .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
+            .style('visibility', 'visible')
+            ;
+    })
+    .on('mousemove', function (e) {
+        tooltip
+            .style('top', (e.pageY - 10) + 'px')
+            .style('left', (e.pageX + 10) + 'px')
+            ;
+    })
+    .on('mouseout', function () {
+        tooltip.style('visibility', 'hidden');
+    })
+    .on('touchstart', function (e, d) {
+        e.preventDefault();
+        const percent = Math.round(d.data.value / totalElements * 100);
+        tooltip
+            .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
+            .style('visibility', 'visible')
+            .style('top', (e.touches[0].pageY - 30) + 'px')
+            .style('left', (e.touches[0].pageX + 10) + 'px')
+            ;
+        
+        setTimeout(() => {
+            tooltip.style('visibility', 'hidden');
+        }, 2000);
+    })
+    ;

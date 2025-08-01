@@ -2,36 +2,44 @@
 
 {% block title %} | Login to spin up your Wheel {% endblock %}
 
+{% block extrastyle %}
+{% endblock %}
+
 {% block content %}
-<section id="login" class="login-section">
-    <div class="container">
-        <div class="row">
-            <div class="column">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <!-- Alerts -->
-                        {% include 'partials/_alerts.html' %}
-                        <form action="{% url 'login' %}" method="POST">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" name="username" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
-                            <input type="submit" value="Login" class="btn btn-secondary btn-block">
-                        </form>
-                    </div>
-                </div>
-            </div>
+<section>
+    <div class="title-wrapper">
+        <div class="login-title">
+            <h2 class="the-title">Welcome back!</h2>
+            <h1 class="main-title">Return Player Login:</h1>
         </div>
     </div>
 </section>
+<section id="login" class="login-section">
+    <div class="container">
+        <div class="card">
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="submit" style="visibility: hidden;">Ready Player Login</label>
+                    <input type="submit" value="Ready Player!" id="ready-player-login" class="btn">
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Alerts -->
+{% include 'partials/_alerts.html' %}
 {% endblock %}
