@@ -4,6 +4,7 @@
 # Disco's not-so-groovy test files
 /templates/pages/wheel-copy.html
 /discman/static-copy
+/discman/static/scripts/tooltip-copy.js
 
 ### Django ###
 *.log

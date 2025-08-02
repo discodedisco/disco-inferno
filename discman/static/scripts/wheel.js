@@ -1,7 +1,9 @@
-// const planets = {'Sun': 339.35306034182435, 'Moon': 17.540743571783214, 'Mercury': 324.17873587696073, 'Venus': 297.70346712723125, 'Mars': 291.5611222524487, 'Jupiter': 90.82747167382269, 'Saturn': 292.0445876717063, 'Uranus': 278.74902484669695, 'Neptune': 283.97077819645455, 'Pluto': 227.76350311547512};
-// const houses = {'cusps': [236.11325409849132, 270.466117232383, 304.8189803662746, 339.17184350016623, 4.818980366274616, 30.466117232383, 56.113254098491325, 90.466117232383, 124.81898036627462, 159.17184350016626, 184.81898036627462, 210.46611723238297], 'asc': 236.11325409849132, 'mc': 159.17184350016626};
-
-const container = document.getElementById('wheel-canvas');
+document.addEventListener('DOMContentLoaded', function () {
+    if (!window.wheelData) {
+        console.error('wheelData not yet loaded');
+        return;
+    }
+    const container = document.getElementById('wheel-canvas');
 const size = Math.min(container.offsetWidth, window.innerHeight * 0.7);
 const width = size;
 const height = size;
@@ -14,29 +16,17 @@ const houses = window.wheelData.houses;
 const signs = window.wheelData.signs;
 const element_counts = window.wheelData.element_counts;
 
-const planetSymbols = {
-    Sun: "☉",
-    Moon: "☽",
-    Mercury: "☿",
-    Venus: "♀",
-    Mars: "♂",
-    Jupiter: "♃",
-    Saturn: "♄",
-    Uranus: "♅",
-    Neptune: "♆",
-    Pluto: "♇"
-};
-
-// const width = 400, height = 400, r = 175, cx = width / 2, cy = height / 2;
+const planetSymbols = window.wheelData.planetSymbols;
 
 const signInner = r + 10;
 const signOuter = r + 30;
 
-// function normalizeAngle(angle) {
-//     return ((angle + 180) % 360) - 180;
-// }
-// const offset = normalizeAngle(houses.asc - 180);
+const houseInner = r - 45;
+const houseOuter = r - 15;
+
 const offset = houses.asc - 180;
+
+wheelTooltips.initialize();
 
 // Create svg
 const svg = d3
@@ -46,7 +36,7 @@ const svg = d3
     .attr('height', height)
     ;
 
-// Groups (not yet in use)
+// Groups
 const signsGroup = svg
     .append('g')
     .attr('class', 'signs')
@@ -77,35 +67,49 @@ for (let i = 0; i < 12; i++) {
         .endAngle(end)
         ;
     
-    signsGroup
+    const signPath = signsGroup
         .append('path')
         .attr('d', arc())
         .attr('fill', 'rgba(var(--priOr), 0.15)')
         .attr('stroke', 'rgba(var(--priOr), 1)')
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 3)
         .attr('transform', `translate(${cx},${cy})`)
+        .attr('class', 'sign-path')
         ;
+    
+    // Add 9 (270°) to align with traditional chart orientiation
+    const signIndex = (i + 3) % 12;
+    
+    // Attach tooltip to .sign-path
+    wheelTooltips.attachToSign(d3.select(signPath.node()), signs[signIndex]);
     
     // Sign label
     const mid = (-((i * 30) + 15) + offset) * Math.PI / 180;
     const x = cx + (signInner + signOuter) / 2 * Math.cos(mid);
     const y = cy + (signInner + signOuter) / 2 * Math.sin(mid);
-    signsGroup
+    const signLabel = signsGroup
         .append('text')
         .attr('x', x)
         .attr('y', y + 5)
-        .attr('class', 'label')
+        .attr('class', 'sign-symbol')
         .attr('text-anchor', 'middle')
-        .attr('font-size', 13)
+        .attr('font-size', '1rem')
         .attr('fill', 'rgba(var(--priOr), 1)')
-        .text(signs[i])
+        .attr('cursor', 'default')
+        // .text(signs[i])
+        .html(window.wheelData.signSymbols[signs[signIndex]])
         ;
+    
+    // Attach tooltip to .sign-label
+    wheelTooltips.attachToSign(d3.select(signLabel.node()), signs[i]);
 }
 
 // House calculations
 houses.cusps.forEach((deg, i) => {
     // Draw from center to edge
     const angle = ((-deg + offset) % 360) * Math.PI / 180;
+    const houseIndex = i;
+    const nextDeg = houses.cusps[(i + 1) % 12];
     
     // Draw lines
     const innerRadius = r - 20;
@@ -115,7 +119,7 @@ houses.cusps.forEach((deg, i) => {
     const outerX = cx + outerRadius * Math.cos(angle);
     const outerY = cy + outerRadius * Math.sin(angle);
 
-    housesGroup
+    const houseCusp = housesGroup
         .append('line')
         .attr('x1', innerX)
         .attr('y1', innerY)
@@ -124,7 +128,11 @@ houses.cusps.forEach((deg, i) => {
         .attr('stroke', 'rgba(var(--priOr), 1)')
         // .attr('stroke', 'none')
         .attr('stroke-width', 2)
+        .attr('class', 'house-cusp')
         ;
+    
+    // Attach to .house-cusp
+    wheelTooltips.attachToHouse(d3.select(houseCusp.node()), i + 1)
     
     // Inner ring
     housesGroup
@@ -134,7 +142,7 @@ houses.cusps.forEach((deg, i) => {
         .attr('r', innerRadius)
         .attr('fill', 'none')
         .attr('stroke', 'rgba(var(--priOr), 0.8')
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
         ;
         
     // Outer ring
@@ -145,12 +153,11 @@ houses.cusps.forEach((deg, i) => {
         .attr('r', r)
         .attr('fill', 'none')
         .attr('stroke', 'rgba(var(--priOr), 0.8')
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
         ;
 
 // Draw house numbers    
     // Calculate house no. position
-    const nextDeg = houses.cusps[(i + 1) % 12];
     let midDeg = (deg + nextDeg) / 2;
     // Handle cases where house crosses 0°
     if (Math.abs(deg - nextDeg) > 180) {
@@ -158,7 +165,7 @@ houses.cusps.forEach((deg, i) => {
     }
     const midAngle = ((-midDeg + offset) % 360) * Math.PI / 180;
     
-    housesGroup
+    const houseNumber = housesGroup
         .append('text')
         .attr('x', cx + (r - 35) * Math.cos(midAngle))
         .attr('y', cy + (r - 35) * Math.sin(midAngle))
@@ -167,7 +174,64 @@ houses.cusps.forEach((deg, i) => {
         .attr('font-size', 12)
         .attr('fill', 'rgba(var(--priOr), 1)')
         .text(i + 1)
+        .attr('class', 'house-number')
         ;
+    
+    // Attach to house-number; may get rid of house number altogether
+    wheelTooltips.attachToHouse(d3.select(houseNumber.node()), i + 1);
+
+    // create invisible fill areas for tooltip interaction
+
+    // get current & next cusp angles
+    let startDeg = deg;
+    let endDeg = nextDeg;
+
+    if (Math.abs(endDeg - startDeg) > 180) {
+        if (endDeg < startDeg) {
+            endDeg += 360;
+        } else {
+            startDeg += 360;
+        }
+    }
+
+    // convert to radians w. offset
+    const startAngle = (-startDeg + offset + 90) * Math.PI / 180;
+    const endAngle = (-endDeg + offset + 90) * Math.PI / 180;
+
+    // create arc path covering house area
+    const houseArc = d3
+        .arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius)
+        .startAngle(startAngle)
+        .endAngle(endAngle)
+        ;
+    
+    // add invisible interaction area
+    const houseFill = housesGroup
+        .append('path')
+        .attr('d', houseArc())
+        .attr('transform', `translate(${cx},${cy})`)
+        .attr('class', 'house-fill')
+        .attr('fill', 'transparent')
+        .style('pointer-events', 'all')
+        .style('cursor', 'default')
+        ;
+    
+    // housesGroup
+    //     .append('path')
+    //     .attr('d', houseArc())
+    //     .attr('transform', `translate(${cx},${cy})`)
+    //     .attr('class', 'house-debug')
+    //     .attr('fill', 'rgba(var(--priCy), 0.1)')
+    //     .attr('stroke', 'red')
+    //     .attr('stroke-width', 1)
+    //     .attr('stroke-dasharray', '3,3')
+    //     .attr('opactity', 0.5)
+    //     ;
+    
+    // Attach tooltip to house fill area
+    wheelTooltips.attachToHouse(d3.select(houseFill.node()), houseIndex + 1);
 });
 
 // Draw planets
@@ -175,39 +239,75 @@ Object.entries(planets).forEach(([name, deg]) => {
     const angle = (-deg + offset) * Math.PI / 180;
     const x = cx + (r - 10) * Math.cos(angle);
     const y = cy + (r - 10) * Math.sin(angle);
-    planetsGroup
+    
+    const planetGroup = planetsGroup
+        .append('g')
+        .attr('class', 'planets-group')
+        ;
+
+    const planetCircle = planetGroup
         .append('circle')
         .attr('cx', x)
         .attr('cy', y)
         .attr('r', 8)
         .attr('fill', 'rgba(var(--priYl), 1)')
         ;
-    planetsGroup
+    
+    const planetSymbol = planetGroup
         .append('text')
         .attr('x', x)
         .attr('y', y + 5)
         .attr('class', 'label')
         .attr('text-anchor', 'middle')
-        .attr('font-size', 12)
-        .text(planetSymbols[name])
+        .attr('font-size', '0.75rem')
+        // .attr('fill', 'rgba(var(--priTi), 1)')
+        // .text(planetSymbols[name])
+        .html(function () {
+            return window.wheelData.planetSymbols[name] || name.charAt(0);
+        })
         ;
+    
+    // Attach tooltip to .planets-group (both circle & symbol)
+    wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, deg);
+    wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, deg);
 });
 
 // Draw ASC & MC
-[['ASC', houses.asc], ['MC', houses.mc]].forEach(([label, deg]) => {
+[['ASC', houses.asc], ['MC', houses.mc], ['DESC', (houses.asc + 180) % 360], ['IC', (houses.mc + 180) % 360]].forEach(([label, deg]) => {
     const angle = (-deg + offset) * Math.PI / 180;
-    const x = cx + r * Math.cos(angle);
-    const y = cy + r * Math.sin(angle);
+
+    // Outside points
+    const outerX = cx + r * Math.cos(angle);
+    const outerY = cy + r * Math.sin(angle);
+    const x = cx + (signOuter - 80) * Math.cos(angle);
+    const y = cy + (signOuter - 80) * Math.sin(angle);
+
+    // Inside points
+    const border = r * 0.6;
+    const innerX = cx + border * Math.cos(angle);
+    const innerY = cy + border * Math.sin(angle);
+
     specialPointsGroup
-        .append('text')
-        .attr('x', x)
-        .attr('y', y)
-        .attr('class', 'label')
-        .attr('fill', 'rgba(var(--priAd), 1)')
-        .attr("text-anchor", "middle")
-        .attr("font-size", 14)
-        .text(label)
+        .append('line')
+        .attr('x1', outerX)
+        .attr('y1', outerY)
+        .attr('x2', innerX)
+        .attr('y2', innerY)
+        .attr('class', 'crosshair-line')
+        .attr('stroke', 'rgba(var(--priOr), 1)')
+        .attr('stroke-width', '2')
         ;
+
+    // specialPointsGroup
+    //     .append('text')
+    //     .attr('x', x)
+    //     .attr('y', y)
+    //     .attr('class', 'label')
+    //     .attr('fill', 'rgba(var(--priAd), 1)')
+    //     .attr("text-anchor", "middle")
+    //     .attr("font-size", 14)
+    //     .text(label)
+    //     ;
 });
 
 let totalElements = 0;
@@ -218,11 +318,11 @@ function drawElementRing(elementRatio) {
 
     const elementColors = {
         'Fire': 'rgba(var(--priAg), 1)',
-        'Earth': 'rgba(var(--terPd), 1)',
+        'Earth': 'rgba(var(--priPd), 1)',
         'Air': 'rgba(var(--priCu),1)',
-        'Water': 'rgba(var(--terNi), 1)',
+        'Water': 'rgba(var(--priNi), 1)',
         'Space': 'rgba(var(--priAu), 1)',
-        'Time': 'rgba(var(--terPt), 1)',
+        'Time': 'rgba(var(--priPt), 1)',
     };
 
     // Calculate percentages
@@ -244,7 +344,7 @@ function drawElementRing(elementRatio) {
 
     // Element ring params
     const elementInner = r * 0.5;
-    const elementOuter = r * 0.6;
+    const elementOuter = r * 0.7;
     
     // Create arc-gen
     const elementArc = d3
@@ -270,15 +370,39 @@ function drawElementRing(elementRatio) {
         .attr('class', 'element-arc')
         .attr('d', elementArc)
         .attr('fill', d => elementColors[d.data.key])
-        .attr('stroke', 'rgba(var(--priOr), 1)')
-        .attr('stroke-width', 1)
+        .attr('stroke', 'rgba(var(--priTi), 1)')
+        .attr('stroke-width', 3)
         // .append('title')
         // .text(d => `${d.data.key}: ${d.data.value} (${Math.round(d.data.value / totalElements * 100)}%)`)
         ;
     
-    elementGroup
+    // Create icon group
+    const elementIconGroup = elementGroup
         .append('g')
         .attr('class', 'element-label-group')
+        ;
+    
+    elementIconGroup
+        .selectAll('.element-icon-background')
+        .data(pieData)
+        .join('circle')
+        .attr('class', 'element-icon-background')
+        .attr('cx', d => {
+            const midAngle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+            const radius = (elementInner + elementOuter) / 2;
+            return radius * Math.sin(midAngle);
+        })
+        .attr('cy', d => {
+            const midAngle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+            const radius = (elementInner + elementOuter) / 2;
+            return -radius * Math.cos(midAngle);
+        })
+        .attr('r', '0.75rem')
+        .attr('fill', 'rgba(var(--terRd), 1)')
+        .attr('stroke', 'none')
+        ;
+    
+    elementIconGroup
         .selectAll('.element-icon')
         .data(pieData)
         .join('text')
@@ -298,8 +422,9 @@ function drawElementRing(elementRatio) {
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'central')
         .attr('fill', 'rgba(var(--priAd), 1)')
-        .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1), 0 0 0.5rem rgba(255, 255, 255, 0.5')
-        .attr('font-size', '0.75rem')
+        // .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1), 0 0 1rem rgba(255, 255, 255, 1)')
+        .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1)')
+        .attr('font-size', '1rem')
         .attr('font-family', 'FontAwesome')
         .text(d => {
             const icons = {
@@ -318,20 +443,22 @@ function drawElementRing(elementRatio) {
 
 drawElementRing(element_counts);
 
-const tooltip = d3
-    .select('body')
-    .append('div')
-    .attr('class', 'element-tooltip')
-    .style('position', 'absolute')
-    .style('visibility', 'hidden')
-    .style('background', 'rgba(0, 0, 0, 0.75)')
-    .style('color', 'rgba(var(--priYl), 1)')
-    .style('padding', '0.5rem')
-    .style('border-radius', '0.25rem')
-    .style('font-size', '0.75rem')
-    .style('pointer-events', 'none')
-    .style('z-index', '1000')
-    ;
+// const tooltip = d3
+//     .select('body')
+//     .append('div')
+//     .attr('class', 'element-tooltip')
+//     .style('position', 'absolute')
+//     .style('visibility', 'hidden')
+//     .style('background', 'rgba(0, 0, 0, 0.75)')
+//     .style('color', 'rgba(var(--priYl), 1)')
+//     .style('padding', '0.5rem')
+//     .style('border-radius', '0.25rem')
+//     .style('font-size', '0.75rem')
+//     .style('pointer-events', 'none')
+//     .style('z-index', '1000')
+//     ;
+
+const tooltip = wheelTooltips.getTooltip();
 
 svg
     .select('.element-arc-group')
@@ -403,3 +530,6 @@ svg
         }, 2000);
     })
     ;
+
+});
+

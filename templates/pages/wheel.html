@@ -37,8 +37,9 @@
     <div class="container canvas-container" id="wheel-canvas-container">
         <div id="wheel-canvas"></div>
     </div>
-    {% include 'partials/_house-system.html' %}
 </section>
+
+{% include 'partials/_house-system.html' %}
 
 <!-- <script>
     const elementalDataLocation = "/api/elemental/"
@@ -49,11 +50,19 @@
         planets: {{ planets_json|safe }},
         houses: {{ houses_json|safe }},
         signs: {{ signs_json|safe }},
-        element_counts: {{ element_counts_json|safe }}
+        element_counts: {{ element_counts_json|safe }},
+        signData: {},
+        houseData: {},
+        aspectData: {},
+        planetSymbols: {{ planet_symbols_json|safe }},
+        signSymbols: {{ sign_symbols_json|safe }}
     };
 </script>
+<!-- signData: {{ sign_data_json|safe }},
+houseData: {{ house_data_json|safe }},
+aspectData: {{ aspect_data_json|safe }}, -->
 
-<script src="{% static 'scripts/spin.js' %}?v={{ timestamp }}"></script>
+<script src="{% static 'scripts/tooltip.js' %}?v={{ timestamp }}"></script>
 <script src="{% static 'scripts/wheel.js' %}?v={{ timestamp }}"></script>
 
 {% include 'partials/_alerts.html' %}

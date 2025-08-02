@@ -19,3 +19,13 @@ ul .navbar-nav {
     /* position: relative;
     display: inline-block; */
 }
+
+.house-fill {
+    fill: transparent;
+    pointer-events: all;
+    transition: fill 0.2s ease;
+
+    &:hover {
+        fill: rgba(var(--priYl), 0.1);
+    }
+}

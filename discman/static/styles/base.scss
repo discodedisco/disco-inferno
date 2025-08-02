@@ -203,6 +203,12 @@ h4 {
     top: -2.5rem;
 }
 
+.wheel-title {
+    .the-title {
+        left: 0.5rem
+    }
+}
+
 .link-wrapper {
     margin-top: 4rem;
     text-align: center;
@@ -231,7 +237,7 @@ h4 {
 .breadcrumb-item {
     a {
         text-decoration: none;
-        color: rgba(var(--priYl), 1);
+        color: rgba(var(--priTi), 1);
     }
 }
 
