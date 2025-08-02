@@ -84,7 +84,7 @@ for (let i = 0; i < 12; i++) {
     wheelTooltips.attachToSign(d3.select(signPath.node()), signs[signIndex]);
     
     // Sign label
-    const mid = (-((i * 30) + 15) + offset) * Math.PI / 180;
+    const mid = (-((signIndex * 30) + 15) + offset) * Math.PI / 180;
     const x = cx + (signInner + signOuter) / 2 * Math.cos(mid);
     const y = cy + (signInner + signOuter) / 2 * Math.sin(mid);
     const signLabel = signsGroup
@@ -101,7 +101,7 @@ for (let i = 0; i < 12; i++) {
         ;
     
     // Attach tooltip to .sign-label
-    wheelTooltips.attachToSign(d3.select(signLabel.node()), signs[i]);
+    wheelTooltips.attachToSign(d3.select(signLabel.node()), signs[signIndex]);
 }
 
 // House calculations
