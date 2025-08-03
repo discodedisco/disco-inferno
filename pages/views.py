@@ -44,27 +44,25 @@ def wheel(request):
         # Get element totals
         element_counts = char.get_element_totals()
 
-        # Dict of sign_symbols
-        sign_symbols = {}
-        for sign in sign_options:
-            sign_symbols[sign['name']] = sign['symbol']
-            
-        # Dict of planet_symbols
-        planet_symbols = {}
-        for planet in planet_options:
-            planet_symbols[planet['name']] = planet['symbol']
+        # Create consolidated wheel_data object
+        wheel_data = {
+            'planets': planets,
+            'houses': houses,
+            'signs': SIGNS,
+            'element_counts': element_counts,
+            'signSymbols': {sign['name']: sign['symbol'] for sign in sign_options},
+            'planetSymbols': {planet['name']: planet['symbol'] for planet in planet_options},
+            'signDetails': sign_options,
+            'houseDetails': house_options,
+            'planetDetails': planet_options,
+            'aspectDetails': aspect_options,
+        }
 
         # Pass to template
         context = {
-            'planets_json': json.dumps(planets),
-            'houses_json': json.dumps(houses),
-            'signs_json': json.dumps(SIGNS),
-            'element_counts_json': json.dumps(element_counts),
+            'wheel_data': json.dumps(wheel_data),
             'timestamp': datetime.now().timestamp(),
             'char': char,
-            'sign_symbols_json': json.dumps(sign_symbols),
-            'planet_symbols_json': json.dumps(planet_symbols),
-            # 'selected_house_system': house_system,
         }
         
         return render(request, 'pages/wheel.html', context)
@@ -96,50 +94,25 @@ def recalculate_chart(request):
     # Get element totals
     element_counts = char.get_element_totals()
     
-    # Convert sign_options into js-friendly format
-    sign_data = {}
-    for sign in sign_options:
-        sign_data[sign['name']] = {
-            'element': sign['element'],
-            'domicile': sign['domicileOf'],
-            'exalted': sign['exaltedeOf'],
-            'exile': sign['exileOf'],
-            'fallen': sign['fallenOf'],
-            'symbol': sign['symbol']
-        }
-        
-    # Convert house_options to js-friendly format
-    house_data = {}
-    # for house in house_options:
-    #     house_num = int(house['symbol'])
-    #     house_data[house_num] = {
-    #         'name': house['name'],
-    #         'meaning': house['meaning'],
-    #     }
-        
-    # Convert aspect_options to js-friendly format
-    aspect_data = {}
-    # for aspect in aspect_options:
-    #     aspect_data[aspect['name']] = {
-    #         'angle': aspect['angle'],
-    #         'orb': aspect['orb'],
-    #         'meaning': aspect['meaning'],
-    #     }
-        
-    # Convert planet_options for symbol lookup
-
-    # Pass to template w. refreshed data
-    context = {
-        'planets_json': json.dumps(get_planet_positions(jd)),
-        'houses_json': json.dumps(houses),
-        'signs_json': json.dumps(SIGNS),
-        'timestamp': datetime.now().timestamp(),
-        'element_counts_json': json.dumps(element_counts),
-        'char': char,
-        'selected_house_system': house_system,
-        'sign_data_json': json.dumps(sign_data),
-        'house_data_json': json.dumps(house_data),
-        'aspect_data_json': json.dumps(aspect_data),
+    # Create consolidated wheel_data object
+    wheel_data = {
+        'planets': planets,
+        'houses': houses,
+        'signs': SIGNS,
+        'element_counts': element_counts,
+        'signSymbols': {sign['name']: sign['symbol'] for sign in sign_options},
+        'planetSymbols': {planet['name']: planet['symbol'] for planet in planet_options},
+        'signDetails': sign_options,
+        'houseDetails': house_options,
+        'planetDetails': planet_options,
+        'aspectDetails': aspect_options,
     }
-    
+
+    # Pass to template
+    context = {
+        'wheel_data': json.dumps(wheel_data),
+        'timestamp': datetime.now().timestamp(),
+        'char': char,
+    }
+
     return render(request, 'pages/wheel.html', context)

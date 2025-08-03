@@ -46,17 +46,7 @@
 </script> -->
 
 <script>
-    window.wheelData = {
-        planets: {{ planets_json|safe }},
-        houses: {{ houses_json|safe }},
-        signs: {{ signs_json|safe }},
-        element_counts: {{ element_counts_json|safe }},
-        signData: {},
-        houseData: {},
-        aspectData: {},
-        planetSymbols: {{ planet_symbols_json|safe }},
-        signSymbols: {{ sign_symbols_json|safe }}
-    };
+    window.wheelData = {{ wheel_data|safe }};
 </script>
 <!-- signData: {{ sign_data_json|safe }},
 houseData: {{ house_data_json|safe }},

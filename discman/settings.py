@@ -25,7 +25,7 @@ SECRET_KEY = '0tl1+105!-0fn7v0(eg8vtpz!)1m6tt^^h$x$f*x1ta7&2a4bl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.124', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.124', '127.0.0.1', '174.216.146.25']
 
 
 # Application definition
@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sass_processor',
     'accounts',
-    # 'nativity',
     'pages',
     'characters',
 ]

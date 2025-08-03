@@ -3,17 +3,26 @@ from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from characters.models import PlayerCharacter
 from characters.utils import get_timezone_str
+from .models import SignupCode
 
 
 def register(request):
     if request.method == 'POST':
         # Get form values
+        signup_code = request.POST.get('signup_code', '').strip()
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
+        
+        # SignupCode validation
+        try:
+            code_obj = SignupCode.objects.get(code=signup_code, used=False)
+        except SignupCode.DoesNotExist:
+            messages.error(request, 'Invalid or Exhausted signup code!')
+            return redirect('register')
         
         # Get birth info
         birthdate = request.POST['birth_date']
@@ -70,6 +79,11 @@ def register(request):
                         first_name=first_name,
                         last_name=last_name,
                         )
+                    
+                    # Mark code as used
+                    code_obj.used = True
+                    code_obj.used_by = user
+                    code_obj.save()
                     
                     # Create PC w. nativity info
                     PlayerCharacter.objects.create(
