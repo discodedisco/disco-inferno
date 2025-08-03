@@ -330,8 +330,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;
             
             // Attach tooltip to .planets-group (both circle & symbol)
-            wheelTooltips.attachToPlanet(d3.select(planetsGroup.node()), name, deg);
-            // wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, deg);
+            wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, deg);
+            wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, deg);
         });
 
         // Draw ASC & MC

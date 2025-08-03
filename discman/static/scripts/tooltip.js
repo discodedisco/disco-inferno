@@ -145,7 +145,6 @@ const wheelTooltips = (function() {
         return {
             domicile: signData.domicileOf !== 'n/a' ? signData.domicileOf : null,
             exalted: signData.exaltedOf !== 'n/a' ? signData.exaltedOf : null,
-            domicile: signData.domicileOf !== 'n/a' ? signData.domicileOf : null,
             exile: signData.exileOf !== 'n/a' ? signData.exileOf : null,
             fallen: signData.fallenOf !== 'n/a' ? signData.fallenOf : null,
             element: signData.element.split(' ')[0]
@@ -299,107 +298,172 @@ const wheelTooltips = (function() {
         attachToSign: function(element, signName) {
             if (!element || !signName) return;
             
-            element.on('mouseover', function (e) {
-                const info = getSignInfo(signName);
-                if (!info) return;
+            element
+                .on('mouseover', function (e) {
+                    const info = getSignInfo(signName);
+                    if (!info) return;
 
-                let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
+                    let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
 
-                // Add dignities
-                const dignities = [];
-                if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
-                if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
-                if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
-                if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
+                    // Add dignities
+                    const dignities = [];
+                    if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
+                    if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
+                    if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
+                    if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
 
-                if (dignities.length > 0) {
-                    content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
-                }
+                    if (dignities.length > 0) {
+                        content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
+                    }
 
-                // Add house cusps
-                if (info.houseCusps.length > 0) {
-                    content += `<br><u>House Cusps:</u><br>`;
-                    info.houseCusps.forEach(cusp => {
-                        content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
-                    });
-                }
+                    // Add house cusps
+                    if (info.houseCusps.length > 0) {
+                        content += `<br><u>House Cusps:</u><br>`;
+                        info.houseCusps.forEach(cusp => {
+                            content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
+                        });
+                    }
 
-                // Add planets
-                if (info.planets.length > 0) {
-                    content += `<br><u>Planets:</u><br>`;
-                    info.planets.forEach(planet => {
-                        content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
-                    });
-                }
+                    // Add planets
+                    if (info.planets.length > 0) {
+                        content += `<br><u>Planets:</u><br>`;
+                        info.planets.forEach(planet => {
+                            content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
+                        });
+                    }
 
-                show(content, e);
-            })
-            .on('mousemove', function(e) {
-                const info = getSignInfo(signName);
-                if (!info) return;
+                    show(content, e);
+                })
+                .on('mousemove', function(e) {
+                    const info = getSignInfo(signName);
+                    if (!info) return;
 
-                let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
+                    let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
 
-                // Add dignities
-                const dignities = [];
-                if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
-                if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
-                if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
-                if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
+                    // Add dignities
+                    const dignities = [];
+                    if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
+                    if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
+                    if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
+                    if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
 
-                if (dignities.length > 0) {
-                    content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
-                }
+                    if (dignities.length > 0) {
+                        content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
+                    }
 
-                // Add house cusps
-                if (info.houseCusps.length > 0) {
-                    content += `<br><u>House Cusps:</u><br>`;
-                    info.houseCusps.forEach(cusp => {
-                        content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
-                    });
-                }
+                    // Add house cusps
+                    if (info.houseCusps.length > 0) {
+                        content += `<br><u>House Cusps:</u><br>`;
+                        info.houseCusps.forEach(cusp => {
+                            content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
+                        });
+                    }
 
-                // Add planets
-                if (info.planets.length > 0) {
-                    content += `<br><u>Planets:</u><br>`;
-                    info.planets.forEach(planet => {
-                        content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
-                    });
-                }
+                    // Add planets
+                    if (info.planets.length > 0) {
+                        content += `<br><u>Planets:</u><br>`;
+                        info.planets.forEach(planet => {
+                            content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
+                        });
+                    }
 
-                show(content, e);
-            })
-            .on('mouseout', hide);
+                    show(content, e);
+                })
+                .on('mouseout', hide)
+                ;
         },
         
         // Add attachToPlanet function
         attachToPlanet: function(element, planetName, degree) {
-            if (!element || !planetName) return;
+            if (!element || !planetName || degree === undefined) return;
             
-            element.on('mouseover', function(e) {
-                const content = `<strong>${planetName}</strong>`;
-                show(content, e);
-            })
-            .on('mousemove', function(e) {
-                const content = `<strong>${planetName}</strong>`;
-                show(content, e);
-            })
-            .on('mouseout', hide);
+            element
+                .on('mouseover', function (e) {
+                    // const content = `<strong>${planetName}</strong>`;
+                    const info = getPlanetInfo(planetName, degree);
+                    if (!info) return;
+
+                    const sign = getSignFromDegree(degree);
+                    const house = getHouseFromDegree(degree);
+                    const signDignities = getPlanetDignities(sign);
+
+                    let content = `<strong>${info.symbol} ${info.name}</strong><br>`;
+                    content += `in House ${house}; ${sign} at ${formatDegree(degree % 30)}<br>`;
+
+                    // Check if planet has dignity in current sign
+                    const dignityStatus = [];
+                    if (signDignities.domicile === planetName) {
+                        // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
+                        dignityStatus.push(`• <strong>Domicile</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.exalted === planetName) {
+                        dignityStatus.push(`• <strong>Exalted</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.exile === planetName) {
+                        dignityStatus.push(`• <strong>Exile</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.fallen === planetName) {
+                        dignityStatus.push(`• <strong>Fallen</strong> in ${sign}<br>`);
+                    }
+
+                    if (dignityStatus.length > 0) {
+                        content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
+                    }
+
+                    show(content, e);
+                })
+                .on('mousemove', function(e) {
+                    const info = getPlanetInfo(planetName, degree);
+                    if (!info) return;
+
+                    const sign = getSignFromDegree(degree);
+                    const house = getHouseFromDegree(degree);
+                    const signDignities = getPlanetDignities(sign);
+
+                    let content = `<strong>${info.symbol} (${info.name})</strong><br>`;
+                    content += `in House ${house}<br>& ${sign} (${formatDegree(degree % 30)})<br>`;
+
+                    // Check if planet has dignity in current sign
+                    const dignityStatus = [];
+                    if (signDignities.domicile === planetName) {
+                        // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
+                        dignityStatus.push(`• <strong>Domicile</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.exalted === planetName) {
+                        dignityStatus.push(`• <strong>Exalted</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.exile === planetName) {
+                        dignityStatus.push(`• <strong>Exile</strong> in ${sign}<br>`);
+                    }
+                    if (signDignities.fallen === planetName) {
+                        dignityStatus.push(`• <strong>Fallen</strong> in ${sign}<br>`);
+                    }
+
+                    if (dignityStatus.length > 0) {
+                        content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
+                    }
+
+                    show(content, e);
+                })
+                .on('mouseout', hide)
+                ;
         },
 
         // Add attachToHouse function
         attachToHouse: function(element, houseName, degree) {
             if (!element || !houseName) return;
             
-            element.on('mouseover', function(e) {
-                const content = `<strong>${houseName}</strong>`;
-                show(content, e);
-            })
-            .on('mousemove', function(e) {
-                const content = `<strong>${houseName}</strong>`;
-                show(content, e);
-            })
-            .on('mouseout', hide);
+            element
+                .on('mouseover', function (e) {
+                    const content = `<strong>${houseName}</strong>`;
+                    show(content, e);
+                })
+                .on('mousemove', function(e) {
+                    const content = `<strong>${houseName}</strong>`;
+                    show(content, e);
+                })
+                .on('mouseout', hide)
+                ;
         },
         
         // Add attachToElement function
@@ -416,7 +480,8 @@ const wheelTooltips = (function() {
                 .on('mousemove', function(e) {
                     show(content, e);
                 })
-                .on('mouseout', hide);
+                .on('mouseout', hide)
+                ;
         }
     };
 })();
