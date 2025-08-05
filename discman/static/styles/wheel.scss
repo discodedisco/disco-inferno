@@ -20,14 +20,28 @@ ul .navbar-nav {
     display: inline-block; */
 }
 
+/* .house-number:hover {
+    color: rgba(var(--priYl), 1);
+    text-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.25);
+} */
+
 .house-fill {
     fill: transparent;
     pointer-events: all;
     transition: fill 0.2s ease;
 
     &:hover {
-        fill: rgba(var(--priYl), 0.1);
+        fill: rgba(var(--priYl), 0.25);
     }
+}
+
+.sign-group:hover .sign-path {
+    fill: transparent !important;
+    transition: fill 0.2s ease;
+}
+
+.sign-path {
+    transition: fill 0.2s ease;
 }
 
 svg {

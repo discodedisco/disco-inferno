@@ -87,7 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 .endAngle(end)
                 ;
             
-            const signPath = signsGroup
+            // Add 9 (270°) to align with traditional chart orientiation
+            const signIndex = (i + 3) % 12;
+            
+            const signGroup = signsGroup
+                .append('g')
+                .attr('class', 'sign-group')
+                .attr('data-sign', signs[signIndex]);
+                ;
+            
+            const signPath = signGroup
                 .append('path')
                 .attr('d', arc())
                 .attr('fill', 'rgba(var(--priOr), 0.25)')
@@ -95,53 +104,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('stroke-width', 3)
                 .attr('transform', `translate(${cx},${cy})`)
                 .attr('class', 'sign-path')
-                // .on('mouseover', function () {
-                //     d3
-                //         .select(this)
-                //         .attr('fill', 'rgba(var(--priOr), 0.15)');
-                //     ;
-                // })
-                // .on('mouseout', function () {
-                //     d3
-                //         .select(this)
-                //         .attr('fill', 'rgba(var(--priOr), 0.15)')
-                //         ;
-                // })
-                // .on('touchstart', function (e) {
-                //     e.preventDefault();
-                //     d3
-                //         .select(this)
-                //         .attr('fill', 'transparent')
-                //         ;
-                //     setTimeout(() => {
-                //         d3
-                //             .select(this)
-                //             .attr('fill', 'rgba(var(--priOr), 0.15)')
-                //             ;
-                //     });
-                // })
+                .attr('cursor', 'default')
+                .style('pointer-events', 'all')
                 ;
-            
-            // Add 9 (270°) to align with traditional chart orientiation
-            const signIndex = (i + 3) % 12;
             
             // Attach tooltip to .sign-path
             wheelTooltips.attachToSign(d3.select(signPath.node()), signs[signIndex]);
+
+            // const signPathNode = signPath.node();
             
             // Sign label
             const mid = (-((signIndex * 30) + 15) + offset) * Math.PI / 180;
             const x = cx + (signInner + signOuter) / 2 * Math.cos(mid);
             const y = cy + (signInner + signOuter) / 2 * Math.sin(mid);
 
-            const signCircle = signsGroup
+            const signCircle = signGroup
                 .append('circle')
                 .attr('cx', x)
                 .attr('cy', y)
                 .attr('r', 10)
                 .attr('fill', 'rgba(var(--terRd), 1)')
+                .attr('cursor', 'default')
+                .style('pointer-events', 'all')
                 ;
             
-            const signLabel = signsGroup
+            const signLabel = signGroup
                 .append('text')
                 .attr('x', x)
                 .attr('y', y + 5)
@@ -154,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .html(window.wheelData.signSymbols[signs[signIndex]])
                 ;
             
-            // Attach tooltip to .sign-label
-            wheelTooltips.attachToSign(d3.select(signLabel.node()), signs[signIndex]);
+            // Attach tooltip to sign group
+            wheelTooltips.attachToSign(signGroup, signs[signIndex]);
         }
 
         // House calculations
@@ -195,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('cy', cy)
                 .attr('r', innerRadius)
                 .attr('fill', 'none')
-                .attr('stroke', 'rgba(var(--priOr), 0.8')
+                .attr('stroke', 'rgba(var(--priOr), 1')
                 .attr('stroke-width', 1)
                 ;
                 
@@ -206,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('cy', cy)
                 .attr('r', outerRadius)
                 .attr('fill', 'none')
-                .attr('stroke', 'rgba(var(--priOr), 0.8')
+                .attr('stroke', 'rgba(var(--priOr), 1')
                 .attr('stroke-width', 1)
                 ;
 
@@ -288,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
             //     .attr('stroke', 'red')
             //     .attr('stroke-width', 1)
             //     .attr('stroke-dasharray', '3,3')
-            //     .attr('opactity', 0.5)
+            //     .attr('opacity', 0.5)
             //     ;
             
             // Attach tooltip to house fill area
@@ -296,8 +283,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Draw planets
-        Object.entries(planets).forEach(([name, deg]) => {
-            const angle = (-deg + offset) * Math.PI / 180;
+        Object.entries(planets).forEach(([name, data]) => {
+            const angle = (-data.deg + offset) * Math.PI / 180;
             const x = cx + (r - 5) * Math.cos(angle);
             const y = cy + (r - 5) * Math.sin(angle);
             
@@ -330,8 +317,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;
             
             // Attach tooltip to .planets-group (both circle & symbol)
-            wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, deg);
-            wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, deg);
+            wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, data.deg);
+            wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, data.deg);
         });
 
         // Draw ASC & MC
@@ -376,12 +363,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Draw element analyzer ring
         function drawElementRing(elementRatio) {
-            console.log("element data:", elementRatio);
+            // console.log("element data:", elementRatio);
 
             const elementColors = {
                 'Fire': 'rgba(var(--priAg), 1)',
                 'Earth': 'rgba(var(--priPd), 1)',
-                'Air': 'rgba(var(--priCu),1)',
+                'Air': 'rgba(var(--priCu), 1)',
                 'Water': 'rgba(var(--priNi), 1)',
                 'Space': 'rgba(var(--priAu), 1)',
                 'Time': 'rgba(var(--priPt), 1)',

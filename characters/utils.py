@@ -1,6 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from timezonefinder import TimezoneFinder
+from characters.constellation import sign_options
 import swisseph as swe
 
 def get_timezone_str(lat, lon):
@@ -49,7 +50,12 @@ def get_planet_positions(jd):
     positions = {}
     for name, code in planets.items():
         pos, ret = swe.calc_ut(jd, code, flag)
-        positions[name] = pos[0]
+        degree = pos[0]
+        positions[name] = {
+            'deg': degree,
+            'sign': get_sign(degree),
+            'speed': pos[3]
+        }
     return positions
 
 def get_houses(jd, lat, lon, hsys='O'):
@@ -62,18 +68,25 @@ def get_houses(jd, lat, lon, hsys='O'):
     }
     
 def get_element_totals(planet_positions, houses):
+    elements_by_sign = {}
+    for sign_data in sign_options:
+        sign_name = sign_data['name']
+        element = sign_data['element'].split(' ')[0]
+        elements_by_sign[sign_name] = element
+    
     # Define elements by sign
-    elements_map = {
-        'Fire': ['Aries', 'Leo', 'Sagittarius'],
-        'Earth': ['Taurus', 'Virgo', 'Capricorn'],
-        'Air': ['Gemini', 'Libra', 'Aquarius'],
-        'Water': ['Cancer', 'Scorpio', 'Pisces'],
-        'Space': [],
-        'Time': [],
+    element_counts = {
+        # Change all to 1 w. aspect implementation
+        'Fire': 0,
+        'Earth': 0,
+        'Air': 0,
+        'Water': 0,
+        'Space': 0,
+        'Time': 0,
     }
     
-    # Init counts
-    element_counts = {element: 0 for element in elements_map}
+    # # Init counts
+    # element_counts = {element: 0 for element in elements_map}
     
     # Get signs for angles
     asc_sign = get_sign(houses['asc'])
@@ -82,17 +95,16 @@ def get_element_totals(planet_positions, houses):
     ic_sign = get_sign((houses['mc'] + 180) % 360)
     
     # Process planets by trad sign element
-    for planet, position in planet_positions.items():
+    for name, data in planet_positions.items():
+        position = data['deg'] if isinstance(data, dict) else data
         sign = get_sign(position)
 
-        # Trad element
-        trad_found = False
-        for element, signs in elements_map.items():
-            if sign in signs:
-                element_counts[element] += 1
-                trad_found = True
-                break
-            
+        # Count element per sign
+        if sign in elements_by_sign:
+            element = elements_by_sign[sign]
+            element_counts[element] += 1
+        
+        
         # Space (Asc. & Desc.)
         if sign == asc_sign or sign == desc_sign:
             element_counts['Space'] += 1
@@ -100,5 +112,5 @@ def get_element_totals(planet_positions, houses):
         # Time (M.C. & I.C.)
         if sign == mc_sign or sign == ic_sign:
             element_counts['Time'] += 1
-    
+
     return element_counts

@@ -1,14 +1,14 @@
 planet_options = [
-    {'id': 'planet-sun', 'symbol': '&#9737;', 'name': 'Sun', 'domicileIn': 'Leo', 'exaltedIn': 'Aries', 'exiledIn': 'Aquarius', 'fallenIn': 'Libra'},
-    {'id': 'planet-moon', 'symbol': '&#9789;', 'name': 'Moon', 'domicileIn': 'Cancer', 'exaltedIn': 'Taurus', 'exiledIn': 'Capricorn', 'fallenIn': 'Scorpio'},
-    {'id': 'planet-mercury', 'symbol': '&#9791;', 'name': 'Mercury', 'domicileIn': 'Gemini', 'exaltedIn': 'Virgo', 'exiledIn': 'Sagittarius', 'fallenIn': 'Pisces'},
-    {'id': 'planet-venus', 'symbol': '&#9792;', 'name': 'Venus', 'domicileIn': 'Libra', 'exaltedIn': 'Pisces', 'exiledIn': 'Aries', 'fallenIn': 'Virgo'},
-    {'id': 'planet-mars', 'symbol': '&#9794;', 'name': 'Mars', 'domicileIn': 'Aries', 'exaltedIn': 'Capricorn', 'exiledIn': 'Libra', 'fallenIn': 'Cancer'},
-    {'id': 'planet-jupiter', 'symbol': '&#9795;', 'name': 'Jupiter', 'domicileIn': 'Sagittarius', 'exaltedIn': 'Cancer', 'exiledIn': 'Gemini', 'fallenIn': 'Capricorn'},
-    {'id': 'planet-saturn', 'symbol': '&#9796;', 'name': 'Saturn', 'domicileIn': 'Capricorn', 'exaltedIn': 'Libra', 'exiledIn': 'Cancer', 'fallenIn': 'Aries'},
-    {'id': 'planet-uranus', 'symbol': '&#9797;', 'name': 'Uranus', 'domicileIn': 'Aquarius', 'exaltedIn': 'Scorpio', 'exiledIn': 'Leo', 'fallenIn': 'Taurus'},
-    {'id': 'planet-neptune', 'symbol': '&#9798;', 'name': 'Neptune', 'domicileIn': 'Pisces', 'exaltedIn': 'Leo', 'exiledIn': 'Virgo', 'fallenIn': 'Aquarius'},
-    {'id': 'planet-pluto', 'symbol': '&#9799;', 'name': 'Pluto', 'domicileIn': 'Scorpio', 'exaltedIn': 'Aquarius', 'exiledIn': 'Taurus', 'fallenIn': 'Leo'},
+    {'id': 'planet-sun', 'symbol': '&#9737;', 'name': 'Sun', 'domicileIn': 'Leo', 'exaltedIn': 'Aries', 'exileIn': 'Aquarius', 'fallenIn': 'Libra'},
+    {'id': 'planet-moon', 'symbol': '&#9789;', 'name': 'Moon', 'domicileIn': 'Cancer', 'exaltedIn': 'Taurus', 'exileIn': 'Capricorn', 'fallenIn': 'Scorpio'},
+    {'id': 'planet-mercury', 'symbol': '&#9791;', 'name': 'Mercury', 'domicileIn': 'Gemini', 'exaltedIn': 'Virgo', 'exileIn': 'Sagittarius', 'fallenIn': 'Pisces'},
+    {'id': 'planet-venus', 'symbol': '&#9792;', 'name': 'Venus', 'domicileIn': 'Libra', 'exaltedIn': 'Pisces', 'exileIn': 'Aries', 'fallenIn': 'Virgo'},
+    {'id': 'planet-mars', 'symbol': '&#9794;', 'name': 'Mars', 'domicileIn': 'Aries', 'exaltedIn': 'Capricorn', 'exileIn': 'Libra', 'fallenIn': 'Cancer'},
+    {'id': 'planet-jupiter', 'symbol': '&#9795;', 'name': 'Jupiter', 'domicileIn': 'Sagittarius', 'exaltedIn': 'Cancer', 'exileIn': 'Gemini', 'fallenIn': 'Capricorn'},
+    {'id': 'planet-saturn', 'symbol': '&#9796;', 'name': 'Saturn', 'domicileIn': 'Capricorn', 'exaltedIn': 'Libra', 'exileIn': 'Cancer', 'fallenIn': 'Aries'},
+    {'id': 'planet-uranus', 'symbol': '&#9797;', 'name': 'Uranus', 'domicileIn': 'Aquarius', 'exaltedIn': 'Scorpio', 'exileIn': 'Leo', 'fallenIn': 'Taurus'},
+    {'id': 'planet-neptune', 'symbol': '&#9798;', 'name': 'Neptune', 'domicileIn': 'Pisces', 'exaltedIn': 'Leo', 'exileIn': 'Virgo', 'fallenIn': 'Aquarius'},
+    {'id': 'planet-pluto', 'symbol': '&#9799;', 'name': 'Pluto', 'domicileIn': 'Scorpio', 'exaltedIn': 'Aquarius', 'exileIn': 'Taurus', 'fallenIn': 'Leo'},
 ]
 
 sign_options = [
@@ -39,18 +39,18 @@ sign_options = [
 ]
 
 house_options = [
-    {'id': 'house-01', 'symbol': '01', 'name': 'Ascendant (Asc.)', 'meaning': 'Self, appearance, begeinnings, personality'},
-    {'id': 'house-02', 'symbol': '02', 'name': 'House of Value', 'meaning': 'Possessions, resources, values, self-worth'},
-    {'id': 'house-03', 'symbol': '03', 'name': 'House of Communications', 'meaning': 'Communication, siblings, local travel, education'},
-    {'id': 'house-04', 'symbol': '04', 'name': 'Imum Coeli (I.C.)', 'meaning': 'Home, family, roots, foundations, security'},
-    {'id': 'house-05', 'symbol': '05', 'name': 'House of Pleasure', 'meaning': 'Creativity, romance, children, recreation'},
-    {'id': 'house-06', 'symbol': '06', 'name': 'House of Health', 'meaning': 'Health, service, work, daily routine'},
-    {'id': 'house-07', 'symbol': '07', 'name': 'Descendant (Desc.)', 'meaning': 'Partnerships, marriage, contracts, open enemies'},
-    {'id': 'house-08', 'symbol': '08', 'name': 'House of Transformation', 'meaning': 'Shared resources, death, rebirth, transformation'},
-    {'id': 'house-09', 'symbol': '09', 'name': 'House of Philosophy', 'meaning': 'Higher education, philosophy, travel, expansion'},
-    {'id': 'house-10', 'symbol': '10', 'name': 'Medium Coeli (M.C.)', 'meaning': 'Career, reputation, public status, authority'},
-    {'id': 'house-11', 'symbol': '11', 'name': 'House of Community', 'meaning': 'Friends, groups, hopes, wishes, humanitarian pursuits'},
-    {'id': 'house-12', 'symbol': '12', 'name': 'House of Unconscious', 'meaning': 'Hidden things, spirituality, isolation, self-undoing'},
+    {'id': 'house-01', 'symbol': '01', 'name': 'Ascendant (Asc.)', 'meaning': 'self, appearance, begeinnings, personality'},
+    {'id': 'house-02', 'symbol': '02', 'name': 'House of Value', 'meaning': 'possessions, resources, values, self-worth'},
+    {'id': 'house-03', 'symbol': '03', 'name': 'House of Communications', 'meaning': 'communication, siblings, local travel, education'},
+    {'id': 'house-04', 'symbol': '04', 'name': 'Imum Coeli (I.C.)', 'meaning': 'home, family, roots, foundations, security'},
+    {'id': 'house-05', 'symbol': '05', 'name': 'House of Pleasure', 'meaning': 'creativity, romance, children, recreation'},
+    {'id': 'house-06', 'symbol': '06', 'name': 'House of Health', 'meaning': 'health, service, work, daily routine'},
+    {'id': 'house-07', 'symbol': '07', 'name': 'Descendant (Desc.)', 'meaning': 'partnerships, marriage, contracts, open enemies'},
+    {'id': 'house-08', 'symbol': '08', 'name': 'House of Transformation', 'meaning': 'shared resources, death, rebirth, transformation'},
+    {'id': 'house-09', 'symbol': '09', 'name': 'House of Philosophy', 'meaning': 'higher education, philosophy, travel, expansion'},
+    {'id': 'house-10', 'symbol': '10', 'name': 'Medium Coeli (M.C.)', 'meaning': 'career, reputation, public status, authority'},
+    {'id': 'house-11', 'symbol': '11', 'name': 'House of Community', 'meaning': 'friends, groups, hopes, wishes, humanitarian pursuits'},
+    {'id': 'house-12', 'symbol': '12', 'name': 'House of Unconscious', 'meaning': 'hidden things, spirituality, isolation, self-undoing'},
 ]
 
 moon_point_options = [

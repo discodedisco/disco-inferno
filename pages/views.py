@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from characters.utils import SIGNS, get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
+from characters.utils import get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
 from characters.models import PlayerCharacter
 from datetime import datetime
 from characters.constellation import sign_options, house_options, aspect_options, planet_options, moon_point_options
@@ -48,7 +48,7 @@ def wheel(request):
         wheel_data = {
             'planets': planets,
             'houses': houses,
-            'signs': SIGNS,
+            'signs': [sign['name'] for sign in sign_options],
             'element_counts': element_counts,
             'signSymbols': {sign['name']: sign['symbol'] for sign in sign_options},
             'planetSymbols': {planet['name']: planet['symbol'] for planet in planet_options},
@@ -89,6 +89,7 @@ def recalculate_chart(request):
     house_system = request.GET.get('house_system', 'O')
 
     # Recalculate houses with selected system
+    planets = get_planet_positions(jd)
     houses = get_houses(jd, char.birthplace_lat, char.birthplace_lon, hsys=house_system)
 
     # Get element totals
@@ -98,7 +99,7 @@ def recalculate_chart(request):
     wheel_data = {
         'planets': planets,
         'houses': houses,
-        'signs': SIGNS,
+        'signs': [sign['name'] for sign in sign_options],
         'element_counts': element_counts,
         'signSymbols': {sign['name']: sign['symbol'] for sign in sign_options},
         'planetSymbols': {planet['name']: planet['symbol'] for planet in planet_options},

@@ -1,5 +1,6 @@
 // Tooltip module
-const wheelTooltips = (function() {
+const wheelTooltips = (function () {
+    // console.log('Planet data:', JSON.stringify(window.wheelData.planets, null, 2));
     let tooltip;
     let totalElements = 0;
 
@@ -47,10 +48,18 @@ const wheelTooltips = (function() {
 
     // Helper functions
     function getSignFromDegree(degree) {
-        const signs = window.wheelData.signs;
-        degree = degree % 360;
+        if (!window.wheelData || !window.wheelData.signs) return '';
+
+        // const signs = window.wheelData.signs;
+        // degree = degree % 360;
+        degree = (parseFloat(degree) + 360) % 360;
+
         const signIndex = Math.floor(degree / 30);
-        return signs[signIndex];
+
+        // console.log(`Degree: ${degree}, Sign Index: ${signIndex}, Sign: ${window.wheelData.signs[signIndex]}`);
+
+        // return signs[signIndex];
+        return window.wheelData.signs[signIndex] || '';
     }
 
     function getHouseFromDegree(degree) {
@@ -79,10 +88,16 @@ const wheelTooltips = (function() {
         const planets = window.wheelData.planets;
 
         for (const [name, data] of Object.entries(planets)) {
-            if (getSignFromDegree(data.deg) === sign) {
+            const planetDegree = data.deg;
+            const planetSign = getSignFromDegree(data.deg);
+
+            // console.log(`Checking planet ${name}: ${planetDegree} of ${planetSign} vs ${sign}`);
+
+            if (planetSign && planetSign.toLowerCase() === sign.toLowerCase()) {
                 result.push({
                     name: name,
-                    degree: data.deg % 30
+                    symbol: window.wheelData.planetSymbols[name] || name.charAt(0),
+                    degree: planetDegree % 30
                 });
             }
         }
@@ -193,7 +208,7 @@ const wheelTooltips = (function() {
             cusp: cusp,
             sign: sign,
             signDegree: signDegree,
-            ruler: dignities.ruler,
+            ruler: dignities.domicileIn,
             planets: planets,
             meaning: houseDetails?.meaning || ''
         };
@@ -210,7 +225,7 @@ const wheelTooltips = (function() {
         // Find planet details from constellation.py
         const planetDetails = window.wheelData.planetDetails?.find(p => p.name === planetName);
 
-        // Find what signs planet has dignities
+        // Find in which signs planet has dignities
         const dignifiedSigns = [];
         if (window.wheelData.signDetails) {
             window.wheelData.signDetails.forEach(sign => {
@@ -254,6 +269,29 @@ const wheelTooltips = (function() {
         };
     }
 
+    function getElementsForPlanet(planetName, degree) {
+        const sign = getSignFromDegree(degree);
+        const signDetails = window.wheelData.signDetails.find(s => s.name === sign);
+        const elements = [];
+
+        // Classical Element
+        if (signDetails) {
+            elements.push(signDetails.element.split(' ')[0]);
+        }
+
+        // Space & Time—please improve this logic
+        const ascSign = getSignFromDegree(window.wheelData.houses.asc);
+        const descSign = getSignFromDegree(window.wheelData.houses.asc + 180) % 360;
+        const mcSign = getSignFromDegree(window.wheelData.houses.mc);
+        const icSign = getSignFromDegree(window.wheelData.houses.mc + 180) % 360;
+
+        if (sign === ascSign || sign === descSign) elements.push('Space');
+        if (sign === mcSign || sign === icSign) elements.push('Time');
+
+        // Remove duplications
+        return [...new Set(elements)];
+    }
+
     function getElementInfo(elementName) {
         if (!elementName || !window.wheelData) return null;
 
@@ -273,16 +311,48 @@ const wheelTooltips = (function() {
     function formatDegree(deg) {
         const d = Math.floor(deg);
         const m = Math.floor((deg - d) * 60);
-        return `${d}° ${m}'`;
+        // Leading zeroes
+        const dStr = d < 10 ? `0${d}` : `${d}`;
+        const mStr = m < 10 ? `0${m}` : `${m}`;
+        return `${dStr}° ${mStr}'`;
     }
 
     // Event handlers
     function show(content, e) {
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        const x = e.pageX;
+        const y = e.pageY;
         tooltip
             .html(content)
             .style('visibility', 'visible')
-            .style('top', (e.pageY - 10) + 'px')
-            .style('left', (e.pageX + 10) + 'px');
+            ;
+        
+        // Horizontal position
+        if (x > winW / 2) {
+            tooltip
+                .style('left', null)
+                .style('right', (winW - x + 10) + 'px');
+                ;
+        } else {
+            tooltip
+                .style('right', null)
+                .style('left', (x + 10) + 'px')
+                ;
+        }
+
+        // Vertical position
+        if (y > winH / 2) {
+            tooltip
+                .style('top', null)
+                .style('bottom', (winH - y + 10) + 'px');
+                ;
+        } else {
+            tooltip
+                .style('bottom', null)
+                .style('top', (y - 10) + 'px')
+                ;
+        }
     }
 
     function hide() {
@@ -295,173 +365,154 @@ const wheelTooltips = (function() {
         getTooltip: getTooltip,
         
         // Add attachToSign function
-        attachToSign: function(element, signName) {
+        attachToSign: function (element, signName) {
+            // console.log("Sign name:", signName)
+            // console.log("Planets:", window.wheelData.planets)
+            // const planetSymbol = window.wheelData.planetSymbols[planetName] || '';
+
+            const info = getSignInfo(signName);
+            if (!info) return;
+            
             if (!element || !signName) return;
+
+            let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
+
+            // Add dignities
+            // const dignities = [];
+            // if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
+            // if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
+            // if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
+            // if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
+
+            // if (dignities.length > 0) {
+            //     content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
+            // }
+
+            // Add house cusps
+            if (info.houseCusps.length > 0) {
+                content += `<br><u>House Cusps:</u><br>`;
+                info.houseCusps.forEach(cusp => {
+                    const houseNumStr = cusp.house < 10 ? `0${cusp.house}` : `${cusp.house}`;
+                    content += `<strong>${houseNumStr}</strong> @ ${formatDegree(cusp.degree)}<br>`;
+                });
+            }
+
+            // Add planets
+            if (info.planets.length > 0) {
+                content += `<br><u>Planets:</u><br>`;
+                info.planets.forEach(planet => {
+                    const signDignities = getPlanetDignities(signName);
+                    let dignityLabel = '';
+                    if (signDignities.domicile === planet.name) dignityLabel = ' (Domicile)'
+                    if (signDignities.exalted === planet.name) dignityLabel = ' (Exalted)'
+                    if (signDignities.exile === planet.name) dignityLabel = ' (Exile)'
+                    if (signDignities.fallen === planet.name) dignityLabel = ' (Fallen)'
+
+                    content += `<strong>${planet.symbol}</strong> @ ${formatDegree(planet.degree)}${dignityLabel}<br>`;
+                });
+            }
             
             element
-                .on('mouseover', function (e) {
-                    const info = getSignInfo(signName);
-                    if (!info) return;
-
-                    let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
-
-                    // Add dignities
-                    const dignities = [];
-                    if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
-                    if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
-                    if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
-                    if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
-
-                    if (dignities.length > 0) {
-                        content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
-                    }
-
-                    // Add house cusps
-                    if (info.houseCusps.length > 0) {
-                        content += `<br><u>House Cusps:</u><br>`;
-                        info.houseCusps.forEach(cusp => {
-                            content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
-                        });
-                    }
-
-                    // Add planets
-                    if (info.planets.length > 0) {
-                        content += `<br><u>Planets:</u><br>`;
-                        info.planets.forEach(planet => {
-                            content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
-                        });
-                    }
-
-                    show(content, e);
-                })
-                .on('mousemove', function(e) {
-                    const info = getSignInfo(signName);
-                    if (!info) return;
-
-                    let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
-
-                    // Add dignities
-                    const dignities = [];
-                    if (info.dignities.domicile) dignities.push(`• Domicile of <strong>${info.dignities.domicile}</strong><br>`);
-                    if (info.dignities.exalted) dignities.push(`• Exalted of <strong>${info.dignities.exalted}</strong><br>`);
-                    if (info.dignities.exile) dignities.push(`• Exile of <strong>${info.dignities.exile}</strong><br>`);
-                    if (info.dignities.fallen) dignities.push(`• Fallen of <strong>${info.dignities.fallen}</strong><br>`);
-
-                    if (dignities.length > 0) {
-                        content += `<br><u>Dignities:</u><br>${dignities.join('')}<br>`
-                    }
-
-                    // Add house cusps
-                    if (info.houseCusps.length > 0) {
-                        content += `<br><u>House Cusps:</u><br>`;
-                        info.houseCusps.forEach(cusp => {
-                            content += `House ${cusp.house}: ${formatDegree(cusp.degree)}<br>`;
-                        });
-                    }
-
-                    // Add planets
-                    if (info.planets.length > 0) {
-                        content += `<br><u>Planets:</u><br>`;
-                        info.planets.forEach(planet => {
-                            content += `${planet.name}: <strong>${formatDegree(planet.degree)}</strong><br>`;
-                        });
-                    }
-
-                    show(content, e);
-                })
+                .on('mouseover', function (e) { show(content, e); })
+                .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
-                ;
+                ;            
         },
         
         // Add attachToPlanet function
         attachToPlanet: function(element, planetName, degree) {
             if (!element || !planetName || degree === undefined) return;
-            
+            // const content = `<strong>${planetName}</strong>`;
+            const info = getPlanetInfo(planetName, degree);
+            if (!info) return;
+
+            const sign = getSignFromDegree(degree);
+            const house = getHouseFromDegree(degree);
+            const signDignities = getPlanetDignities(sign);
+            const planetElements = getElementsForPlanet(planetName, degree);
+            const signSymbol = window.wheelData.signSymbols[sign] || sign;
+
+            let content = `<strong>${info.symbol} ${info.name}</strong><br>`;
+
+            const houseStr = house < 10 ? `0${house}` : `${house}`;
+            content += `in <strong>House ${houseStr}</strong> &<br><strong>${signSymbol}</strong> @ ${formatDegree(degree % 30)}<br>`;
+
+
+            // Check if planet has dignity in current sign
+            const dignityStatus = [];
+            if (signDignities.domicile === planetName) {
+                // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
+                dignityStatus.push(`<strong>Domicile</strong> in ${signSymbol}<br>`);
+            }
+            if (signDignities.exalted === planetName) {
+                dignityStatus.push(`<strong>Exalted</strong> in ${signSymbol}<br>`);
+            }
+            if (signDignities.exile === planetName) {
+                dignityStatus.push(`<strong>Exile</strong> in ${signSymbol}<br>`);
+            }
+            if (signDignities.fallen === planetName) {
+                dignityStatus.push(`<strong>Fallen</strong> in ${signSymbol}<br>`);
+            }
+
+            if (dignityStatus.length > 0) {
+                content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
+            }
+
+            // Show planet's element & chart totals
+            content += `<br><u>Elements:</u><br>${planetElements.map(el => `+1 ${el}`).join('<br>')}<br>`;
+
             element
-                .on('mouseover', function (e) {
-                    // const content = `<strong>${planetName}</strong>`;
-                    const info = getPlanetInfo(planetName, degree);
-                    if (!info) return;
-
-                    const sign = getSignFromDegree(degree);
-                    const house = getHouseFromDegree(degree);
-                    const signDignities = getPlanetDignities(sign);
-
-                    let content = `<strong>${info.symbol} ${info.name}</strong><br>`;
-                    content += `in House ${house}; ${sign} at ${formatDegree(degree % 30)}<br>`;
-
-                    // Check if planet has dignity in current sign
-                    const dignityStatus = [];
-                    if (signDignities.domicile === planetName) {
-                        // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
-                        dignityStatus.push(`• <strong>Domicile</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.exalted === planetName) {
-                        dignityStatus.push(`• <strong>Exalted</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.exile === planetName) {
-                        dignityStatus.push(`• <strong>Exile</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.fallen === planetName) {
-                        dignityStatus.push(`• <strong>Fallen</strong> in ${sign}<br>`);
-                    }
-
-                    if (dignityStatus.length > 0) {
-                        content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
-                    }
-
-                    show(content, e);
-                })
-                .on('mousemove', function(e) {
-                    const info = getPlanetInfo(planetName, degree);
-                    if (!info) return;
-
-                    const sign = getSignFromDegree(degree);
-                    const house = getHouseFromDegree(degree);
-                    const signDignities = getPlanetDignities(sign);
-
-                    let content = `<strong>${info.symbol} (${info.name})</strong><br>`;
-                    content += `in House ${house}<br>& ${sign} (${formatDegree(degree % 30)})<br>`;
-
-                    // Check if planet has dignity in current sign
-                    const dignityStatus = [];
-                    if (signDignities.domicile === planetName) {
-                        // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
-                        dignityStatus.push(`• <strong>Domicile</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.exalted === planetName) {
-                        dignityStatus.push(`• <strong>Exalted</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.exile === planetName) {
-                        dignityStatus.push(`• <strong>Exile</strong> in ${sign}<br>`);
-                    }
-                    if (signDignities.fallen === planetName) {
-                        dignityStatus.push(`• <strong>Fallen</strong> in ${sign}<br>`);
-                    }
-
-                    if (dignityStatus.length > 0) {
-                        content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
-                    }
-
-                    show(content, e);
-                })
+                .on('mouseover', function (e) { show(content, e); })
+                .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
                 ;
         },
 
         // Add attachToHouse function
-        attachToHouse: function(element, houseName, degree) {
-            if (!element || !houseName) return;
+        attachToHouse: function(element, houseNum, degree) {
+            if (!element || !houseNum) return;
+
+            const info = getHouseInfo(houseNum);
+            if (!info) return;
+
+            // House No. w. ordinal indicator
+            function ordinal(n) {
+                const s = ['th', 'st', 'nd', 'rd'],
+                    v = n % 100;
+                return n + '<sup>' + (s[(v - 20) % 10] || s[v] || s[0]) + '</sup>';
+            }
+
+            const houseNumStr = ordinal(info.number);
+            const houseName = info.name;
+            const signSymbol = window.wheelData.signSymbols[info.sign] || info.sign;
+            const cuspDegree = formatDegree(info.signDegree);
+            const rulerSymbol = window.wheelData.planetSymbols[info.ruler] || info.ruler || '';
+            const meaning = info.meaning;
+
+            let content = `<strong>${houseNumStr} House</strong><br>`;
+            content += `${houseName}<br>`;
+            content += `Cusp in <strong>${signSymbol}</strong> @ ${cuspDegree}<br>`;
+            if (rulerSymbol) content += `Ruled by ${rulerSymbol}<br>`;
+            content += `<br><u>Meanings:</u><br>`;
+            const meaningPoints = meaning.split(',').map(item => item.trim());
+            meaningPoints.forEach(point => {
+                if (point) content += `${point}<br>`
+            })
+
+            // Planets in house
+            if (info.planets && info.planets.length > 0) {
+                content += `<br><u>Planets:</u><br>`;
+                info.planets.forEach(planet => {
+                    const planetSymbol = window.wheelData.planetSymbols[planet.name] || planet.name.charAt(0);
+                    const planetSign = getSignFromDegree(planet.degree);
+                    const planetSignSymbol = window.wheelData.signSymbols[planetSign] || planetSign;
+                    content += `<strong>${planetSymbol}</strong> @ ${formatDegree(planet.degree % 30)} in <strong>${planetSignSymbol}</strong><br>`;
+                });
+            }
             
             element
-                .on('mouseover', function (e) {
-                    const content = `<strong>${houseName}</strong>`;
-                    show(content, e);
-                })
-                .on('mousemove', function(e) {
-                    const content = `<strong>${houseName}</strong>`;
-                    show(content, e);
-                })
+                .on('mouseover', function (e) { show(content, e); })
+                .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
                 ;
         },

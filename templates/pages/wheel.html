@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load sass_tags %}
 
 {% block title %}Wheel{% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'styles/wheel.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'styles/wheel.scss' %}"> -->
+ <link rel="stylesheet" href="{% sass_src 'styles/wheel.scss' %}" />
 {% endblock %}
 
 {% block content %}
