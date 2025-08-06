@@ -1,8 +1,14 @@
 #wheel-canvas {
-    width: 90%;
-    max-width: 800px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 100%;
     margin: 0 auto;
     aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    // display: block;
 }
 
 .nav-container {
@@ -50,4 +56,244 @@ svg {
     -ms-user-select: none;
     user-select: none;
     touch-action: manipulation;
+
+}
+
+.planets-group {
+    transition: filter 0.2s;
+}
+
+.planets-group:hover .planet-circle,
+.planets-group:hover .planet-circle-symbol {
+    filter: drop-shadow(0 0 5px rgba(var(--priAd), 1));
+}
+
+.planet-circle {
+    stroke: rgba(var(--priTi), 1);
+
+    &.planet-sun {
+        fill: rgba(var(--quiAu), 1);
+    }
+    &.planet-moon {
+        fill: rgba(var(--quiAg), 1);
+    }
+    &.planet-mercury {
+        fill: rgba(var(--quiHg), 1);
+    }
+    &.planet-venus {
+        fill: rgba(var(--quiCu), 1);
+    }
+    &.planet-mars {
+        fill: rgba(var(--quiFe), 1);
+    }
+    &.planet-jupiter {
+        fill: rgba(var(--quiSn), 1);
+    }
+    &.planet-saturn {
+        fill: rgba(var(--quiPb), 1);
+    }
+    &.planet-uranus {
+        fill: rgba(var(--quiU), 1);
+    }
+    &.planet-neptune {
+        fill: rgba(var(--quiNp), 1);
+    }
+    &.planet-pluto {
+        fill: rgba(var(--quiPu), 1);
+    }
+}
+
+.planet-circle-symbol {
+    // stroke: rgba(var(--priTi), 1);
+    stroke-width: 0.5;
+
+    &.planet-symbol-sun {
+        stroke: rgba(var(--secAu), 1);
+    }
+    &.planet-symbol-moon {
+        stroke: rgba(var(--secAg), 1);
+    }
+    &.planet-symbol-mercury {
+        stroke: rgba(var(--secHg), 1);
+    }
+    &.planet-symbol-venus {
+        stroke: rgba(var(--secCu), 1);
+    }
+    &.planet-symbol-mars {
+        stroke: rgba(var(--secFe), 1);
+    }
+    &.planet-symbol-jupiter {
+        stroke: rgba(var(--secSn), 1);
+    }
+    &.planet-symbol-saturn {
+        stroke: rgba(var(--secPb), 1);
+    }
+    &.planet-symbol-uranus {
+        stroke: rgba(var(--secU), 1);
+    }
+    &.planet-symbol-neptune {
+        stroke: rgba(var(--secNp), 1);
+    }
+    &.planet-symbol-pluto {
+        stroke: rgba(var(--secPu), 1);
+    }
+}
+
+.wheel-controls {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 900px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.aspect-toggle-container {
+    background: rgba(var(--priOr), 1);
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    max-width: 90%;
+    margin: 1rem auto 0;
+
+    // Main toggle row
+    .aspect-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .aspect-toggle-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            
+            .aspect-toggle-span {
+                color: rgba(var(--terRd), 1);
+                font-weight: 500;
+                position: relative;
+                margin-left: 0.5rem;
+            }
+
+            input[type='checkbox'] {
+                // opacity: 0;
+                width: 1rem;
+                height: 1rem;
+                position: relative;
+                margin: 0;
+                cursor: pointer;
+                appearance: none;
+                -webkit-appearance: none;
+                background-color: rgba(var(--priOr), 1);
+                border: 2px solid rgba(var(--terRd), 1);
+                border-radius: 0.25rem;
+
+                &:hover {
+                    outline: none;
+                    box-shadow: 0 0 5px 0.25rem rgba(var(--priAd), 0.5);
+                }
+
+                &:checked {
+                    background-color: rgba(var(--sexTi), 1);
+                }
+            }
+
+            // .custom-checkbox {
+            //     width: 1rem;
+            //     height: 1rem;
+            //     background-color: rgba(var(--priOr), 1);
+            //     border: 0.25rem solid rgba(var(--priTi), 1);
+            //     border-radius: 0.25rem;
+            //     display: inline-block;
+            //     position: relative;
+            //     margin-right: 0.5rem;
+            //     transition: background 0.2s;
+            // }
+        }
+    }
+}
+
+.house-system-container {
+    background-color: rgba(var(--priOr), 1);
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 90%;
+    margin: 0.25rem auto 0;
+
+    label {
+        color: rgba(var(--terRd), 1);
+        font-weight: 500;
+        margin-right: 0.5rem;
+    }
+
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: rgba(var(--sexTi), 1);
+        color: rgba(var(--terRd), 1);
+        border: 1px solid rgba(var(--terRd), 0.5);
+        padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-weight: 500;
+
+        &:hover, &:focus {
+            border-color: rgba(var(--terRd), 1);
+            outline: none;
+            box-shadow: 0 0 0.25rem 0.25rem rgba(var(--priAd), 0.5);
+        }
+
+        option {
+            background-color: rgba(var(--sexTi), 1);
+            color: rgba(var(--terRd), 1);
+        }
+    }
+
+    button {
+        background-color: rgba(var(--terRd), 1);
+        color: rgba(var(--priOr), 1);
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        
+        &:hover {
+            background-color: rgba(var(--terRd), 0.8);
+            box-shadow: 0 0 5px 0.25rem rgba(var(--priAd), 0.5);
+        }
+    }
+}
+
+@media (max-width: 578px) {
+    .house-system-container {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.9rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        
+        button {
+            margin-left: 0.25rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        label {
+            margin-right: 0;
+            // font-size: 0.75rem;
+        }
+    }
+    
+    .aspect-toggle-container {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.9rem;
+    }
 }

@@ -8,78 +8,136 @@
 }
 
 :root {
-    /* rgbA Variable Index */
-    /* Metals */
+    /* rgb Variable Index */
+    /* Theme Metals */
     --priAd: 207, 228, 237;
-    --priFe: 80, 80, 75;
-    --priCu: 184, 115, 51;
-    --priAg: 192, 192, 192;
-    --priAu: 218, 165, 32;
-    --priNi: 141, 142, 140;
-    --priPd: 188, 193, 165;
-    --priPt: 229, 228, 226;
-    --priTi: 91, 121, 142;
     --secAd: 164, 180, 186;
-    --secFe: 59, 60, 57;
-    --secCu: 152, 94, 38;
-    --secAg: 160, 160, 161;
-    --secAu: 181, 138, 31;
-    --secNi: 118, 120, 118;
-    --secPd: 155, 160, 138;
-    --secPt: 189, 190, 189;
-    --secTi: 75, 101, 119;
     --terAd: 119, 131, 135;
-    --terFe: 36, 37, 34;
-    --terCu: 119, 73, 24;
-    --terAg: 128, 129, 130;
-    --terAu: 144, 110, 19;
-    --terNi: 93, 95, 94;
-    --terPd: 124, 129, 111;
-    --terPt: 152, 153, 153;
-    --terTi: 57, 79, 94;
     --quaAd: 75, 81, 84;
-    --quaFe: 130, 130, 124;
-    --quaTi: 38, 57, 69;
     --quiAd: 226, 244, 253;
-    --quiFe: 181, 181, 172;
-    --quiTi: 9, 28, 39;
-    --sexTi: 124, 166, 191;
+    --sexAd: 0, 0, 0;
+    --priNi: 141, 142, 140;
+    --secNi: 118, 120, 118;
+    --terNi: 93, 95, 94;
+    --terNi: 0, 0, 0;
+    --quaNi: 0, 0, 0;
+    --quiNi: 0, 0, 0;
+    --sexNi: 0, 0, 0;
+    --priPd: 188, 193, 165;
+    --secPd: 155, 160, 138;
+    --terPd: 124, 129, 111;
+    --quaPd: 0, 0, 0;
+    --quiPd: 0, 0, 0;
+    --sexPd: 0, 0, 0;
+    --priPt: 229, 228, 226;
+    --secPt: 189, 190, 189;
+    --terPt: 152, 153, 153;
+    --quaPt: 0, 0, 0;
+    --quiPt: 0, 0, 0;
+    --sexPt: 0, 0, 0;
+    --priTi: 38, 57, 69;
+    --secTi: 57, 79, 94;
+    --terTi: 75, 101, 119;
+    --quaTi: 91, 121, 142;
+    --quiTi: 124, 166, 191;
+    --sexTi: 159, 200, 224;
+    /* Planetary Metals */
+    --priAu: 61, 48, 2;
+    --secAu: 99, 80, 8;
+    --terAu: 148, 121, 24;
+    --quaAu: 181, 154, 54;
+    --quiAu: 214, 186, 84;
+    --sexAu: 237, 214, 130;
+    --priAg: 30, 30, 30;
+    --secAg: 60, 60, 60;
+    --terAg: 100, 100, 100;
+    --quaAg: 133, 133, 133;
+    --quiAg: 175, 175, 175;
+    --sexAg: 240, 240, 240;
+    --priHg: 23, 31, 51;
+    --secHg: 51, 62, 87;
+    --terHg: 87, 98, 128;
+    --quaHg: 139, 148, 176;
+    --quiHg: 176, 186, 209;
+    --sexHg: 206, 214, 237;
+    --priCu: 46, 24, 5;
+    --secCu: 84, 48, 17;
+    --terCu: 133, 81, 36;
+    --quaCu: 171, 112, 60;
+    --quiCu: 207, 173, 143;
+    --sexCu: 242, 216, 191;
+    --priFe: 51, 47, 26;
+    --secFe: 74, 72, 45;
+    --terFe: 105, 103, 74;
+    --quaFe: 148, 144, 115;
+    --quiFe: 184, 178, 154;
+    --sexFe: 224, 219, 202;
+    --priSn: 36, 36, 19;
+    --secSn: 68, 72, 42;
+    --terSn: 100, 102, 66;
+    --quaSn: 148, 150, 110;
+    --quiSn: 207, 209, 180;
+    --sexSn: 243, 245, 223;
+    --priPb: 33, 40, 46;
+    --secPb: 48, 59, 64;
+    --terPb: 87, 102, 107;
+    --quaPb: 126, 142, 148;
+    --quiPb: 163, 180, 184;
+    --sexPb: 213, 228, 232;
+    --priU: 32, 59, 18;
+    --secU: 51, 87, 41;
+    --terU: 85, 129, 69;
+    --quaU: 114, 156, 100;
+    --quiU: 167, 196, 149;
+    --sexU: 209, 240, 192;
+    --priNp: 16, 59, 49;
+    --secNp: 37, 84, 76;
+    --terNp: 85, 135, 129;
+    --quaNp: 107, 156, 148;
+    --quiNp: 139, 181, 175;
+    --sexNp: 197, 227, 224;
+    --priPu: 29, 18, 38;
+    --secPu: 59, 44, 71;
+    --terPu: 84, 71, 97;
+    --quaPu: 109, 98, 128;
+    --quiPu: 169, 155, 194;
+    --sexPu: 235, 211, 217;
     /* Chromas */
     --priRd: 233, 53, 37;
-    --priOr: 225, 133, 40;
-    --priYl: 255, 207, 52;
-    --priLm: 151, 174, 60;
-    --priGn: 0, 160, 75;
-    --priTk: 0, 184, 162;
-    --priCy: 13, 179, 200;
-    --priBl: 20, 141, 205;
-    --priId: 53, 74, 156;
-    --priVt: 96, 58, 147;
-    --priFs: 158, 61, 150;
-    --priMe: 237, 30, 129;
     --secRd: 193, 43, 28;
-    --secOr: 187, 111, 30;
-    --secYl: 211, 172, 44;
-    --secLm: 124, 145, 48;
-    --secGn: 0, 135, 62;
-    --secTk: 0, 154, 136;
-    --secCy: 12, 150, 168;
-    --secBl: 18, 119, 173;
-    --secId: 44, 60, 131;
-    --secVt: 80, 45, 124;
-    --secFs: 133, 47, 126;
-    --secMe: 196, 18, 108;
     --terRd: 155, 31, 15;
+    --priOr: 225, 133, 40;
+    --secOr: 187, 111, 30;
     --terOr: 150, 88, 17;
+    --priYl: 255, 207, 52;
+    --secYl: 211, 172, 44;
     --terYl: 168, 138, 33;
+    --priLm: 151, 174, 60;
+    --secLm: 124, 145, 48;
     --terLm: 97, 117, 36;
+    --priGn: 0, 160, 75;
+    --secGn: 0, 135, 62;
     --terGn: 0, 109, 48;
+    --priTk: 0, 184, 162;
+    --secTk: 0, 154, 136;
     --terTk: 0, 125, 110;
+    --priCy: 13, 179, 200;
+    --secCy: 12, 150, 168;
     --terCy: 0, 121, 136;
+    --priBl: 20, 141, 205;
+    --secBl: 18, 119, 173;
     --terBl: 8, 95, 140;
+    --priId: 53, 74, 156;
+    --secId: 44, 60, 131;
     --terId: 32, 44, 106;
+    --priVt: 96, 58, 147;
+    --secVt: 80, 45, 124;
     --terVt: 64, 30, 100;
+    --priFs: 158, 61, 150;
+    --secFs: 133, 47, 126;
     --terFs: 107, 31, 101;
+    --priMe: 237, 30, 129;
+    --secMe: 196, 18, 108;
     --terMe: 158, 1, 86;
 }
 
@@ -90,6 +148,31 @@ html {
     font-weight: 400;
     font-style: normal;
     font-feature-settings: "onum";
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    width: 100%;
+    overflow: visible;
 }
 
 h1 {
@@ -109,6 +192,10 @@ h2 {
     font-style: normal;
     font-size: 2rem;
     margin-bottom: 2rem;
+
+    i {
+        color: rgba(var(--priAd), 1);
+    }
 }
 
 h3 {
@@ -164,7 +251,6 @@ h4 {
 .container {
     width: 100%;
 }
-
 
 .canvas-container {
     text-align: center;
@@ -223,6 +309,12 @@ h4 {
     font-feature-settings: "onum";
 }
 
+section#bc, #bc {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
 .breadcrumb {
     display: flex;
     flex-wrap: wrap;
@@ -237,7 +329,8 @@ h4 {
 .breadcrumb-item {
     a {
         text-decoration: none;
-        color: rgba(var(--priTi), 1);
+        color: rgba(var(--priAd), 1);
+        text-shadow: 0 0 3px rgba(var(--terRd), 1);
     }
 }
 
@@ -395,6 +488,15 @@ footer {
     p {
         align-items: center;
     }
+
+    // .footer-container {
+    //     padding-top: 0.5rem;
+    // }
+
+    flex-shrink: 0;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
 }
 
 @media (max-width: 578px) {
@@ -403,11 +505,13 @@ footer {
     }
     
     .main-title {
-        font-size: 6rem;
+        font-size: 5rem;
     }
 
     h2 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0;
     }
 
     h3 {
@@ -420,10 +524,57 @@ footer {
             flex-direction: column;
         }
 
+        label {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
         #birth-location-label {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+    }
+
+    #login {
+        .container, .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        label {
+            text-align: center;
+            width: 60vw;
+            max-width: 500px;
+            margin-bottom: 0.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        input[type='text'],
+        input[type='password'] {
+            width: 60vw;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+    }
     }
 }

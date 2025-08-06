@@ -41,7 +41,12 @@
     </div>
 </section>
 
-{% include 'partials/_house-system.html' %}
+<div class="wheel-controls">
+    {% include 'partials/_aspect-overlay.html' %}
+    
+    {% include 'partials/_house-system.html' %}
+</div>
+
 
 <!-- <script>
     const elementalDataLocation = "/api/elemental/"
@@ -55,6 +60,7 @@ houseData: {{ house_data_json|safe }},
 aspectData: {{ aspect_data_json|safe }}, -->
 
 <script src="{% static 'scripts/tooltip.js' %}?v={{ timestamp }}"></script>
+<script src="{% static 'scripts/aspect.js' %}?v={{ timestamp }}"></script>
 <script src="{% static 'scripts/wheel.js' %}?v={{ timestamp }}"></script>
 
 {% include 'partials/_alerts.html' %}

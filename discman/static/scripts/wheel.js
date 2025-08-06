@@ -24,7 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createWheel() {
         const container = document.getElementById('wheel-canvas');
-        const size = Math.min(container.offsetWidth);
+
+        // Viewport dimensions
+        const headerHeight = document.querySelector('header').getBoundingClientRect().height || 0;
+        const footerHeight = document.querySelector('footer').getBoundingClientRect().height || 0;
+
+        const controlsContainer = document.querySelector('.wheel-controls');
+        const controlsHeight = controlsContainer ? controlsContainer.getBoundingClientRect().height : 0;
+
+        const buffer = 40;
+
+        const availableHeight = window.innerHeight - headerHeight - footerHeight - controlsHeight - buffer;
+        const mainContentWidth = document.querySelector('.main-content')?.clientWidth || 0
+        const availableWidth = Math.min(document.querySelector('.main-content').clientWidth, window.innerWidth * 0.9);
+
+        let size = Math.min(availableWidth, availableHeight);
+        // let size = Math.min(container.offsetWidth, container.offsetHeight);
+        if (size < 350) size = 350;
+        
+        container.style.width = size + 'px';
+        container.style.height = size + 'px';
+
         const width = size;
         const height = size;
         const r = size / 2 - 30;
@@ -93,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const signGroup = signsGroup
                 .append('g')
                 .attr('class', 'sign-group')
-                .attr('data-sign', signs[signIndex]);
+                .attr('data-sign', signs[signIndex])
                 ;
             
             const signPath = signGroup
@@ -205,12 +225,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 midDeg = ((deg + nextDeg + 360) / 2) % 360;
             }
             const midAngle = ((-midDeg + offset) % 360) * Math.PI / 180;
+            let numRadius = (innerRadius + outerRadius) / 2;
 
             // Calculate house width (deg)
             const houseWidth = Math.abs(nextDeg - deg);
             const adjustedWidth = houseWidth > 180 ? 360 - houseWidth : houseWidth;
 
-            let numRadius = (innerRadius + outerRadius) / 2;
+            // // Not currently working
+            // const houseCircle = housesGroup
+            //     .append('circle')
+            //     .attr('x', cx + numRadius * Math.cos(midAngle))
+            //     .attr('y', cy + numRadius * Math.sin(midAngle))
+            //     .attr('class', 'label')
+            //     .attr('text-anchor', 'middle')
+            //     .attr('dominant-baseline', 'central')
+            //     .attr('r', 10)
+            //     .attr('fill', 'rgba(var(--terRd), 1)')
+            //     .attr('cursor', 'default')
+            //     .style('pointer-events', 'all')
+            //     ;
             
             const houseNumber = housesGroup
                 .append('text')
@@ -226,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;
             
             // Attach to house-number
+            // wheelTooltips.attachToHouse(d3.select(houseCircle.node()));
             wheelTooltips.attachToHouse(d3.select(houseNumber.node()), i + 1);
 
             // create invisible fill areas for tooltip interaction
@@ -299,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('cy', y)
                 .attr('r', 8)
                 .attr('fill', 'rgba(var(--priYl), 1)')
+                .attr('class', `planet-circle planet-${name.toLowerCase()}`)
                 ;
             
             const planetSymbol = planetGroup
@@ -308,6 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('class', 'label')
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '0.75rem')
+                .attr('class', `planet-circle-symbol planet-symbol-${name.toLowerCase()}`)
                 .attr('cursor', 'default')
                 // .attr('fill', 'rgba(var(--priTi), 1)')
                 // .text(planetSymbols[name])
@@ -366,12 +402,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // console.log("element data:", elementRatio);
 
             const elementColors = {
-                'Fire': 'rgba(var(--priAg), 1)',
-                'Earth': 'rgba(var(--priPd), 1)',
-                'Air': 'rgba(var(--priCu), 1)',
+                'Air': 'rgba(var(--priNi), 1)',
+                'Space': 'rgba(var(--priPt), 1)',
+                'Fire': 'rgba(var(--priPd), 1)',
                 'Water': 'rgba(var(--priNi), 1)',
-                'Space': 'rgba(var(--priAu), 1)',
                 'Time': 'rgba(var(--priPt), 1)',
+                'Earth': 'rgba(var(--priPd), 1)',
             };
 
             // Calculate percentages
@@ -386,10 +422,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 .pie()
                 .value(d => d.value)
                 .sort(null)
+                .startAngle(((-houses.asc + offset + 90) * Math.PI) / 180)
                 ;
             
-            // Conver pie data
-            const pieData = pie(Object.entries(elementRatio).map(([key, value]) => ({ key, value })));
+            // Convert pie data
+            const elementOrder = ['Air', 'Space', 'Fire', 'Water', 'Time', 'Earth']
+            const pieData = pie(
+                elementOrder
+                    .map(key => ({ key, value: elementRatio[key] }))
+                    .filter(d => d.value !== undefined)
+            );
 
             // Element ring params
             const elementInner = r * 0.5;
@@ -477,12 +519,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('font-family', 'FontAwesome')
                 .text(d => {
                     const icons = {
-                        'Fire': '\uf06d',
-                        'Earth': '\uf6fc',
                         'Air': '\uf72e',
-                        'Water': '\uf043',
                         'Space': '\uf753',
+                        'Fire': '\uf06d',
+                        'Water': '\uf043',
                         'Time': '\uf017',
+                        'Earth': '\uf6fc',
                     };
                     return icons[d.data.key];
                 })
@@ -579,5 +621,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, 2000);
             })
             ;
+        
+        // For aspect.js
+        if (typeof aspectManager !== 'undefined') {
+            aspectManager.initialize(svg, cx, cy);
+        }
     }
+
 });

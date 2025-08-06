@@ -1,13 +1,15 @@
-<form action="{% url 'recalculate_chart' %}" method="get">
-    <label for="house_system">House System:</label>
-    <select name="house_system" id="house_system">
-        <option value="P" {% if selected_house_system == 'P' %}selected{% endif %}>Placidus</option>
-        <option value="K" {% if selected_house_system == 'K' %}selected{% endif %}>Koch</option>
-        <option value="O" {% if selected_house_system == 'O' %}selected{% endif %}>Porphyry</option>
-        <option value="R" {% if selected_house_system == 'R' %}selected{% endif %}>Regiomontanus</option>
-        <option value="C" {% if selected_house_system == 'C' %}selected{% endif %}>Campanus</option>
-        <option value="E" {% if selected_house_system == 'E' %}selected{% endif %}>Equal</option>
-        <option value="W" {% if selected_house_system == 'W' %}selected{% endif %}>Whole Sign</option>
-    </select>
-    <button type="submit">Redraw Houses</button>
-</form>
+<div class="container house-system-container">
+    <form action="{% url 'recalculate_chart' %}" method="get">
+        <label for="house_system">House System:</label>
+        <select name="house_system" id="house_system">
+            <option value="P" {% if selected_house_system == 'P' %}selected{% endif %}>Placidus</option>
+            <option value="K" {% if selected_house_system == 'K' %}selected{% endif %}>Koch</option>
+            <option value="O" {% if selected_house_system == 'O' %}selected{% endif %}>Porphyry</option>
+            <option value="R" {% if selected_house_system == 'R' %}selected{% endif %}>Regiomontanus</option>
+            <option value="C" {% if selected_house_system == 'C' %}selected{% endif %}>Campanus</option>
+            <option value="E" {% if selected_house_system == 'E' %}selected{% endif %}>Equal</option>
+            <option value="W" {% if selected_house_system == 'W' %}selected{% endif %}>Whole Sign</option>
+        </select>
+        <button type="submit">Redraw Houses</button>
+    </form>
+</div>

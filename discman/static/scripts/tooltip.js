@@ -326,13 +326,17 @@ const wheelTooltips = (function () {
         tooltip
             .html(content)
             .style('visibility', 'visible')
+            .style('left', null)
+            .style('right', null)
+            .style('top', null)
+            .style('bottom', null)
             ;
         
         // Horizontal position
         if (x > winW / 2) {
             tooltip
                 .style('left', null)
-                .style('right', (winW - x + 10) + 'px');
+                .style('right', (winW - x + 10) + 'px')
                 ;
         } else {
             tooltip
@@ -345,7 +349,7 @@ const wheelTooltips = (function () {
         if (y > winH / 2) {
             tooltip
                 .style('top', null)
-                .style('bottom', (winH - y + 10) + 'px');
+                .style('bottom', (winH - y + 10) + 'px')
                 ;
         } else {
             tooltip
@@ -442,16 +446,16 @@ const wheelTooltips = (function () {
             const dignityStatus = [];
             if (signDignities.domicile === planetName) {
                 // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
-                dignityStatus.push(`<strong>Domicile</strong> in ${signSymbol}<br>`);
+                dignityStatus.push(`Domicile in <strong>${signSymbol}</strong><br>`);
             }
             if (signDignities.exalted === planetName) {
-                dignityStatus.push(`<strong>Exalted</strong> in ${signSymbol}<br>`);
+                dignityStatus.push(`Exalted <strong>in ${signSymbol}</strong><br>`);
             }
             if (signDignities.exile === planetName) {
-                dignityStatus.push(`<strong>Exile</strong> in ${signSymbol}<br>`);
+                dignityStatus.push(`Exile <strong>in ${signSymbol}</strong><br>`);
             }
             if (signDignities.fallen === planetName) {
-                dignityStatus.push(`<strong>Fallen</strong> in ${signSymbol}<br>`);
+                dignityStatus.push(`Fallen <strong>in ${signSymbol}</strong><br>`);
             }
 
             if (dignityStatus.length > 0) {
@@ -522,15 +526,11 @@ const wheelTooltips = (function () {
             if (!element || !elementName) return;
             
             const percent = value ? Math.round((value / totalElements) * 100) : 0;
-            const content = `${elementName}: ${value} (${percent}%)`;
+            content += `${elementName}: ${value} (${percent}%)`;
             
             element
-                .on('mouseover', function(e) {
-                    show(content, e);
-                })
-                .on('mousemove', function(e) {
-                    show(content, e);
-                })
+                .on('mouseover', function(e) { show(content, e); })
+                .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
                 ;
         }
