@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Resize listener
     let resizeTimeout;
     window.addEventListener('resize', function () {
+        if (typeof wheelTooltips !== 'undefined' && wheelTooltips.hideAll) {
+            wheelTooltips.hideAll();
+        } else {
+            const tooltipElements = this.document.querySelectorAll('.tooltip');
+            tooltipElements.forEach(t => t.style.display = 'none');
+        }
         this.clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function () {
             // Remove existing svg
@@ -66,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const offset = houses.asc - 180;
 
+        // Create tooltip manager
         wheelTooltips.initialize();
 
         // Create svg
@@ -75,6 +82,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr('width', width)
             .attr('height', height)
             ;
+
+        // Initialize aspect manager
+        if (typeof aspectManager !== 'undefined') {
+            aspectManager.initialize(svg, cx, cy);
+
+            window.wheelData.calculatedAspects = aspectManager.calculateAspects();
+        }
 
         // Groups
         const specialPointsGroup = svg
@@ -549,83 +563,21 @@ document.addEventListener('DOMContentLoaded', function () {
         //     .style('z-index', '1000')
         //     ;
 
-        const tooltip = wheelTooltips.getTooltip();
-
         svg
             .select('.element-arc-group')
             .selectAll('.element-arc')
-            .on('mouseover', function (e, d) {
-                const percent = Math.round(d.data.value / totalElements * 100);
-                tooltip
-                    .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
-                    .style('visibility', 'visible')
-                    ;
-            })
-            .on('mousemove', function (e) {
-                tooltip
-                    .style('top', (e.pageY - 10) + 'px')
-                    .style('left', (e.pageX + 10) + 'px')
-                    ;
-            })
-            .on('mouseout', function () {
-                tooltip.style('visibility', 'hidden');
-            })
-            // Mobile support
-            .on('touchstart', function (e, d) {
-                e.preventDefault();
-                const percent = Math.round(d.data.value / totalElements * 100);
-                tooltip
-                    .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
-                    .style('visibility', 'visible')
-                    .style('top', (e.touches[0].pageY - 30) + 'px')
-                    .style('left', (e.touches[0].pageX + 10) + 'px')
-                    ;
-                // Auto-hide after delay
-                setTimeout(() => {
-                    tooltip.style('visibility', 'hidden');
-                }, 2000);
-            })
-            ;
-
-        svg
-            .select('.element-label-group')
-            .selectAll('.element-icon')
-            .on('mouseover', function (e, d) {
-                const percent = Math.round(d.data.value / totalElements * 100);
-                tooltip
-                    .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
-                    .style('visibility', 'visible')
-                    ;
-            })
-            .on('mousemove', function (e) {
-                tooltip
-                    .style('top', (e.pageY - 10) + 'px')
-                    .style('left', (e.pageX + 10) + 'px')
-                    ;
-            })
-            .on('mouseout', function () {
-                tooltip.style('visibility', 'hidden');
-            })
-            .on('touchstart', function (e, d) {
-                e.preventDefault();
-                const percent = Math.round(d.data.value / totalElements * 100);
-                tooltip
-                    .html(`${d.data.key}: ${d.data.value} (${percent}%)`)
-                    .style('visibility', 'visible')
-                    .style('top', (e.touches[0].pageY - 30) + 'px')
-                    .style('left', (e.touches[0].pageX + 10) + 'px')
-                    ;
-                
-                setTimeout(() => {
-                    tooltip.style('visibility', 'hidden');
-                }, 2000);
+            .each(function (d) {
+                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
             })
             ;
         
-        // For aspect.js
-        if (typeof aspectManager !== 'undefined') {
-            aspectManager.initialize(svg, cx, cy);
-        }
+        svg
+            .select('.element-label-group')
+            .selectAll('.element-icon')
+            .each(function (d) {
+                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
+            })
+            ;
     }
 
 });

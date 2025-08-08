@@ -37,21 +37,21 @@ const aspectManager = (function () {
                 aspectTypes[aspect.name.toLowerCase()] = {
                     angle: aspect.angle,
                     orb: aspect.defaultOrb,
-                    color: aspect.color || getDefaultColor(aspect.name), // No default colors yet
-                    symbol: aspect.symbol || ''
+                    color: aspect.color || getDefaultColor(aspect.name),
+                    symbol: aspect.symbol && aspect.symbol.trim() !== '' ? aspect.symbol : null,
                 };
             });
 
             // console.log('aspect types initialized:', aspectTypes);
         } else {
             console.warn('no aspect data found (using defaults)');
-            aspectTypes = {
-            conjunction: { angle: 0, orb: 8, color: 'rgba(var(--priTi), 1)', symbol: '☌' },
-            opposition: { angle: 180, orb: 8, color: 'rgba(var(--secTi), 1)', symbol: '☍' },
-            trine: { angle: 120, orb: 8, color: 'rgba(var(--terTi), 1)', symbol: '△' },
-            square: { angle: 90, orb: 7, color: 'rgba(var(--quaTi), 1)', symbol: '□' },
-            sextile: { angle: 60, orb: 6, color: 'rgba(var(--quiTi), 1)', symbol: '⚹' }
-        };
+            // aspectTypes = {
+            // conjunction: { angle: 0, orb: 8, color: 'rgba(var(--priTi), 1)', symbol: '☌' },
+            // opposition: { angle: 180, orb: 8, color: 'rgba(var(--secTi), 1)', symbol: '☍' },
+            // trine: { angle: 120, orb: 8, color: 'rgba(var(--terTi), 1)', symbol: '△' },
+            // square: { angle: 90, orb: 7, color: 'rgba(var(--quaTi), 1)', symbol: '□' },
+            // sextile: { angle: 60, orb: 6, color: 'rgba(var(--quiTi), 1)', symbol: '⚹' }
+            // };
         }
     
         // Invoke toggle listener
@@ -61,6 +61,8 @@ const aspectManager = (function () {
         if (isVisible) {
             calculateAndDrawAspects();
         }
+
+        window.wheelData.calculatedAspects = calculateAspects();
     }
 
     // Invoke toggle listener
@@ -83,14 +85,12 @@ const aspectManager = (function () {
 
     }
 
-    function calculateAndDrawAspects() {
-        // console.log('Calculating aspects….')
-        clearAspects();
-
+    function calculateAspects() {
         const bodies = getAllBodies();
-        // console.log(`Found ${bodies.length} celestial bodies:`, bodies)
+        // console.log("DEBUG - Bodies with orb values:", bodies.map(b => ({ name: b.name, degree: b.degree, orb: b.orbOtt })));
+        const calculatedAspects = [];
 
-        // Check each pair of bodies for aspects
+        // Check ea. pair of bodies for aspects
         for (let i = 0; i < bodies.length; i++) {
             for (let j = i + 1; j < bodies.length; j++) {
                 const body1 = bodies[i];
@@ -100,25 +100,52 @@ const aspectManager = (function () {
                 let angleDiff = Math.abs(body1.degree - body2.degree);
                 if (angleDiff > 180) angleDiff = 360 - angleDiff;
 
-                // console.log(`Checking ${body1.name} (${body1.degree}°) to ${body2.name} (${body2.degree}°): diff = ${angleDiff}°`);
-
-                // check if angle matches any aspect type
-                for (const [aspectName, aspectDetails] of Object.entries(aspectTypes)) {
-                    // Calculate allowed [Ott's] orb
+                // Check if angle matches any aspect type
+                for (const [aspectType, aspectDetails] of Object.entries(aspectTypes)) {
                     const allowedOrb = (body1.orbOtt + body2.orbOtt) / 2;
-
                     const orbDiff = Math.abs(angleDiff - aspectDetails.angle);
-                    // console.log(` Aspect ${aspectName} (${aspectDetails.angle}°): diff = ${orbDiff}°, allowed orb = ${allowedOrb}°`);
 
-                    // Check if the angle difference is w.in orb tolerance
+                    // if (orbDiff < 10) {  // Only log "close" aspects to avoid console spam
+                    //     console.log(`  ${aspectType} (${aspectDetails.angle}°): diff=${orbDiff.toFixed(1)}°, allowed=${allowedOrb}°, match=${orbDiff <= allowedOrb}`);
+                    // }
+
+                    // Check angle diff w.in orb tolerance
                     if (orbDiff <= allowedOrb) {
-                        // console.log(` ✓ Found aspect: ${body1.name} ${aspectName} ${body2.name}`);
-                        drawAspect(body1, body2, aspectDetails);
+                        calculatedAspects.push({
+                            body1: body1.name,
+                            body2: body2.name,
+                            aspectType: aspectType,
+                            aspectSymbol: (aspectDetails.symbol && aspectDetails.symbol.trim() !== '') ? aspectDetails.symbol : aspectType,
+                            orb: orbDiff,
+                        });
                         break;
                     }
                 }
             }
         }
+        return calculatedAspects;
+    }
+
+    function drawCalculatedAspects() {
+        const aspects = calculateAspects();
+
+        // Draw all aspects
+        const bodies = getAllBodies();
+        aspects.forEach(aspect => {
+            const body1 = bodies.find(i => i.name === aspect.body1);
+            const body2 = bodies.find(j => j.name === aspect.body2);
+            const aspectDetails = aspectTypes[aspect.aspectType];
+
+            drawAspect(body1, body2, aspectDetails);
+        });
+
+        return aspects;
+    }
+
+    function calculateAndDrawAspects() {
+        clearAspects();
+        const aspects = drawCalculatedAspects();
+        return aspects;
     }
     
     function getStrokeDashArray(angle) {
@@ -151,8 +178,6 @@ const aspectManager = (function () {
             innerRadius = r - 5;
         }
 
-        // console.log(`Drawing aspect: ${body1.name}–${body2.name}, radius=${innerRadius}`);
-
         // Rotation adjustment
         const offset = window.wheelData.houses.asc - 180;
         const angle1 = (-body1.degree + offset) * Math.PI / 180;
@@ -163,8 +188,6 @@ const aspectManager = (function () {
         const y1 = cy + innerRadius * Math.sin(angle1);
         const x2 = cx + innerRadius * Math.cos(angle2);
         const y2 = cy + innerRadius * Math.sin(angle2);
-
-        // console.log(` Line from (${x1.toFixed(1)},${y1.toFixed(1)}) to (${x2.toFixed(1)},${y2.toFixed(1)})`);
 
         // Draw aspect line
         aspectGroup
@@ -252,6 +275,12 @@ const aspectManager = (function () {
     return {
         initialize: initialize,
         calculateAndDrawAspects: calculateAndDrawAspects,
-        clearAspects: clearAspects
+        clearAspects: clearAspects,
+        getAllBodies: getAllBodies,
+        // calculateAspectsForTooltip: function () {
+        //     return calculateAspects();
+        // },
+        calculateAspects: calculateAspects,
+        drawCalculatedAspects: drawCalculatedAspects,
     };
 })();

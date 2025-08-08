@@ -1,3 +1,17 @@
+window.addEventListener('DOMContentLoaded', function () {
+    this.setTimeout(function () {
+        console.log('DIRECT TEST:');
+        const testAspects = aspectManager.calculateAspects();
+        console.log('Raw aspects:', testAspects);
+
+        if (testAspects && testAspects.length) {
+            const testPlanet = testAspects[0].body1;
+            console.log(`Testing aspects for ${testPlanet}`);
+            testAspects.filter(a => a.body1 === testPlanet || a.body2 === testPlanet);
+        }
+    }, 1000);
+});
+
 // Tooltip module
 const wheelTooltips = (function () {
     // console.log('Planet data:', JSON.stringify(window.wheelData.planets, null, 2));
@@ -307,6 +321,32 @@ const wheelTooltips = (function () {
         };
     }
 
+    function getAspectsForPlanet(planetName) {
+        if (!window.wheelData || !window.wheelData.aspectDetails && !window.wheelData.calculatedAspects) return [];
+
+        const bodies = aspectManager.getAllBodies();
+        const aspects = window.wheelData.calculatedAspects || aspectManager.calculateAspects();
+
+        // console.log('Checking aspects for:', planetName, aspects);
+
+        return aspects
+            .filter(a => a.body1 === planetName || a.body2 === planetName)
+            .map(a => {
+                // Find body2
+                const aspectedName = a.body1 === planetName ? a.body2 : a.body1;
+                const aspectedBody = bodies.find(b => b.name === aspectedName);
+                return {
+                    aspectType: a.aspectType,
+                    aspectSymbol: a.aspectSymbol || a.aspectType,
+                    orb: a.orb,
+                    aspected: aspectedName,
+                    aspectedSymbol: window.wheelData.planetSymbols?.[aspectedName] || aspectedBody?.name?.charAt(0) || aspectedName,
+                    aspectedDegree: aspectedBody?.degree,
+                };
+            })
+            ;
+    }
+
     // Format degrees nicely
     function formatDegree(deg) {
         const d = Math.floor(deg);
@@ -319,44 +359,41 @@ const wheelTooltips = (function () {
 
     // Event handlers
     function show(content, e) {
-        const winW = window.innerWidth;
-        const winH = window.innerHeight;
+        const padding = 10;
         const x = e.pageX;
         const y = e.pageY;
+        
+        // Set content first to calculate dimensions
         tooltip
             .html(content)
             .style('visibility', 'visible')
-            .style('left', null)
-            .style('right', null)
-            .style('top', null)
-            .style('bottom', null)
+            .style('left', '-9999px')
+            .style('top', '-9999px')
             ;
         
-        // Horizontal position
-        if (x > winW / 2) {
-            tooltip
-                .style('left', null)
-                .style('right', (winW - x + 10) + 'px')
-                ;
-        } else {
-            tooltip
-                .style('right', null)
-                .style('left', (x + 10) + 'px')
-                ;
+        // Get tooltip and viewport dimensions
+        const tooltipWidth = tooltip.node().offsetWidth;
+        const tooltipHeight = tooltip.node().offsetHeight;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate position with smart boundary handling
+        let leftPos = x + padding;
+        let topPos = y + padding;
+        
+        if (leftPos + tooltipWidth > viewportWidth - padding) {
+            leftPos = Math.max(padding, x - tooltipWidth - padding)
         }
 
-        // Vertical position
-        if (y > winH / 2) {
-            tooltip
-                .style('top', null)
-                .style('bottom', (winH - y + 10) + 'px')
-                ;
-        } else {
-            tooltip
-                .style('bottom', null)
-                .style('top', (y - 10) + 'px')
-                ;
+        if (topPos + tooltipHeight > viewportHeight - padding) {
+            topPos = Math.max(padding, y - tooltipHeight - padding)
         }
+        
+        // Apply consistent positioning (left/top only)
+        tooltip
+            .style('left', leftPos + 'px')
+            .style('top', topPos + 'px')
+            ;
     }
 
     function hide() {
@@ -369,7 +406,7 @@ const wheelTooltips = (function () {
         getTooltip: getTooltip,
         
         // Add attachToSign function
-        attachToSign: function (element, signName) {
+        attachToSign: function (domElement, signName) {
             // console.log("Sign name:", signName)
             // console.log("Planets:", window.wheelData.planets)
             // const planetSymbol = window.wheelData.planetSymbols[planetName] || '';
@@ -377,7 +414,7 @@ const wheelTooltips = (function () {
             const info = getSignInfo(signName);
             if (!info) return;
             
-            if (!element || !signName) return;
+            if (!domElement || !signName) return;
 
             let content = `<strong>${info.symbol} ${info.name}</strong> (${info.element})<br>`;
 
@@ -416,7 +453,7 @@ const wheelTooltips = (function () {
                 });
             }
             
-            element
+            domElement
                 .on('mouseover', function (e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
@@ -424,9 +461,8 @@ const wheelTooltips = (function () {
         },
         
         // Add attachToPlanet function
-        attachToPlanet: function(element, planetName, degree) {
-            if (!element || !planetName || degree === undefined) return;
-            // const content = `<strong>${planetName}</strong>`;
+        attachToPlanet: function(domElement, planetName, degree) {
+            if (!domElement || !planetName || degree === undefined) return;
             const info = getPlanetInfo(planetName, degree);
             if (!info) return;
 
@@ -445,7 +481,6 @@ const wheelTooltips = (function () {
             // Check if planet has dignity in current sign
             const dignityStatus = [];
             if (signDignities.domicile === planetName) {
-                // const symbol = window.wheelData.planetSymbols?.[planetName] || planetName;
                 dignityStatus.push(`Domicile in <strong>${signSymbol}</strong><br>`);
             }
             if (signDignities.exalted === planetName) {
@@ -457,15 +492,25 @@ const wheelTooltips = (function () {
             if (signDignities.fallen === planetName) {
                 dignityStatus.push(`Fallen <strong>in ${signSymbol}</strong><br>`);
             }
-
             if (dignityStatus.length > 0) {
                 content += `<br><u>Dignified:</u><br>${dignityStatus.join('')}`;
+            }
+
+            // Show planetary aspects
+            const aspects = getAspectsForPlanet(planetName);
+            if (aspects.length > 0) {
+                content += `<br><u>Aspects:</u><br>`;
+                aspects.forEach(a => {
+                    content += `<strong>${a.aspectSymbol} ${a.aspectedSymbol}</strong>`;
+                    if (typeof a.orb === 'number') content += ` (orb: ${a.orb.toFixed(2)}°)`;
+                    content += `<br>`;
+                });
             }
 
             // Show planet's element & chart totals
             content += `<br><u>Elements:</u><br>${planetElements.map(el => `+1 ${el}`).join('<br>')}<br>`;
 
-            element
+            domElement
                 .on('mouseover', function (e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
@@ -473,8 +518,8 @@ const wheelTooltips = (function () {
         },
 
         // Add attachToHouse function
-        attachToHouse: function(element, houseNum, degree) {
-            if (!element || !houseNum) return;
+        attachToHouse: function(domElement, houseNum, degree) {
+            if (!domElement || !houseNum) return;
 
             const info = getHouseInfo(houseNum);
             if (!info) return;
@@ -514,7 +559,7 @@ const wheelTooltips = (function () {
                 });
             }
             
-            element
+            domElement
                 .on('mouseover', function (e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
@@ -522,17 +567,24 @@ const wheelTooltips = (function () {
         },
         
         // Add attachToElement function
-        attachToElement: function(element, elementName, value) {
-            if (!element || !elementName) return;
+        attachToElement: function(domElement, elementName, value) {
+            if (!domElement || !elementName) return;
             
             const percent = value ? Math.round((value / totalElements) * 100) : 0;
-            content += `${elementName}: ${value} (${percent}%)`;
+            let content = `${elementName}: ${value} (${percent}%)`;
             
-            element
+            domElement
                 .on('mouseover', function(e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
                 .on('mouseout', hide)
                 ;
-        }
+        },
+
+        hideAll: function () {
+            const tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(tooltip => {
+                tooltip.style.display = 'none';
+            });
+        },
     };
 })();

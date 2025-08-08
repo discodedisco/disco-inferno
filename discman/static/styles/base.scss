@@ -330,7 +330,11 @@ section#bc, #bc {
     a {
         text-decoration: none;
         color: rgba(var(--priAd), 1);
-        text-shadow: 0 0 3px rgba(var(--terRd), 1);
+        text-shadow: 0 0 5px rgba(var(--priTi), 1);
+        
+        &:hover {
+            text-shadow: 0 0 5px rgba(var(--priTi), 1), 0 0 5px rgba(var(--priAd), 1);
+        }
     }
 }
 
@@ -347,6 +351,10 @@ section#bc, #bc {
 
 .breadcrumb-item + .breadcrumb-item + .breadcrumb-item::before {
     content: "::";
+}
+
+.breadcrumb-item + .breadcrumb-item + .breadcrumb-item + .breadcrumb-item::before {
+    content: ":::";
 }
 
 .card {
