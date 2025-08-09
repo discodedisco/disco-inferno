@@ -20,6 +20,8 @@ planet_options = [
         'exaltedIn': 'Aquarius', 'exileIn': 'Taurus', 'fallenIn': 'Leo', 'orbOtt': 4},
 ]
 
+planet_order = [planet['name'] for planet in planet_options]
+
 sign_options = [
     {'id': 'sign-aries', 'symbol': '♈︎', 'name': 'Aries',
         'element': 'Fire (Ig)', 'domicileOf': 'Mars', 'exaltedOf': 'Sun', 'exileOf': 'Venus', 'fallenOf': 'Saturn'},
@@ -86,7 +88,7 @@ aspect_options = [
         'angle': 45, 'orb': 5, 'meaning': '', 'color': 'rgba(var(--secTi), 1)'},
     {'id': 'aspect-sextile', 'symbol': '&#9913;', 'name': 'Sextile', 'angle': 60,
         'orb': 6, 'meaning': 'Opportunity, ease, harmony', 'color': 'rgba(var(--terTi), 1)'},
-    {'id': 'aspect-quintile', 'symbol': '&#81;', 'name': 'Quintile',
+    {'id': 'aspect-quincunx', 'symbol': '&#81;', 'name': 'Quincunx',
         'angle': 72, 'orb': 6, 'meaning': '', 'color': 'rgba(var(--terTi), 1)'},
     {'id': 'aspect-Square', 'symbol': '&#9633;', 'name': 'Square', 'angle': 90, 'orb': 7,
         'meaning': 'Tension, challenge, action', 'color': 'rgba(var(--quaTi), 1)'},

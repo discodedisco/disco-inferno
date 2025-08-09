@@ -28,11 +28,8 @@ const aspectManager = (function () {
             planetOrbValues = window.planetData;
         }
 
-        // console.log('initializing aspect manager….');
-
         // Convert python aspect_options
         if (window.wheelData && window.wheelData.aspectDetails && Array.isArray(window.wheelData.aspectDetails)) {
-            console.log("Aspect data received:", window.wheelData.aspectDetails);
             window.wheelData.aspectDetails.forEach(aspect => {
                 aspectTypes[aspect.name.toLowerCase()] = {
                     angle: aspect.angle,
@@ -41,8 +38,6 @@ const aspectManager = (function () {
                     symbol: aspect.symbol && aspect.symbol.trim() !== '' ? aspect.symbol : null,
                 };
             });
-
-            // console.log('aspect types initialized:', aspectTypes);
         } else {
             console.warn('no aspect data found (using defaults)');
             // aspectTypes = {
@@ -87,7 +82,6 @@ const aspectManager = (function () {
 
     function calculateAspects() {
         const bodies = getAllBodies();
-        // console.log("DEBUG - Bodies with orb values:", bodies.map(b => ({ name: b.name, degree: b.degree, orb: b.orbOtt })));
         const calculatedAspects = [];
 
         // Check ea. pair of bodies for aspects
@@ -97,17 +91,13 @@ const aspectManager = (function () {
                 const body2 = bodies[j];
 
                 // Calculate angular distance between bodies
-                let angleDiff = Math.abs(body1.degree - body2.degree);
+                let angleDiff = Math.abs((body1.degree - body2.degree + 360) % 360);
                 if (angleDiff > 180) angleDiff = 360 - angleDiff;
 
                 // Check if angle matches any aspect type
                 for (const [aspectType, aspectDetails] of Object.entries(aspectTypes)) {
                     const allowedOrb = (body1.orbOtt + body2.orbOtt) / 2;
                     const orbDiff = Math.abs(angleDiff - aspectDetails.angle);
-
-                    // if (orbDiff < 10) {  // Only log "close" aspects to avoid console spam
-                    //     console.log(`  ${aspectType} (${aspectDetails.angle}°): diff=${orbDiff.toFixed(1)}°, allowed=${allowedOrb}°, match=${orbDiff <= allowedOrb}`);
-                    // }
 
                     // Check angle diff w.in orb tolerance
                     if (orbDiff <= allowedOrb) {
@@ -256,11 +246,21 @@ const aspectManager = (function () {
         }
     }
 
+    /**
+     * Get orb value for planet
+     * @param {string} planetName get planet name
+     * @return {number} corresponding Ott's orb
+     */
     function getDefaultOrb(planetName) {
-        if (planetOrbValues &&
-            planetOrbValues[planetName] &&
-            typeof planetOrbValues[planetName].orbOtt !== 'undefined') {
-            return planetOrbValues[planetName].orbOtt;
+        if (window.wheelData && window.wheelData.planetDetails) {
+            const planetDetail = window.wheelData.planetDetails.find(p => p.name === planetName);
+            if (planetDetail && typeof planetDetail.orbOtt !== 'undefined') {
+                return planetDetail.orbOtt;
+            }
+        }
+
+        if (window.wheelData && window.wheelData.planets && window.wheelData.planets[planetName] && window.wheelData.planets[planetName].orbOtt) {
+            return window.wheelData.planets[planetName].orbOtt;
         }
         // Default fallback
         return 4;
@@ -277,9 +277,6 @@ const aspectManager = (function () {
         calculateAndDrawAspects: calculateAndDrawAspects,
         clearAspects: clearAspects,
         getAllBodies: getAllBodies,
-        // calculateAspectsForTooltip: function () {
-        //     return calculateAspects();
-        // },
         calculateAspects: calculateAspects,
         drawCalculatedAspects: drawCalculatedAspects,
     };

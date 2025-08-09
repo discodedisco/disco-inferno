@@ -5,6 +5,7 @@
 /templates/pages/wheel-copy.html
 /discman/static-copy
 /discman/static/scripts/tooltip-copy.js
+/discman/static/scripts/old-syzygy.js
 
 ### Django ###
 *.log

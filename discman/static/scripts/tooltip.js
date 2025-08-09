@@ -1,34 +1,26 @@
-window.addEventListener('DOMContentLoaded', function () {
-    this.setTimeout(function () {
-        console.log('DIRECT TEST:');
-        const testAspects = aspectManager.calculateAspects();
-        console.log('Raw aspects:', testAspects);
+// window.addEventListener('DOMContentLoaded', function () {
+//     this.setTimeout(function () {
+//         console.log('DIRECT TEST:');
+//         const testAspects = aspectManager.calculateAspects();
+//         console.log('Raw aspects:', testAspects);
 
-        if (testAspects && testAspects.length) {
-            const testPlanet = testAspects[0].body1;
-            console.log(`Testing aspects for ${testPlanet}`);
-            testAspects.filter(a => a.body1 === testPlanet || a.body2 === testPlanet);
-        }
-    }, 1000);
-});
+//         if (testAspects && testAspects.length) {
+//             const testPlanet = testAspects[0].body1;
+//             console.log(`Testing aspects for ${testPlanet}`);
+//             testAspects.filter(a => a.body1 === testPlanet || a.body2 === testPlanet);
+//         }
+//     }, 1000);
+// });
 
 // Tooltip module
 const wheelTooltips = (function () {
-    // console.log('Planet data:', JSON.stringify(window.wheelData.planets, null, 2));
     let tooltip;
     let totalElements = 0;
 
-    // const signs = window.wheelData.signs;
-    // const houses = window.wheelData.houses;
-    // const planets = window.wheelData.planets;
-    // const houseCusps = window.wheelData.houses.cusps;
-    // const signIndex = indexOf(signName);
-    // degree = degree % 360;
-    // const signIndexCusp = Math.floor(degree / 30);
-    // const startDegree = signIndex * 30;
-    // const endDegree = startDegree + 30;
-
     function initialize() {
+        // Remove existing
+        d3.selectAll('.chart-tooltip').remove();
+        
         // Create tooltip el
         tooltip = d3
             .select('body')
@@ -64,13 +56,9 @@ const wheelTooltips = (function () {
     function getSignFromDegree(degree) {
         if (!window.wheelData || !window.wheelData.signs) return '';
 
-        // const signs = window.wheelData.signs;
-        // degree = degree % 360;
         degree = (parseFloat(degree) + 360) % 360;
 
         const signIndex = Math.floor(degree / 30);
-
-        // console.log(`Degree: ${degree}, Sign Index: ${signIndex}, Sign: ${window.wheelData.signs[signIndex]}`);
 
         // return signs[signIndex];
         return window.wheelData.signs[signIndex] || '';
@@ -104,8 +92,6 @@ const wheelTooltips = (function () {
         for (const [name, data] of Object.entries(planets)) {
             const planetDegree = data.deg;
             const planetSign = getSignFromDegree(data.deg);
-
-            // console.log(`Checking planet ${name}: ${planetDegree} of ${planetSign} vs ${sign}`);
 
             if (planetSign && planetSign.toLowerCase() === sign.toLowerCase()) {
                 result.push({
@@ -327,14 +313,20 @@ const wheelTooltips = (function () {
         const bodies = aspectManager.getAllBodies();
         const aspects = window.wheelData.calculatedAspects || aspectManager.calculateAspects();
 
-        // console.log('Checking aspects for:', planetName, aspects);
-
-        return aspects
+        const planetAspects = aspects
             .filter(a => a.body1 === planetName || a.body2 === planetName)
             .map(a => {
-                // Find body2
+                // find body 2
                 const aspectedName = a.body1 === planetName ? a.body2 : a.body1;
                 const aspectedBody = bodies.find(b => b.name === aspectedName);
+
+                const aspectTypeLower = a.aspectType.toLowerCase();
+
+                // Find default orb
+                const aspectDetail = window.wheelData.aspectDetails.find(ad => ad.name.toLowerCase() === aspectTypeLower);
+
+                const defaultOrb = aspectDetail ? aspectDetail.orb : 0;
+
                 return {
                     aspectType: a.aspectType,
                     aspectSymbol: a.aspectSymbol || a.aspectType,
@@ -342,9 +334,36 @@ const wheelTooltips = (function () {
                     aspected: aspectedName,
                     aspectedSymbol: window.wheelData.planetSymbols?.[aspectedName] || aspectedBody?.name?.charAt(0) || aspectedName,
                     aspectedDegree: aspectedBody?.degree,
+                    defaultOrb: defaultOrb,
                 };
             })
             ;
+        
+        // sort by default orb (descending) and then by actual orb (ascending)
+        planetAspects.sort((a, b) => {
+            // default descending
+            if (b.defaultOrb !== a.defaultOrb) {
+                return b.defaultOrb - a.defaultOrb;
+            }
+            // actual ascending
+            return a.orb - b.orb;
+        });
+
+        return planetAspects;
+    }
+
+    /**
+     * Get element mods for planet from aspects
+     * @param {string} planetName planet needing mods
+     * @return {Object|null} element mods for planet, or null
+     */
+    function getElementModsForPlanet(planetName) {
+        if (typeof aspectMod === 'undefined' || !aspectMod.calculateMods) {
+            return null;
+        }
+
+        const mods = aspectMod.calculateMods();
+        return mods[planetName] || null;
     }
 
     // Format degrees nicely
@@ -397,7 +416,14 @@ const wheelTooltips = (function () {
     }
 
     function hide() {
-        tooltip.style('visibility', 'hidden');
+        if (tooltip) tooltip.style('visibility', 'hidden');
+    }
+
+    function cleanup() {
+        if (tooltip) {
+            tooltip.remove();
+            tooltip = null;
+        }
     }
 
     // ONLY ONE return statement at the very end
@@ -407,9 +433,6 @@ const wheelTooltips = (function () {
         
         // Add attachToSign function
         attachToSign: function (domElement, signName) {
-            // console.log("Sign name:", signName)
-            // console.log("Planets:", window.wheelData.planets)
-            // const planetSymbol = window.wheelData.planetSymbols[planetName] || '';
 
             const info = getSignInfo(signName);
             if (!info) return;
@@ -501,14 +524,48 @@ const wheelTooltips = (function () {
             if (aspects.length > 0) {
                 content += `<br><u>Aspects:</u><br>`;
                 aspects.forEach(a => {
-                    content += `<strong>${a.aspectSymbol} ${a.aspectedSymbol}</strong>`;
-                    if (typeof a.orb === 'number') content += ` (orb: ${a.orb.toFixed(2)}°)`;
+                    content += `<strong>${a.aspectSymbol}</strong> to <strong>${a.aspectedSymbol}</strong>`;
+                    if (typeof a.orb === 'number') content += ` (orb: ${formatDegree(a.orb)})`;
                     content += `<br>`;
                 });
             }
 
             // Show planet's element & chart totals
-            content += `<br><u>Elements:</u><br>${planetElements.map(el => `+1 ${el}`).join('<br>')}<br>`;
+            content += `<br><u>Elements:</u><br>`;
+
+            // Get aspect mods for planet
+            const elementMods = getElementModsForPlanet(planetName);
+
+            const totalElements = {};
+
+            // Default elements
+            planetElements.forEach(el => {
+                totalElements[el] = 1;
+            });
+
+            if (elementMods) {
+                Object.entries(elementMods).forEach(([element, value]) => {
+                    if (value > 0) {
+                        totalElements[element] = (totalElements[element] || 0) + value;
+                    }
+                });
+            }
+
+            // Display total elements
+            Object.entries(totalElements).forEach(([element, count]) => {
+                if (count > 0) {
+                    content += `+${count} ${element}<br>`;
+                }
+                
+                if (count < 0) {
+                    content += `-${count} ${element}<br>`;
+                }
+            });
+
+            // Add empty line if elements were shown
+            if (Object.keys(totalElements).length > 0) {
+                content += `<br>`;
+            }
 
             domElement
                 .on('mouseover', function (e) { show(content, e); })
@@ -581,10 +638,10 @@ const wheelTooltips = (function () {
         },
 
         hideAll: function () {
-            const tooltips = document.querySelectorAll('.tooltip');
-            tooltips.forEach(tooltip => {
-                tooltip.style.display = 'none';
-            });
+            d3.selectAll('.chart-tooltip').remove();
+            tooltip = null;
         },
+
+        cleanup: cleanup
     };
 })();

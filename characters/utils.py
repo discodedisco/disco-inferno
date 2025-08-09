@@ -77,12 +77,12 @@ def get_element_totals(planet_positions, houses):
     # Define elements by sign
     element_counts = {
         # Change all to 1 w. aspect implementation
-        'Fire': 0,
-        'Earth': 0,
         'Air': 0,
-        'Water': 0,
         'Space': 0,
+        'Fire': 0,
+        'Water': 0,
         'Time': 0,
+        'Earth': 0,
     }
     
     # # Init counts

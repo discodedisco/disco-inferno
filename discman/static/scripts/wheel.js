@@ -331,45 +331,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Draw planets
-        Object.entries(planets).forEach(([name, data]) => {
-            const angle = (-data.deg + offset) * Math.PI / 180;
-            const x = cx + (r - 5) * Math.cos(angle);
-            const y = cy + (r - 5) * Math.sin(angle);
-            
-            const planetGroup = planetsGroup
-                .append('g')
-                .attr('class', 'planets-group')
-                ;
+        function drawPlanets(planetsGroup, planets, cx, cy, r, offset) {
+            const reversePlanetOrder = [...(window.wheelData.planetOrder || [])].reverse();
+            const planetEntries = Object.entries(planets);
+    
+            planetEntries.sort((a, b) => {
+                const indexA = reversePlanetOrder.indexOf(a[0]);
+                const indexB = reversePlanetOrder.indexOf(b[0]);
+    
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+    
+                return indexA - indexB;
+            });
+                
+            planetEntries.forEach(([name, data]) => {
+                const angle = (-data.deg + offset) * Math.PI / 180;
+                const x = cx + (r - 5) * Math.cos(angle);
+                const y = cy + (r - 5) * Math.sin(angle);
+                const planetGroup = planetsGroup
+                    .append('g')
+                    .attr('class', 'planets-group')
+                    ;
+    
+                const planetCircle = planetGroup
+                    .append('circle')
+                    .attr('cx', x)
+                    .attr('cy', y)
+                    .attr('r', 8)
+                    .attr('fill', 'rgba(var(--priYl), 1)')
+                    .attr('class', `planet-circle planet-${name.toLowerCase()}`)
+                    ;
+                
+                const planetSymbol = planetGroup
+                    .append('text')
+                    .attr('x', x)
+                    .attr('y', y + 5)
+                    .attr('class', 'label')
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', '0.75rem')
+                    .attr('class', `planet-circle-symbol planet-symbol-${name.toLowerCase()}`)
+                    .attr('cursor', 'default')
+                    // .attr('fill', 'rgba(var(--priTi), 1)')
+                    // .text(planetSymbols[name])
+                    .html(function () {
+                        return window.wheelData.planetSymbols[name] || name.charAt(0);
+                    })
+                    ;
+                
+                // Attach tooltip to .planets-group (both circle & symbol)
+                wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, data.deg);
+                wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, data.deg);
+            });
+        }
 
-            const planetCircle = planetGroup
-                .append('circle')
-                .attr('cx', x)
-                .attr('cy', y)
-                .attr('r', 8)
-                .attr('fill', 'rgba(var(--priYl), 1)')
-                .attr('class', `planet-circle planet-${name.toLowerCase()}`)
-                ;
-            
-            const planetSymbol = planetGroup
-                .append('text')
-                .attr('x', x)
-                .attr('y', y + 5)
-                .attr('class', 'label')
-                .attr('text-anchor', 'middle')
-                .attr('font-size', '0.75rem')
-                .attr('class', `planet-circle-symbol planet-symbol-${name.toLowerCase()}`)
-                .attr('cursor', 'default')
-                // .attr('fill', 'rgba(var(--priTi), 1)')
-                // .text(planetSymbols[name])
-                .html(function () {
-                    return window.wheelData.planetSymbols[name] || name.charAt(0);
-                })
-                ;
-            
-            // Attach tooltip to .planets-group (both circle & symbol)
-            wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, data.deg);
-            wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, data.deg);
-        });
+        drawPlanets(planetsGroup, planets, cx, cy, r, offset);
 
         // Draw ASC & MC
         [['ASC', houses.asc], ['MC', houses.mc], ['DESC', (houses.asc + 180) % 360], ['IC', (houses.mc + 180) % 360]].forEach(([label, deg]) => {
@@ -413,7 +429,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Draw element analyzer ring
         function drawElementRing(elementRatio) {
-            // console.log("element data:", elementRatio);
 
             const elementColors = {
                 'Air': 'rgba(var(--priNi), 1)',
@@ -547,6 +562,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         drawElementRing(element_counts);
+
+        setTimeout(function () {
+            if (typeof aspectMod !== 'undefined') {
+                const modifiedCounts = aspectMod.getTotalElementCounts();
+                console.log('Redrawing element ring w. mods:', modifiedCounts);
+
+                // Remove existing element ring
+                svg.select('.element-ring').remove();
+                // Redraw w. modified values
+                drawElementRing(modifiedCounts);
+                // Reattach tooltips to new elements
+                svg
+                    .select('.element-arc-group')
+                    .selectAll('.element-arc')
+                    .each(function (d) {
+                        wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
+                    })
+                    ;
+                svg
+                    .select('.element-label-group')
+                    .selectAll('.element-icon')
+                    .each(function (d) {
+                        wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
+                    })
+                    ;
+            }
+        })
 
         // const tooltip = d3
         //     .select('body')

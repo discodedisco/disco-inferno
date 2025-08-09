@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from characters.utils import get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
 from characters.models import PlayerCharacter
 from datetime import datetime
-from characters.constellation import sign_options, house_options, aspect_options, planet_options, moon_point_options
+from characters.constellation import sign_options, house_options, aspect_options, planet_options, planet_order, moon_point_options
 import json
 
 def index(request):
@@ -55,6 +55,7 @@ def wheel(request):
             'signDetails': sign_options,
             'houseDetails': house_options,
             'planetDetails': planet_options,
+            'planetOrder': planet_order,
             'aspectDetails': aspect_options,
         }
 
@@ -106,6 +107,7 @@ def recalculate_chart(request):
         'signDetails': sign_options,
         'houseDetails': house_options,
         'planetDetails': planet_options,
+        'planetOrder': planet_order,
         'aspectDetails': aspect_options,
     }
 
