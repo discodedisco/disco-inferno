@@ -5,17 +5,22 @@
     padding: 0;
     box-sizing: border-box;
     touch-action: pan-y;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 :root {
     /* rgb Variable Index */
     /* Theme Metals */
-    --priAd: 207, 228, 237;
-    --secAd: 164, 180, 186;
+    --priAd: 35, 40, 43;
+    --secAd: 75, 81, 84;
     --terAd: 119, 131, 135;
-    --quaAd: 75, 81, 84;
-    --quiAd: 226, 244, 253;
-    --sexAd: 0, 0, 0;
+    --quaAd: 164, 180, 186;
+    --quiAd: 207, 228, 237;
+    --sexAd: 226, 244, 253;
     --priNi: 141, 142, 140;
     --secNi: 118, 120, 118;
     --terNi: 93, 95, 94;
@@ -194,7 +199,7 @@ h2 {
     margin-bottom: 2rem;
 
     i {
-        color: rgba(var(--priAd), 1);
+        color: rgba(var(--sexAd), 1);
     }
 }
 
@@ -329,11 +334,11 @@ section#bc, #bc {
 .breadcrumb-item {
     a {
         text-decoration: none;
-        color: rgba(var(--priAd), 1);
+        color: rgba(var(--sexAd), 1);
         text-shadow: 0 0 5px rgba(var(--priTi), 1);
         
         &:hover {
-            text-shadow: 0 0 5px rgba(var(--priTi), 1), 0 0 5px rgba(var(--priAd), 1);
+            text-shadow: 0 0 5px rgba(var(--priTi), 1), 0 0 5px rgba(var(--sexAd), 1);
         }
     }
 }
@@ -417,6 +422,7 @@ section#bc, #bc {
     input[type="submit"] {
         font-family: 'estro-mn', serif;
         grid-column: 1 / -1;
+        width: 160px;
         max-width: 200px;
         justify-self: center;
         padding: 2.5rem 2rem;
@@ -476,13 +482,17 @@ section#bc, #bc {
 }
 
 #ready-player-register, #ready-player-login {
-    color: rgba(var(--priAd), 1);
+    color: rgba(var(--terRd), 1);
     background-color: rgba(var(--sexTi), 1);
     font-size: 1rem;
     font-family: "estro-mn", sans-serif;
+    text-transform: uppercase;
 
     &:active {
-        background-color: rgba(var(--quaAd), 1);
+        color: rgba(var(--sexAd), 1);
+        background-color: rgba(var(--priOr), 1);
+        border: 1px solid rgba(var(--priYl), 1);
+        box-shadow: 0 0 2rem 1px rgba(var(--sexAd), 0.25);
     }
 }
 
@@ -505,6 +515,34 @@ footer {
     width: 100%;
     text-align: center;
     padding: 0.5rem 0;
+}
+
+#message {
+    width: 100%;
+    min-height: 1.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1000;
+    transition: opacity 0.3s;
+}
+
+.alert {
+    margin: 0 auto;
+    text-align: center;
+    min-width: 300px;
+    max-width: 600px;
+    width: fit-content;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+#message:empty,
+#message .alert:empty {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 @media (max-width: 578px) {

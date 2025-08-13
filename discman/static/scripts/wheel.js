@@ -344,34 +344,52 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 return indexA - indexB;
             });
+
+            const planetContainer = planetsGroup
+                .append('g')
+                .attr('class', 'planets-container')
+                .attr('transform', `translate(${cx},${cy})`)
+                ;                
                 
-            planetEntries.forEach(([name, data]) => {
-                const angle = (-data.deg + offset) * Math.PI / 180;
-                const x = cx + (r - 5) * Math.cos(angle);
-                const y = cy + (r - 5) * Math.sin(angle);
-                const planetGroup = planetsGroup
+            planetEntries.forEach(([name, data], i) => {
+                const finalAngle = (-data.deg + offset) * Math.PI / 180;
+                const ascAngle = (-houses.asc + offset) * Math.PI / 180;
+
+                let adjustedFinalAngle = finalAngle;
+                if (finalAngle > ascAngle) {
+                    adjustedFinalAngle = finalAngle - 2 * Math.PI;
+                }
+
+                const planetRadius = r - 5;
+                
+                const startX = planetRadius * Math.cos(ascAngle);
+                const startY = planetRadius * Math.sin(ascAngle);
+
+                const planetGroup = planetContainer
                     .append('g')
                     .attr('class', 'planets-group')
                     ;
     
                 const planetCircle = planetGroup
                     .append('circle')
-                    .attr('cx', x)
-                    .attr('cy', y)
+                    .attr('cx', startX)
+                    .attr('cy', startY)
                     .attr('r', 8)
                     .attr('fill', 'rgba(var(--priYl), 1)')
                     .attr('class', `planet-circle planet-${name.toLowerCase()}`)
+                    .attr('opacity', 0)
                     ;
                 
                 const planetSymbol = planetGroup
                     .append('text')
-                    .attr('x', x)
-                    .attr('y', y + 5)
+                    .attr('x', startX)
+                    .attr('y', startY + 5)
                     .attr('class', 'label')
                     .attr('text-anchor', 'middle')
                     .attr('font-size', '0.75rem')
                     .attr('class', `planet-circle-symbol planet-symbol-${name.toLowerCase()}`)
                     .attr('cursor', 'default')
+                    .attr('opacity', 0)
                     // .attr('fill', 'rgba(var(--priTi), 1)')
                     // .text(planetSymbols[name])
                     .html(function () {
@@ -379,9 +397,66 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                     ;
                 
-                // Attach tooltip to .planets-group (both circle & symbol)
-                wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, data.deg);
-                wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, data.deg);
+                // function arcTween(targetAngle) {
+                //     return function () {
+                //         const i = d3.interpolate(ascAngle, targetAngle);
+
+                //         return function (t) {
+                //             const angle = i(t);
+                //             return planetRadius * Math.cos(angle) + ',' + planetRadius * Math.sin(angle);
+                //         };
+                //     };
+                // }
+                
+                planetCircle
+                    .transition()
+                    .delay(i * 50)
+                    .duration(1000)
+                    .attr('opacity', 1)
+                    .attrTween('cx', function () {
+                        return function (t) {
+                            const angle = d3.interpolate(ascAngle, adjustedFinalAngle)(t);
+                            return planetRadius * Math.cos(angle);
+                        };
+                    })
+                    .attrTween('cy', function () {
+                        return function (t) {
+                            const angle = d3.interpolate(ascAngle, adjustedFinalAngle)(t);
+                            return planetRadius * Math.sin(angle);
+                        };
+                    })
+                    ;
+                
+                planetSymbol
+                    .transition()
+                    .delay(i * 50)
+                    .duration(1000)
+                    .attr('opacity', 1)
+                    .attrTween('x', function () {
+                        return function (t) {
+                            const angle = d3.interpolate(ascAngle, adjustedFinalAngle)(t);
+                            return planetRadius * Math.cos(angle);
+                        }
+                    })
+                    .attrTween('y', function () {
+                        return function (t) {
+                            const angle = d3.interpolate(ascAngle, adjustedFinalAngle)(t);
+                            return planetRadius * Math.sin(angle) + 5;
+                        }
+                    })
+                    ;
+
+                planetCircle
+                    .transition()
+                    .delay(i * 50 + 1000)
+                    // .attr('opacity', 1)
+                    .on('end', function () {
+                        // Attach tooltip to .planets-group (both circle & symbol)
+                        wheelTooltips.attachToPlanet(d3.select(planetCircle.node()), name, data.deg);
+                        wheelTooltips.attachToPlanet(d3.select(planetSymbol.node()), name, data.deg);
+                    })
+                    ;
+                
             });
         }
 
@@ -442,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Calculate percentages
             totalElements = Object.values(elementRatio).reduce((a, b) => a + b, 0);
             if (totalElements === 0) {
-                console.error("No element data found!");
+                console.error('No element data found!');
                 return;
             }
 
@@ -455,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;
             
             // Convert pie data
-            const elementOrder = ['Air', 'Space', 'Fire', 'Water', 'Time', 'Earth']
+            const elementOrder = ['Air', 'Space', 'Fire', 'Water', 'Time', 'Earth'];
             const pieData = pie(
                 elementOrder
                     .map(key => ({ key, value: elementRatio[key] }))
@@ -477,7 +552,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const elementGroup = svg
                 .append('g')
                 .attr('class', 'element-ring')
-                .attr('transform', `translate(${cx},${cy})`)
+                .attr('transform', `translate(${cx},${cy}) rotate(-90)`)
+                ;
+            
+            // Animate back to 0°
+            elementGroup
+                .transition()
+                .duration(1200)
+                .attr('transform', `translate(${cx},${cy}) rotate(0)`)
                 ;
             
             // Draw arcs
@@ -492,6 +574,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('fill', d => elementColors[d.data.key])
                 .attr('stroke', 'rgba(var(--priTi), 1)')
                 .attr('stroke-width', 3)
+                .attr('opacity', 0)
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
                 // .append('title')
                 // .text(d => `${d.data.key}: ${d.data.value} (${Math.round(d.data.value / totalElements * 100)}%)`)
                 ;
@@ -541,7 +627,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'central')
-                .attr('fill', 'rgba(var(--priAd), 1)')
+                .attr('fill', 'rgba(var(--sexAd), 1)')
                 // .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1), 0 0 1rem rgba(255, 255, 255, 1)')
                 .style('text-shadow', '0 0 0.25rem rgba(0, 0, 0, 1)')
                 .attr('font-size', '1rem')
@@ -558,37 +644,209 @@ document.addEventListener('DOMContentLoaded', function () {
                     return icons[d.data.key];
                 })
                 .style('cursor', 'default')
+                .attr('opacity', 0)
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
                 ;
         }
 
-        drawElementRing(element_counts);
+        let finalElementCounts = element_counts;
+        if (typeof aspectMod !== 'undefined') {
+            finalElementCounts = aspectMod.getTotalElementCounts();
+            // console.log('Drawing element ring with mods:', finalElementCounts);
+        }
+        drawElementRing(finalElementCounts);
 
-        setTimeout(function () {
-            if (typeof aspectMod !== 'undefined') {
-                const modifiedCounts = aspectMod.getTotalElementCounts();
-                console.log('Redrawing element ring w. mods:', modifiedCounts);
+        function drawDistinctionRing(distinctionRatio) {
+            const distinctColors = {
+                'Self': 'rgba(var(--priRd), 1)',
+                'Worth': 'rgba(var(--priOr), 1)',
+                'Education': 'rgba(var(--priYl), 1)',
+                'Home': 'rgba(var(--priLm), 1)',
+                'Creativity': 'rgba(var(--priGn), 1)',
+                'Service': 'rgba(var(--priTk), 1)',
+                'Cooperation': 'rgba(var(--priCy), 1)',
+                'Regeneration': 'rgba(var(--priBl), 1)',
+                'Enterprise': 'rgba(var(--priId), 1)',
+                'Career': 'rgba(var(--priVt), 1)',
+                'Reward': 'rgba(var(--priFs), 1)',
+                'Reprisal': 'rgba(var(--priMe), 1)'
+            };
 
-                // Remove existing element ring
-                svg.select('.element-ring').remove();
-                // Redraw w. modified values
-                drawElementRing(modifiedCounts);
-                // Reattach tooltips to new elements
-                svg
-                    .select('.element-arc-group')
-                    .selectAll('.element-arc')
-                    .each(function (d) {
-                        wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
-                    })
-                    ;
-                svg
-                    .select('.element-label-group')
-                    .selectAll('.element-icon')
-                    .each(function (d) {
-                        wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
-                    })
-                    ;
+            // Calculate percentages
+            totalDistinctions = Object.values(distinctionRatio).reduce((a, b) => a + b, 0);
+            if (totalDistinctions === 0) {
+                console.error('No distinction data found!')
+                return;
             }
-        })
+
+            // Create pie-gen
+            const pie = d3
+                .pie()
+                .value(d => d.value)
+                .sort(null)
+                .startAngle(((-houses.asc + offset + 90) * Math.PI) / 180)
+                ;
+            
+            // Convert pie data
+            const distinctOrder = ['Self', 'Worth', 'Education', 'Home', 'Creativity', 'Service', 'Cooperation', 'Regeneration', 'Enterprise', 'Career', 'Reward', 'Reprisal'];
+            const pieData = pie(
+                distinctOrder
+                    .map(key => ({
+                        key,
+                        value: distinctionRatio[key] || 0,
+                        subDistinctions: wheelTooltips.getSubDistinctionFromDistinction(key)
+                    }))
+                    .filter(d => d.value > 0)
+            );
+
+            // Distinction ring params
+            const distinctInner = r * 0.35;
+            const distinctOuter = r * 0.45;
+
+            // Create arc-gen
+            const distinctArc = d3
+                .arc()
+                .innerRadius(distinctInner)
+                .outerRadius(distinctOuter)
+                ;
+            
+            // Create distinction ring group
+            const distinctGroup = svg
+                .append('g')
+                .attr('class', 'distinct-ring')
+                .attr('transform', `translate(${cx},${cy}) rotate(180)`)
+                ;
+            
+            // Animate back to 0°
+            distinctGroup
+                .transition()
+                .duration(1200)
+                .attr('transform', `translate(${cx},${cy}) rotate(0)`)
+                ;
+            
+            // Draw arcs
+            const distinctArcs = distinctGroup
+                .append('g')
+                .attr('class', 'distinct-arc-group')
+                .selectAll('.distinct-arc')
+                .data(pieData)
+                .join('path')
+                .attr('class', 'distinct-arc')
+                .attr('d', distinctArc)
+                .attr('fill', d => distinctColors[d.data.key])
+                .attr('stroke', 'rgba(var(--priTi), 1)')
+                .attr('stroke-width', 1.5)
+                .attr('opacity', 0)
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
+                ;
+            
+            pieData.forEach(d => {
+                console.log(d.data.key, d.data.subDistinctions);
+            });
+
+            distinctGroup
+                .append('g')
+                .attr('class', 'sub-distinction-dividers')
+                .selectAll('sub-divider')
+                .data(
+                    pieData.filter(d => {
+                        const nonzero = Object
+                            .values(d.data.subDistinctions)
+                            .filter(v => v > 0)
+                            ;
+                        return nonzero.length > 1;
+                    })
+                )
+                .join('g')
+                .attr('class', 'sub-dividers-group')
+                .each(function (arcData) {
+                    const subDistinctions = arcData.data.subDistinctions;
+                    const subKeys = Object.keys(subDistinctions).filter(k => subDistinctions[k] > 0);
+                    const total = subKeys.reduce((sum, key) => sum + subDistinctions[key], 0);
+
+                    if (total === 0) return;
+
+                    console.log(`Drawing dividers for ${arcData.data.key}:`, subKeys.map(k => ({ name: k, value: subDistinctions[k] })));
+
+                    // skip if only one sub-distinction has planets
+                    // if (subKeys.length <= 1) return;
+
+                    let cumulativeValue = 0;
+                    const group = d3.select(this);
+
+                    // draw dividers for each sub-distinction save final
+                    subKeys.slice(0, -1).forEach((key, i) => {
+                        // const subValue = subDistinctions[key];
+                        cumulativeValue += subDistinctions[key];
+                        const proportion = cumulativeValue / total;
+
+                        // calculate angle for divider
+                        const angle = arcData.startAngle + (arcData.endAngle - arcData.startAngle) * proportion;
+
+                        if (isNaN(angle)) return;
+
+                        // draw line from inner to outer
+                        const innerX = distinctInner * Math.sin(angle);
+                        const innerY = -distinctInner * Math.cos(angle);
+                        const outerX = distinctOuter * Math.sin(angle);
+                        const outerY = -distinctOuter * Math.cos(angle);
+
+                        console.log(`Divider ${i+1}: key=${key}, value=${subDistinctions[key]}, proportion=${proportion}, angle=${angle}, coords=(${innerX},${innerY})-(${outerX},${outerY})`);
+
+                        group
+                            .append('line')
+                            .attr('class', 'sub-distinction-divider')
+                            .attr('x1', innerX)
+                            .attr('y1', innerY)
+                            .attr('x2', outerX)
+                            .attr('y2', outerY)
+                            .attr('stroke', 'rgba(var(--priTi), 0.75)')
+                            .attr('stroke-width', 1)
+                            .attr('stroke-dasharray', '2,1')
+                            .attr('opacity', 0)
+                            .transition()
+                            .delay(600)
+                            .duration(400)
+                            .attr('opacity', 1)
+                            ;
+                    });
+                })
+                ;
+            
+            distinctGroup
+                .selectAll('.distinct-arc')
+                .each(function (d) {
+                    if (wheelTooltips && wheelTooltips.attachToDistinction) {
+                        wheelTooltips.attachToDistinction(d3.select(this), d.data.key, d.data.value);
+                    }
+                })
+                ;
+        }
+
+        let distinctionData = wheelTooltips.getDistinctionForPlanet();
+        console.log('Distinction data from tooltip:', distinctionData);
+        drawDistinctionRing(distinctionData);
+
+        // Attach tooltips after drawing
+        svg
+            .select('.element-arc-group')
+            .selectAll('.element-arc')
+            .each(function (d) {
+                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value)
+            })
+            ;
+        
+        svg
+            .select('.element-label-group')
+            .selectAll('.element-icon')
+            .each(function (d) {
+                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value)
+            })
+            ;
 
         // const tooltip = d3
         //     .select('body')
@@ -604,22 +862,6 @@ document.addEventListener('DOMContentLoaded', function () {
         //     .style('pointer-events', 'none')
         //     .style('z-index', '1000')
         //     ;
-
-        svg
-            .select('.element-arc-group')
-            .selectAll('.element-arc')
-            .each(function (d) {
-                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
-            })
-            ;
-        
-        svg
-            .select('.element-label-group')
-            .selectAll('.element-icon')
-            .each(function (d) {
-                wheelTooltips.attachToElement(d3.select(this), d.data.key, d.data.value);
-            })
-            ;
     }
 
 });

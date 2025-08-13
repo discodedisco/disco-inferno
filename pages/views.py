@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from characters.utils import get_timezone_str, get_utc_datetime, get_julian_day, get_planet_positions, get_houses
 from characters.models import PlayerCharacter
 from datetime import datetime
-from characters.constellation import sign_options, house_options, aspect_options, planet_options, planet_order, moon_point_options
+from characters.constellation import sign_options, house_options, aspect_options, planet_options, planet_order, moon_point_options, constellation_options
 import json
 
 def index(request):
@@ -36,10 +37,13 @@ def wheel(request):
 
         # Calculate Julian day
         jd = get_julian_day(dt_utc)
+        
+        # Use the specified house system from request or default to Placidus
+        house_system = request.GET.get('house_system', 'P')
 
         # Calculate planets and houses
         planets = get_planet_positions(jd)
-        houses = get_houses(jd, char.birthplace_lat, char.birthplace_lon, hsys='P')
+        houses = get_houses(jd, char.birthplace_lat, char.birthplace_lon, hsys=house_system)
         
         # Get element totals
         element_counts = char.get_element_totals()
@@ -57,6 +61,9 @@ def wheel(request):
             'planetDetails': planet_options,
             'planetOrder': planet_order,
             'aspectDetails': aspect_options,
+            'constellationDetails': constellation_options,
+            'current_house_system': house_system,
+
         }
 
         # Pass to template
@@ -64,6 +71,7 @@ def wheel(request):
             'wheel_data': json.dumps(wheel_data),
             'timestamp': datetime.now().timestamp(),
             'char': char,
+            'current_house_system': house_system,
         }
         
         return render(request, 'pages/wheel.html', context)
@@ -87,7 +95,7 @@ def recalculate_chart(request):
     jd = get_julian_day(dt_utc)
     
     # Use the specified house stem from request or default to Placidus
-    house_system = request.GET.get('house_system', 'O')
+    house_system = request.GET.get('house_system', 'P')
 
     # Recalculate houses with selected system
     planets = get_planet_positions(jd)
@@ -109,6 +117,8 @@ def recalculate_chart(request):
         'planetDetails': planet_options,
         'planetOrder': planet_order,
         'aspectDetails': aspect_options,
+        'constellationDetails': constellation_options,
+        'current_house_system': house_system,
     }
 
     # Pass to template
@@ -117,5 +127,6 @@ def recalculate_chart(request):
         'timestamp': datetime.now().timestamp(),
         'char': char,
     }
+    base_url = reverse('wheel')
 
-    return render(request, 'pages/wheel.html', context)
+    return redirect(f'{base_url}?house_system={house_system}')

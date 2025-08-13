@@ -16,6 +16,7 @@
 const wheelTooltips = (function () {
     let tooltip;
     let totalElements = 0;
+    let totalDistinctions = 0;
 
     function initialize() {
         // Remove existing
@@ -42,6 +43,14 @@ const wheelTooltips = (function () {
         if (window.wheelData && window.wheelData.element_counts) {
             totalElements = Object
                 .values(window.wheelData.element_counts)
+                .reduce((sum, count) => sum + count, 0)
+                ;
+        }
+
+        // Calculate totalDistinctions
+        if (window.wheelData && window.wheelData.distinction_counts) {
+            window.totalDistinctions = Object
+                .values(window.wheelData.distinction_counts)
                 .reduce((sum, count) => sum + count, 0)
                 ;
         }
@@ -366,6 +375,185 @@ const wheelTooltips = (function () {
         return mods[planetName] || null;
     }
 
+    function getDistinctionForPlanet() {
+        // Reset distinction counts
+        // const distinctionCounts = {
+        //     'Self': 0,
+        //     'Worth': 0,
+        //     'Education': 0,
+        //     'Home': 0,
+        //     'Creativity': 0,
+        //     'Service': 0,
+        //     'Cooperation': 0,
+        //     'Regeneration': 0,
+        //     'Enterprise': 0,
+        //     'Career': 0,
+        //     'Rewards': 0,
+        //     'Reprisals': 0
+        // };
+
+        // Get all planets
+        const houseDistinctions = {};
+        const groupMap = {};
+        const constellationDetails = window.wheelData.constellationDetails;
+
+        if (constellationDetails) {
+            constellationDetails.forEach(constellation => {
+                // Parse house number
+                let houseNum = null;
+                if (constellation.natalHouse) {
+                    const match = constellation.natalHouse.match(/house-(\d+)/);
+                    if (match) houseNum = parseInt(match[1]);
+                }
+                // Assign group distinction if this is a governing sign
+                if (
+                    houseNum &&
+                    constellation.govSign === constellation.name &&
+                    constellation.distinction
+                ) {
+                    groupMap[houseNum] = constellation.distinction;
+                    if (!houseDistinctions[houseNum]) houseDistinctions[houseNum] = [undefined, undefined, undefined];
+                }
+                // Assign sub-distinction if decan is present
+                if (
+                    houseNum &&
+                    constellation.decan &&
+                    constellation.distinction
+                ) {
+                    const decanIndex = constellation.decan - 1; // decan should be 1,2,3
+                    if (!houseDistinctions[houseNum]) houseDistinctions[houseNum] = [undefined, undefined, undefined];
+                    houseDistinctions[houseNum][decanIndex] = constellation.distinction;
+                }
+            });
+        } else {
+            console.warn('Constellation data unavailable; using default mappings');
+        }
+        
+
+        const distinctionCounts = {};
+        const subDistinctionCounts = {};
+        Object.values(groupMap).forEach(group => distinctionCounts[group] = 0);
+        Object.values(houseDistinctions).flat().forEach(sub => subDistinctionCounts[sub] = 0);
+
+        // Calculate for ea. planet
+        const planets = window.wheelData.planets;
+        const houses = window.wheelData.houses;
+
+        if (!planets || !constellationDetails || !houses.cusps) {
+            console.warn('Missing data needed for distinction tabulation');
+            return distinctionCounts;
+        }
+
+        // For ea. planet
+        Object.entries(planets).forEach(([planetName, data]) => {
+            const degree = data.deg;
+            const houseNum = wheelTooltips.getHouseFromDegree ? wheelTooltips.getHouseFromDegree(degree) : getHouseFromDegree(degree);
+            // console.log(`Planet ${planetName} at ${degree}° is in house ${houseNum}`);
+
+            if (!houseNum || !houseDistinctions[houseNum]) return;
+
+            // Calculate thirds of ea. house
+            const houseCusp = houses.cusps[houseNum - 1];
+            const nextHouseCusp = houses.cusps[houseNum % 12];
+
+            // Calculate house span in deg
+            let houseSpan = nextHouseCusp - houseCusp;
+            if (houseSpan < 0) houseSpan += 360;
+
+            // Calculate pos in house (0–houseSpan)
+            let posInHouse = (degree - houseCusp);
+            if (posInHouse < 0) posInHouse += 360;
+
+            // Determine third of house (0/1/2)
+            const thirdOfHouse = Math.floor((posInHouse / houseSpan) * 3);
+
+            // Get distinction for third
+            const distinction = houseDistinctions[houseNum][thirdOfHouse];
+
+            // Get group for house
+            const group = groupMap[houseNum];
+            const subDistinction = houseDistinctions[houseNum][thirdOfHouse];
+
+            // console.log('houseDistinctions:', houseDistinctions);
+            // console.log('groupMap:', groupMap);
+
+            // +1 Distinction
+            if (distinction) {
+                console.debug(`Planet ${planetName} in House ${houseNum}, third ${thirdOfHouse + 1}, ${distinction} +1`);
+            }
+
+            if (group) {
+                distinctionCounts[group] = (distinctionCounts[group] || 0) + 1;
+            }
+            if (subDistinction) subDistinctionCounts[subDistinction] = (subDistinctionCounts[subDistinction] || 0) + 1;
+        });
+
+        return distinctionCounts;
+    }
+
+    function getSubDistinctionFromDistinction(distinctName) {
+        // get house num
+        let houseNum = null;
+        for (let i = 1; i <= 12; i++) {
+            if (window.wheelData.constellationDetails.find(
+                c => c.govSign === c.name && c.distinction === distinctName && c.natalHouse === `house-${i.toString().padStart(2, '0')}`
+            )) {
+                houseNum = i;
+                break;
+            }
+        }
+
+        if (!houseNum) return [];
+
+        // Get sub-distinctions for house
+   
+        const houseDecans = window.wheelData.constellationDetails
+            .filter(c => c.natalHouse === `house-${houseNum.toString().padStart(2, '0')}` && c.decan)
+            .sort((a, b) => a.decan - b.decan)
+            ;
+
+        const subDistinctions = {};
+        houseDecans.forEach(c => {
+                subDistinctions[c.distinction] = 0;
+            })
+            ;
+        
+        // count planets in ea. house-third
+        const planets = window.wheelData.planets;
+        const houses = window.wheelData.houses;
+
+        Object.entries(planets).forEach(([planetName, data]) => {
+            const degree = data.deg;
+            const planetHouseNum = getHouseFromDegree(degree);
+
+            if (planetHouseNum === houseNum) {
+                // Calculate which house-third planet is in
+                const houseCusp = houses.cusps[houseNum - 1];
+                const nextHouseCusp = houses.cusps[houseNum % 12];
+
+                let houseSpan = nextHouseCusp - houseCusp;
+                if (houseSpan < 0) houseSpan += 360;
+
+                let posInHouse = degree - houseCusp;
+                if (posInHouse < 0) posInHouse += 360;
+
+                const thirdOfHouse = Math.floor((posInHouse / houseSpan) * 3);
+
+                // Find sub-distinction of house-third
+                const subDistinctionName = houseDecans[thirdOfHouse]?.distinction;
+                // const subDistinctionName = window.wheelData.constellationDetails.find(c => c.natalHouse === `house-${houseNum.toString().padStart(2, '0')}` && c.decan === thirdOfHouse + 1)?.distinction;
+
+                if (subDistinctionName) {
+                    subDistinctions[subDistinctionName] = (subDistinctions[subDistinctionName] || 0) + 1;
+                }
+            }
+        });
+
+        // console.log('SubDistinctions for', distinctName, subDistinctions);
+
+        return subDistinctions;
+    }
+
     // Format degrees nicely
     function formatDegree(deg) {
         const d = Math.floor(deg);
@@ -498,7 +686,7 @@ const wheelTooltips = (function () {
             let content = `<strong>${info.symbol} ${info.name}</strong><br>`;
 
             const houseStr = house < 10 ? `0${house}` : `${house}`;
-            content += `in <strong>House ${houseStr}</strong> &<br><strong>${signSymbol}</strong> @ ${formatDegree(degree % 30)}<br>`;
+            content += `in <strong>House ${houseStr}</strong> &<br> @ ${formatDegree(degree % 30)} <strong>${signSymbol}</strong><br>`;
 
 
             // Check if planet has dignity in current sign
@@ -628,11 +816,41 @@ const wheelTooltips = (function () {
             if (!domElement || !elementName) return;
             
             const percent = value ? Math.round((value / totalElements) * 100) : 0;
-            let content = `${elementName}: ${value} (${percent}%)`;
+            let content = `<strong>${elementName} ${value}</strong> (${percent}%)`;
             
             domElement
                 .on('mouseover', function(e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
+                .on('mouseout', hide)
+                ;
+        },
+
+        attachToDistinction: function (domElement, distinctName, value) {
+            if (!domElement || !distinctName) return;
+
+            const distinctionCounts = wheelTooltips.getDistinctionForPlanet();
+            const totalDistinctions = Object.values(distinctionCounts).reduce((a, b) => a + b, 0);
+            const percent = totalDistinctions > 0 ? Math.round((value / totalDistinctions) * 100) : 0;
+            const subDistinctions = wheelTooltips.getSubDistinctionFromDistinction(distinctName);
+
+            let content = `<strong>${distinctName} ${value}</strong> (${percent}%)`;
+
+            const nonzeroSubs = Object
+                .entries(subDistinctions)
+                .filter(([name, count]) => count > 0)
+                // .sort(([, countA], [, countB]) => countB - countA);
+                ;
+            
+            if (nonzeroSubs.length > 0) {
+                content += `<br><br><u>Distinctions:</u><br>`;
+                nonzeroSubs.forEach(([name, count]) => {
+                    content += `${name} +${count}<br>`;
+                });
+            }
+
+            domElement
+                .on('mouseover', function (e) { show(content, e); })
+                .on('mousemove', function (e) { show(content, e); })
                 .on('mouseout', hide)
                 ;
         },
@@ -642,6 +860,9 @@ const wheelTooltips = (function () {
             tooltip = null;
         },
 
-        cleanup: cleanup
+        cleanup: cleanup,
+        getDistinctionForPlanet: getDistinctionForPlanet,
+        getSubDistinctionFromDistinction: getSubDistinctionFromDistinction,
+        getHouseFromDegree: getHouseFromDegree
     };
 })();

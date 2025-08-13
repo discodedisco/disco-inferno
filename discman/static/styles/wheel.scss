@@ -56,7 +56,6 @@ svg {
     -ms-user-select: none;
     user-select: none;
     touch-action: manipulation;
-
 }
 
 .planets-group {
@@ -65,7 +64,7 @@ svg {
 
 .planets-group:hover .planet-circle,
 .planets-group:hover .planet-circle-symbol {
-    filter: drop-shadow(0 0 5px rgba(var(--priAd), 1));
+    filter: drop-shadow(0 0 5px rgba(var(--sexAd), 1));
 }
 
 .planet-circle {
@@ -193,7 +192,7 @@ svg {
 
                 &:hover {
                     outline: none;
-                    box-shadow: 0 0 5px 0.25rem rgba(var(--priAd), 0.5);
+                    box-shadow: 0 0 5px 0.25rem rgba(var(--sexAd), 0.5);
                 }
 
                 &:checked {
@@ -246,7 +245,7 @@ svg {
         &:hover, &:focus {
             border-color: rgba(var(--terRd), 1);
             outline: none;
-            box-shadow: 0 0 0.25rem 0.25rem rgba(var(--priAd), 0.5);
+            box-shadow: 0 0 0.25rem 0.25rem rgba(var(--sexAd), 0.5);
         }
 
         option {
@@ -267,7 +266,7 @@ svg {
         
         &:hover {
             background-color: rgba(var(--terRd), 0.8);
-            box-shadow: 0 0 5px 0.25rem rgba(var(--priAd), 0.5);
+            box-shadow: 0 0 5px 0.25rem rgba(var(--sexAd), 0.5);
         }
     }
 }
