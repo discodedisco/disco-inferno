@@ -755,6 +755,41 @@ const wheelTooltips = (function () {
                 content += `<br>`;
             }
 
+            const constellations = window.wheelData.constellationDetails || [];
+            const houseStr2 = house.toString().padStart(2, '0');
+            const govConstellation = constellations.find(
+                c => c.govSign === c.name && c.natalHouse === `house-${houseStr2}`
+            );
+
+            if (govConstellation && window.wheelData.houses) {
+                const houseCusp = window.wheelData.houses.cusps[house - 1];
+                const nextHouseCusp = window.wheelData.houses.cusps[house % 12];
+                let houseSpan = nextHouseCusp - houseCusp;
+                if (houseSpan < 0) houseSpan += 360;
+                let posInHouse = degree - houseCusp;
+                if (posInHouse < 0) posInHouse += 360;
+                
+                const thirdOfHouse = Math.floor((posInHouse / houseSpan) * 3);
+        
+                // Debug the calculation and lookup
+                console.log(`Planet ${planetName} in house ${house} at position ${posInHouse}/${houseSpan} is in third ${thirdOfHouse+1}`);
+                
+                // Find all decans for this house to make sure we have the right data
+                const houseDecans = constellations.filter(
+                    c => c.natalHouse === `house-${houseStr2}` && c.decan
+                );
+                console.log(`Available decans for house ${house}:`, houseDecans);
+                
+                // Find sub-distinction for this decan (more reliable approach)
+                const decanConstellation = houseDecans[thirdOfHouse];
+
+                if (decanConstellation) {
+                    content += `<u>Distinctions:</u><br>`;
+                    content += `+1 ${decanConstellation.distinction} (${govConstellation.distinction})<br>`;
+                    // content += `(House ${house}, Decan ${thirdOfHouse + 1})<br>`
+                }
+            }
+
             domElement
                 .on('mouseover', function (e) { show(content, e); })
                 .on('mousemove', function(e) { show(content, e); })
@@ -781,17 +816,60 @@ const wheelTooltips = (function () {
             const signSymbol = window.wheelData.signSymbols[info.sign] || info.sign;
             const cuspDegree = formatDegree(info.signDegree);
             const rulerSymbol = window.wheelData.planetSymbols[info.ruler] || info.ruler || '';
-            const meaning = info.meaning;
+            // const meaning = info.meaning;
 
             let content = `<strong>${houseNumStr} House</strong><br>`;
             content += `${houseName}<br>`;
             content += `Cusp in <strong>${signSymbol}</strong> @ ${cuspDegree}<br>`;
             if (rulerSymbol) content += `Ruled by ${rulerSymbol}<br>`;
-            content += `<br><u>Meanings:</u><br>`;
-            const meaningPoints = meaning.split(',').map(item => item.trim());
-            meaningPoints.forEach(point => {
-                if (point) content += `${point}<br>`
-            })
+            // content += `<br><u>Meanings:</u><br>`;
+            // const meaningPoints = meaning.split(',').map(item => item.trim());
+            // meaningPoints.forEach(point => {
+            //     if (point) content += `${point}<br>`;
+            // });
+
+            const constellations = window.wheelData.constellationDetails || [];
+            const govConstellation = constellations.find(
+                c => c.govSign === c.name && c.natalHouse === `house-${houseNum.toString().padStart(2, '0')}`
+            );
+
+            if (govConstellation && govConstellation.distinction) {
+                const distinctionCounts = getDistinctionForPlanet();
+                const distinctionCount = distinctionCounts[govConstellation.distinction] || 0;
+                const subDistinctionData = getSubDistinctionFromDistinction(govConstellation.distinction);
+
+                content += `<br><strong><u>${govConstellation.distinction} ${distinctionCount}</u></strong><br>`;
+
+                if (Object.keys(subDistinctionData).length > 0) {
+                    Object.entries(subDistinctionData).forEach(([name, count]) => {
+                        if (count > 0) {
+                            const housePlanets = getPlanetsInHouse(houseNum);
+                            const planetSymbols = [];
+                            housePlanets.forEach(planet => {
+                                const degree = planet.degree;
+                                const houseCusp = window.wheelData.houses.cusps[houseNum - 1];
+                                const nextHouseCusp = window.wheelData.houses.cusps[houseNum % 12];
+                                let houseSpan = nextHouseCusp - houseCusp;
+                                if (houseSpan < 0) houseSpan += 360;
+                                
+                                let posInHouse = degree - houseCusp;
+                                if (posInHouse < 0) posInHouse += 360;
+                                
+                                const thirdOfHouse = Math.floor((posInHouse / houseSpan) * 3);
+                                const decanIndex = constellations
+                                    .filter(c => c.natalHouse === `house-${houseNum.toString().padStart(2, '0')}` && c.decan)
+                                    .findIndex(c => c.distinction === name)
+                                    ;
+                                if (thirdOfHouse === decanIndex) {
+                                    const planetSymbol = window.wheelData.planetSymbols[planet.name] || planet.name.charAt(0);
+                                    planetSymbols.push(planetSymbol);
+                                }
+                            });
+                            content += `+${count} ${name} (<strong>${planetSymbols.join(', ')})</strong><br>`;
+                        }
+                    })
+                }
+            }
 
             // Planets in house
             if (info.planets && info.planets.length > 0) {
@@ -844,7 +922,7 @@ const wheelTooltips = (function () {
             if (nonzeroSubs.length > 0) {
                 content += `<br><br><u>Distinctions:</u><br>`;
                 nonzeroSubs.forEach(([name, count]) => {
-                    content += `${name} +${count}<br>`;
+                    content += `+${count} ${name}<br>`;
                 });
             }
 
