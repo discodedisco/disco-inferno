@@ -288,17 +288,142 @@ const wheelTooltips = (function () {
             elements.push(signDetails.element.split(' ')[0]);
         }
 
-        // Space & Time—please improve this logic
-        const ascSign = getSignFromDegree(window.wheelData.houses.asc);
-        const descSign = getSignFromDegree(window.wheelData.houses.asc + 180) % 360;
-        const mcSign = getSignFromDegree(window.wheelData.houses.mc);
-        const icSign = getSignFromDegree(window.wheelData.houses.mc + 180) % 360;
+        // // Space & Time—archived logic
+        // const ascSign = getSignFromDegree(window.wheelData.houses.asc);
+        // const descSign = getSignFromDegree(window.wheelData.houses.asc + 180) % 360;
+        // const mcSign = getSignFromDegree(window.wheelData.houses.mc);
+        // const icSign = getSignFromDegree(window.wheelData.houses.mc + 180) % 360;
 
-        if (sign === ascSign || sign === descSign) elements.push('Space');
-        if (sign === mcSign || sign === icSign) elements.push('Time');
+        // if (sign === ascSign || sign === descSign) elements.push('Space');
+        // if (sign === mcSign || sign === icSign) elements.push('Time');
+
+        // // Time Element: most planets per sign
+        // const planets = window.wheelData.planets;
+        // const signCounts = {};
+        // Object.values(planets).forEach(p => {
+        //     const s = getSignFromDegree(p.deg);
+        //     signCounts[s] = (signCounts[s] || 0) + 1;
+        // });
+        // const maxPlanets = Math.max(...Object.values(signCounts));
+        // const maxSigns = Object
+        //     .entries(signCounts)
+        //     .filter(([s, count]) => count === maxPlanets)
+        //     .map(([s]) => s)
+        //     ;
+        // let timeScore = maxPlanets;
+        // let timeBonus = 0;
+        // if (maxSigns.length > 1) {
+        //     // Comment out to remove bonus for ties
+        //     timeBonus = 1;
+        // }
+        // if (maxSigns.includes(sign)) {
+        //     elements.push('Time');
+        //     elements.timeScore = timeScore + timeBonus;
+        // }
+
+        // // Space Element: most sequentially occupied signs
+        // const signOrder = window.wheelData.signs;
+        // const occupiedSigns = Object.keys(signCounts).sort((a, b) => {
+        //     return signOrder.indexOf(a) - signOrder.indexOf(b);
+        // });
+        // const indices = occupiedSigns.map(s => signOrder.indexOf(s)).sort((a, b) => a - b);
+        // let longestSeq = [];
+        // for (let start = 0; start < indices.length; start++) {
+        //     let seq = [indices[start]];
+        //     for (let offset = 1; offset < indices.length; offset++) {
+        //         let nextIdx = (indices[start] + offset) % signOrder.length;
+        //         if (indices.includes(nextIdx)) {
+        //             seq.push(nextIdx);
+        //         } else {
+        //             break;
+        //         }
+        //     }
+        //     if (seq.length > longestSeq.length) longestSeq = seq;
+        // }
+
+        // const longestSeqNames = longestSeq.map(i => signOrder[i]);
+
+        // const allSeqs = [];
+        // for (let start = 0; start < indices.length; start++) {
+        //     let seq = [indices[start]];
+        //     for (let offset = 1; offset < indices.length; offset++) {
+        //         let nextIdx = (indices[start] + offset) % signOrder.length;
+        //         if (indices.includes(nextIdx)) {
+        //             seq.push(nextIdx);
+        //         } else {
+        //             break;
+        //         }
+        //     }
+        //     allSeqs.push(seq);
+        // }
+        // const maxSeqLen = Math.max(...allSeqs.map(seq => seq.length));
+        // const tiedSeqs = allSeqs.filter(seq => seq.length === maxSeqLen);
+        // let spaceBonus = 0;
+        // if (tiedSeqs.length > 1) {
+        //     // Comment out to remove bonus for ties
+        //     spaceBonus = 1;
+        // }
+        // if (longestSeqNames.includes(sign)) {
+        //     elements.push('Space');
+        //     elements.spaceScore = maxSeqLen + spaceBonus;
+        // }
 
         // Remove duplications
         return [...new Set(elements)];
+    }
+
+    function getElementsForSign(signName) {
+        if (!window.wheelData) return {};
+
+        // Time calc
+        const planets = window.wheelData.planets;
+        const signCounts = {};
+        Object.values(planets).forEach(p => {
+            const s = getSignFromDegree(p.deg);
+            signCounts[s] = (signCounts[s] || 0) + 1;
+        });
+        const maxPlanets = Math.max(...Object.values(signCounts));
+        const maxSigns = Object
+            .entries(signCounts)
+            .filter(([s, count]) => count === maxPlanets)
+            .map(([s]) => s)
+            ;
+        let timeBonus = maxPlanets;
+        // let timeTieBonus = maxSigns.length > 1 ? 1 : 0;
+
+        // Space calc
+        const signOrder = window.wheelData.signs;
+        const occupiedSigns = Object.keys(signCounts).sort((a, b) => signOrder.indexOf(a) - signOrder.indexOf(b));
+        const indices = occupiedSigns.map(s => signOrder.indexOf(s)).sort((a, b) => a - b);
+        const allSeqs = [];
+        for (let start = 0; start < indices.length; start++) {
+            let seq = [indices[start]];
+            for (let offset = 1; offset < indices.length; offset++) {
+                let nextIdx = (indices[start] + offset) % signOrder.length;
+                if (indices.includes(nextIdx)) {
+                    seq.push(nextIdx);
+                } else {
+                    break;
+                }
+            }
+            allSeqs.push(seq);
+        }
+        const maxSeqLen = Math.max(...allSeqs.map(seq => seq.length));
+        const longestSeqs = allSeqs.filter(seq => seq.length === maxSeqLen);
+        const spaceBonuses = {};
+        longestSeqs.forEach((seq, i) => {
+            seq.forEach(idx => {
+                const sign = signOrder[idx];
+                spaceBonuses[sign] = 1;
+            });
+        });
+
+        return {
+            time: maxSigns.includes(signName) ? timeBonus : 0,
+            space: spaceBonuses[signName] || 0
+            // timeTie: timeTieBonus,
+            // spaceTie: tiedSeqs.length > 1
+        };
     }
 
     function getElementInfo(elementName) {
@@ -663,6 +788,19 @@ const wheelTooltips = (function () {
                     content += `<strong>${planet.symbol}</strong> @ ${formatDegree(planet.degree)}${dignityLabel}<br>`;
                 });
             }
+
+            const elementBonuses = getElementsForSign(signName);
+            if (elementBonuses.time > 0 || elementBonuses.space > 0) content += `<br><u>Elements:</u><br>`
+            if (elementBonuses.time > 0) {
+                content += `Time +${elementBonuses.time}`;
+                // if (elementBonuses.timeTie) content += ` (tie)`;
+                content += `<br>`;
+            }
+            if (elementBonuses.space > 0) {
+                content += `Space +${elementBonuses.space}`;
+                // if (elementBonuses.spaceTie) content += ` (tie)`;
+                content += `<br>`
+            }
             
             domElement
                 .on('mouseover', function (e) { show(content, e); })
@@ -772,13 +910,13 @@ const wheelTooltips = (function () {
                 const thirdOfHouse = Math.floor((posInHouse / houseSpan) * 3);
         
                 // Debug the calculation and lookup
-                console.log(`Planet ${planetName} in house ${house} at position ${posInHouse}/${houseSpan} is in third ${thirdOfHouse+1}`);
+                // console.log(`Planet ${planetName} in house ${house} at position ${posInHouse}/${houseSpan} is in third ${thirdOfHouse+1}`);
                 
                 // Find all decans for this house to make sure we have the right data
                 const houseDecans = constellations.filter(
                     c => c.natalHouse === `house-${houseStr2}` && c.decan
                 );
-                console.log(`Available decans for house ${house}:`, houseDecans);
+                // console.log(`Available decans for house ${house}:`, houseDecans);
                 
                 // Find sub-distinction for this decan (more reliable approach)
                 const decanConstellation = houseDecans[thirdOfHouse];
@@ -838,7 +976,7 @@ const wheelTooltips = (function () {
                 const distinctionCount = distinctionCounts[govConstellation.distinction] || 0;
                 const subDistinctionData = getSubDistinctionFromDistinction(govConstellation.distinction);
 
-                content += `<br><strong><u>${govConstellation.distinction} ${distinctionCount}</u></strong><br>`;
+                content += `<br><u>${govConstellation.distinction} ${distinctionCount}</u><br>`;
 
                 if (Object.keys(subDistinctionData).length > 0) {
                     Object.entries(subDistinctionData).forEach(([name, count]) => {

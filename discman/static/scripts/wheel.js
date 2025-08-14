@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Draw planets
         function drawPlanets(planetsGroup, planets, cx, cy, r, offset) {
+            const planetOrder = window.wheelData.planetOrder || [];
             const reversePlanetOrder = [...(window.wheelData.planetOrder || [])].reverse();
             const planetEntries = Object.entries(planets);
     
@@ -352,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;                
                 
             planetEntries.forEach(([name, data], i) => {
+                const animIndex = planetOrder.indexOf(name);
                 const finalAngle = (-data.deg + offset) * Math.PI / 180;
                 const ascAngle = (-houses.asc + offset) * Math.PI / 180;
 
@@ -410,8 +412,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 planetCircle
                     .transition()
-                    .delay(i * 50)
-                    .duration(1000)
+                    .delay(animIndex * 50)
+                    .duration(750)
                     .attr('opacity', 1)
                     .attrTween('cx', function () {
                         return function (t) {
@@ -429,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 planetSymbol
                     .transition()
-                    .delay(i * 50)
-                    .duration(1000)
+                    .delay(animIndex * 50)
+                    .duration(750)
                     .attr('opacity', 1)
                     .attrTween('x', function () {
                         return function (t) {
@@ -448,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 planetCircle
                     .transition()
-                    .delay(i * 50 + 1000)
+                    .delay(animIndex * 50 + 750)
                     // .attr('opacity', 1)
                     .on('end', function () {
                         // Attach tooltip to .planets-group (both circle & symbol)

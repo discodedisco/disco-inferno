@@ -67,6 +67,12 @@ def get_houses(jd, lat, lon, hsys='O'):
         'mc': ascmc[1],
     }
     
+def sign_index(sign_name):
+    for i, s in enumerate(sign_options):
+        if s['name'] == sign_name:
+            return i
+    return -1
+    
 def get_element_totals(planet_positions, houses):
     elements_by_sign = {}
     for sign_data in sign_options:
@@ -88,29 +94,89 @@ def get_element_totals(planet_positions, houses):
     # # Init counts
     # element_counts = {element: 0 for element in elements_map}
     
-    # Get signs for angles
-    asc_sign = get_sign(houses['asc'])
-    desc_sign = get_sign((houses['asc'] + 180) % 360)
-    mc_sign = get_sign(houses['mc'])
-    ic_sign = get_sign((houses['mc'] + 180) % 360)
+    # # Get signs for angles
+    # asc_sign = get_sign(houses['asc'])
+    # desc_sign = get_sign((houses['asc'] + 180) % 360)
+    # mc_sign = get_sign(houses['mc'])
+    # ic_sign = get_sign((houses['mc'] + 180) % 360)
     
     # Process planets by trad sign element
+    # for name, data in planet_positions.items():
+    #     position = data['deg'] if isinstance(data, dict) else data
+    #     sign = get_sign(position)
+
+    #     # Count element per sign
+    #     if sign in elements_by_sign:
+    #         element = elements_by_sign[sign]
+    #         element_counts[element] += 1
+        
+        
+        # # Space (Asc. & Desc.)
+        # if sign == asc_sign or sign == desc_sign:
+        #     element_counts['Space'] += 1
+
+        # # Time (M.C. & I.C.)
+        # if sign == mc_sign or sign == ic_sign:
+        #     element_counts['Time'] += 1
+        
+    sign_counts = {s['name']: 0 for s in sign_options}
     for name, data in planet_positions.items():
         position = data['deg'] if isinstance(data, dict) else data
         sign = get_sign(position)
-
-        # Count element per sign
         if sign in elements_by_sign:
             element = elements_by_sign[sign]
             element_counts[element] += 1
-        
-        
-        # Space (Asc. & Desc.)
-        if sign == asc_sign or sign == desc_sign:
-            element_counts['Space'] += 1
+            sign_counts[sign] += 1
+    
+    # Time logic
+    max_planets = max(sign_counts.values())
+    max_signs = [s for s, count in sign_counts.items() if count == max_planets]
+    time_score = max_planets
+    time_bonus = 0
+    if len(max_signs) > 1:
+        # Comment out & pass to remove time bonus
+        # time_bonus = 1
+        pass
+    element_counts['Time'] = time_score + time_bonus
+    
+    # Space logic
+    occupied_signs = [s['name'] for s in sign_options if sign_counts[s['name']] > 0]
+    sign_names = [s['name'] for s in sign_options]
+    indices = [sign_names.index(sign) for sign in occupied_signs]
+    indices.sort()
+    
+    longest_seq = []
+    for start in range(len(indices)):
+        seq = [indices[start]]
+        for offset in range(1, len(indices)):
+            next_idx = (indices[start] + offset) % len(sign_names)
+            if next_idx in indices:
+                seq.append(next_idx)
+            else:
+                break
+            if len(seq) > len(longest_seq):
+                longest_seq = seq
+                
+    longest_seq_names = [sign_names[i] for i in longest_seq]
 
-        # Time (M.C. & I.C.)
-        if sign == mc_sign or sign == ic_sign:
-            element_counts['Time'] += 1
-
+    # Check for ties
+    all_seqs = []
+    for start in range(len(indices)):
+        seq = [indices[start]]
+        for offset in range(1, len(indices)):
+            next_idx = (indices[start] + offset) % len(sign_names)
+            if next_idx in indices:
+                seq.append(next_idx)
+            else:
+                break    
+        all_seqs.append(seq)
+    max_seq_len = max(len(seq) for seq in all_seqs)
+    tied_seqs = [seq for seq in all_seqs if len(seq) == max_seq_len]
+    space_bonus = 0
+    if len(tied_seqs) > 1:
+        # Comment out & pass to remove space bonus
+        # space_bonus = 1
+        pass
+    element_counts['Space'] = max_seq_len + space_bonus
+    
     return element_counts
