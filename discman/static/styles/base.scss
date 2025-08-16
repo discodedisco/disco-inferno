@@ -188,7 +188,7 @@ h1 {
     font-size: 8rem;
     text-transform: uppercase;
     text-align: center;
-    line-height: 0.75;
+    // line-height: 0.75;
 }
 
 h2 {
@@ -228,6 +228,10 @@ h4 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        h1 {
+            line-height: 0.75;
+        }
 
         h2 {
             margin-top: 2rem;
@@ -297,6 +301,7 @@ h4 {
 
 .title-wrapper {
     text-align: center;
+    z-index: 10;
 }
 
 .wheel-title,
@@ -317,6 +322,9 @@ h4 {
     font-size: 8rem;
     text-transform: uppercase;
     text-align: center;
+    line-height: 0.75;
+    // margin: -1.5rem auto;
+    z-index: 1;
 }
 
 .the-title {
@@ -341,6 +349,7 @@ section#bc, #bc {
     width: 90%;
     max-width: 900px;
     margin: 0 auto;
+    z-index: 1000;
 }
 
 .breadcrumb {
@@ -359,6 +368,7 @@ section#bc, #bc {
         text-decoration: none;
         color: rgba(var(--sexAd), 1);
         text-shadow: 0 0 5px rgba(var(--priTi), 1);
+        z-index: 1000;
         
         &:hover {
             text-shadow: 0 0 5px rgba(var(--priTi), 1), 0 0 5px rgba(var(--sexAd), 1);

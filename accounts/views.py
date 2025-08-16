@@ -87,6 +87,7 @@ def register(request):
                     
                     # Create PC w. nativity info
                     PlayerCharacter.objects.create(
+                        user=user,
                         username=username,
                         first_name=first_name,
                         last_name=last_name,

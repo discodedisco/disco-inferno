@@ -1,82 +1,85 @@
 const input = document.getElementById('birth_location');
 const latField = document.getElementById('birth-lat');
 const lonField = document.getElementById('birth-lon');
-let suggestions = [];
-let debounceTimer;
 
-// Create dropdown for suggestions
-const suggestionDiv = document.createElement('div');
-suggestionDiv.setAttribute('class', 'location-suggestions');
-suggestionDiv.style.display = 'none';
-input.parentNode.insertBefore(suggestionDiv, input.nextSibling);
-
-// Add loading indicator
-function showLoading() {
-    suggestionDiv.innerHTML = '<div class="suggestion-loading">Searching locations….</div>';
-    suggestionDiv.style.display = 'block';
-}
-
-// Debounced input handler
-input.addEventListener('input', function () {
-    // Clear existing timeout, if any
-    clearTimeout(debounceTimer);
-
-    // Hide suggestions if input is too short
-    if (this.value.length < 3) {
-        suggestionDiv.style.display = 'none';
-        return;
-    }
-
-    // Show loading indicator immediately
-    showLoading();
-
-    const searchValue = this.value;
-
-    // Set new timeout for actual search
-    debounceTimer = setTimeout(async function () {
-        try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}&limit=5`);
-            suggestions = await response.json();
-        
-            // Display suggestions
-            suggestionDiv.innerHTML = '';
-            if (suggestions.length > 0) {
-                suggestionDiv.style.display = 'block';
-                suggestions.forEach(place => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.textContent = place.display_name;
-                    div.addEventListener('click', () => {
-                        input.value = place.display_name;
-                        latField.value = place.lat;
-                        lonField.value = place.lon;
-                        suggestionDiv.style.display = 'none';
-                    });
-                    suggestionDiv.appendChild(div);
-                });
-            } else {
-                suggestionDiv.innerHTML = '<div class="suggestion-none">No locations found</div>';
-            }
-        } catch (error) {
-            console.error('Error fetching location suggestions: ', error);
-            suggestionDiv.innerHTML = '<div class="suggestion-error">Error searching for locations</div>';
-        }
-    }, 500);
-});
-
-// Close suggestions when clicking outside
-document.addEventListener('click', function (e) {
-    if (e.target !== input && e.target !== suggestionDiv && !suggestionDiv.contains(e.target)) {
-        suggestionDiv.style.display = 'none';
-    }
-});
-
-// Show suggestions when focusing if value meets min len req
-input.addEventListener('focus', function () {
-    if (this.value.length >= 3 && suggestions.length > 0) {
+if (input && latField && lonField) {
+    let suggestions = [];
+    let debounceTimer;
+    
+    // Create dropdown for suggestions
+    const suggestionDiv = document.createElement('div');
+    suggestionDiv.setAttribute('class', 'location-suggestions');
+    suggestionDiv.style.display = 'none';
+    input.parentNode.insertBefore(suggestionDiv, input.nextSibling);
+    
+    // Add loading indicator
+    function showLoading() {
+        suggestionDiv.innerHTML = '<div class="suggestion-loading">Searching locations….</div>';
         suggestionDiv.style.display = 'block';
     }
-});
+    
+    // Debounced input handler
+    input.addEventListener('input', function () {
+        // Clear existing timeout, if any
+        clearTimeout(debounceTimer);
+    
+        // Hide suggestions if input is too short
+        if (this.value.length < 3) {
+            suggestionDiv.style.display = 'none';
+            return;
+        }
+    
+        // Show loading indicator immediately
+        showLoading();
+    
+        const searchValue = this.value;
+    
+        // Set new timeout for actual search
+        debounceTimer = setTimeout(async function () {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}&limit=5`);
+                suggestions = await response.json();
+            
+                // Display suggestions
+                suggestionDiv.innerHTML = '';
+                if (suggestions.length > 0) {
+                    suggestionDiv.style.display = 'block';
+                    suggestions.forEach(place => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.textContent = place.display_name;
+                        div.addEventListener('click', () => {
+                            input.value = place.display_name;
+                            latField.value = place.lat;
+                            lonField.value = place.lon;
+                            suggestionDiv.style.display = 'none';
+                        });
+                        suggestionDiv.appendChild(div);
+                    });
+                } else {
+                    suggestionDiv.innerHTML = '<div class="suggestion-none">No locations found</div>';
+                }
+            } catch (error) {
+                console.error('Error fetching location suggestions: ', error);
+                suggestionDiv.innerHTML = '<div class="suggestion-error">Error searching for locations</div>';
+            }
+        }, 500);
+    });
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function (e) {
+        if (e.target !== input && e.target !== suggestionDiv && !suggestionDiv.contains(e.target)) {
+            suggestionDiv.style.display = 'none';
+        }
+    });
+    
+    // Show suggestions when focusing if value meets min len req
+    input.addEventListener('focus', function () {
+        if (this.value.length >= 3 && suggestions.length > 0) {
+            suggestionDiv.style.display = 'block';
+        }
+    });
+}
 
 // Form validation
 document.querySelector('form').addEventListener('submit', function(event) {
@@ -106,4 +109,38 @@ document.querySelector('form').addEventListener('submit', function(event) {
         alert('Invalid longitude: degrees must be between -180 and 180');
         return;
     }
+});
+
+function displayCityFromCoords(spanId) {
+    const citySpan = document.getElementById(spanId);
+    const lat = citySpan.getAttribute('data-lat');
+    const lon = citySpan.getAttribute('data-lon');
+
+    if (lat && lon) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.address && data.address.city) {
+                    citySpan.textContent = data.address.city;
+                } else if (data.address && data.address.town) {
+                    citySpan.textContent = data.address.town;
+                } else if (data.address && data.address.village) {
+                    citySpan.textContent = data.address.village;
+                } else if (data.display_name) {
+                    citySpan.textContent = data.display_name.split(',')[0];
+                } else {
+                    citySpan.textContent = 'Unknown location';
+                }
+            })
+            .catch(() => {
+                citySpan.textContent = 'Unknown location';
+            });
+    } else {
+        citySpan.textContent = 'No coordinates saved';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    displayCityFromCoords('birthplace-city');
+    displayCityFromCoords('current-city');
 });

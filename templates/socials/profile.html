@@ -26,6 +26,33 @@
 
 <section class="profile">
     <div class="container profile-container">
+        <h2>{{ char.first_name }} {{ char.last_name }}</h2>
+        <ul>
+            <li><strong>Username:</strong> {{ char.username }}</li>
+            <li><strong>Email:</strong> {{ char.email }}</li>
+            <li><strong>Birthdate:</strong> {{ char.birthdate }}</li>
+            <li><strong>Birthtime:</strong> {{ char.birthtime }}</li>
+            <li><strong>Birthplace:</strong> <span id="birthplace-city" data-lat="{{ char.birthplace_lat }}" data-lon="{{ char.birthplace_lon }}">Loading…</span></li>
+            <li><strong>Current:</strong> <span id="current-city" data-lat="{{ char.current_lat }}" data-lon="{{ char.current_lon }}">Loading…</span></li>
+            <li><strong>Timezone:</strong> {{ char.birthplace_tz }}</li>
+            <li><strong>Autobiography:</strong> {{ char.autobiography }}</li>
+            <li><strong>Public Bio:</strong> {{ char.public_bio }}</li>
+            <li><strong>Private Bio:</strong> {{ char.private_bio }}</li>
+            <li><strong>Experiences:</strong> {{ char.experiences }}</li>
+            <li><strong>Accolades:</strong>
+                <ol>
+                    {% for accolade in char.accolades.all %}
+                        <li>
+                            <h1>{{ accolade.name }}</h1>
+                            <small>({{ accolade.description }})</small>
+                            <p>{{ accolade.date_unlocked }}</p>
+                        </li>
+                    {% empty %}
+                        <li>{{ char.username }} has achieved nothing!</li>
+                    {% endfor %}
+                </ol>
+            </li>
+        </ul>
         {% include 'partials/_wheel-inner.html' %}
         {% include 'partials/_wheel-outer.html' %}
     </div>
@@ -35,5 +62,6 @@
 <script src="{% static 'scripts/tooltip.js' %}?v={{ timestamp }}"></script>
 <!-- <script src="{% static 'scripts/syzygy.js' %}?v={{ timestamp }}"></script> -->
 <script src="{% static 'scripts/wheel.js' %}?v={{ timestamp }}"></script>
+<script src="{% static 'scripts/geocode.js' %}?v={{ timestamp }}"></script>
 
 {% endblock %}

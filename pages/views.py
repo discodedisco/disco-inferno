@@ -6,6 +6,7 @@ from characters.utils import get_timezone_str, get_utc_datetime, get_julian_day,
 from characters.models import PlayerCharacter
 from datetime import datetime
 from characters.constellation import sign_options, house_options, aspect_options, planet_options, planet_order, moon_point_options, constellation_options
+from socials.models import Message, MessageThread, ThreadMember, FriendRequest, Friendship
 import json
 
 def index(request):
@@ -62,7 +63,7 @@ def wheel(request):
             'planetOrder': planet_order,
             'aspectDetails': aspect_options,
             'constellationDetails': constellation_options,
-            'current_house_system': house_system,
+            'current_house_system': house_system
         }
         
         breadcrumbs = [
@@ -84,7 +85,7 @@ def wheel(request):
         return render(request, 'pages/wheel.html', context)
         
     except PlayerCharacter.DoesNotExist:
-        messages.error(request, 'Profile not found')
+        messages.error(request, "Can't cast natal wheel!")
         return redirect('index')
 
 @login_required(login_url='login')
@@ -125,7 +126,7 @@ def recalculate_chart(request):
         'planetOrder': planet_order,
         'aspectDetails': aspect_options,
         'constellationDetails': constellation_options,
-        'current_house_system': house_system,
+        'current_house_system': house_system
     }
 
     # Pass to template

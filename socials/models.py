@@ -1,20 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import User
-from characters.models import PlayerCharacter
 from django.utils import timezone
+from django.contrib.auth.models import User
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    character = models.OneToOneField(PlayerCharacter, on_delete=models.CASCADE, related_name='profile', null=True, blank=True)
-    private_bio = models.TextField(max_length=500, blank=True)
-    public_bio = models.TextField(max_length=500, blank=True)
-    birth_location = models.CharField(max_length=100, blank=True)
-    current_location = models.CharField(max_length=100, blank=True)
-    is_private = models.BooleanField(default=False)
-    last_active = models.DateTimeField(default=timezone.now)
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+#     character = models.OneToOneField(PlayerCharacter, on_delete=models.CASCADE, related_name='profile', null=True, blank=True)
+#     private_bio = models.TextField(max_length=500, blank=True)
+#     public_bio = models.TextField(max_length=500, blank=True)
+#     birth_location = models.CharField(max_length=100, blank=True)
+#     current_location = models.CharField(max_length=100, blank=True)
+#     is_private = models.BooleanField(default=False)
+#     last_active = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
-        return f"{self.user.username}'s wheel"
+#     def __str__(self):
+#         return f"{self.user.username}'s wheel"
 
 class FriendRequest(models.Model):
     STATUS_CHOICES = (
@@ -39,6 +38,8 @@ class Friendship(models.Model):
     user1 = models.ForeignKey(User, related_name='friendships_initiated', on_delete=models.CASCADE)
     user2 = models.ForeignKey(User, related_name='friendships_received', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    experiences_together = models.IntegerField(null=True)
+    game_time = models.DurationField(default=timezone.timedelta)
     
     class Meta:
         unique_together = ('user1', 'user2')

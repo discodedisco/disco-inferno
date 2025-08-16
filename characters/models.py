@@ -1,10 +1,14 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from datetime import datetime, time
 import swisseph as swe
-from characters.utils import get_julian_day, get_planet_positions, get_houses, get_timezone_str, get_utc_datetime, get_element_totals
-from django.core.exceptions import ValidationError
+from .utils import get_julian_day, get_planet_positions, get_houses, get_timezone_str, get_utc_datetime, get_element_totals
 
 class PlayerCharacter(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='character')
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     username = models.CharField(max_length=20)
@@ -13,6 +17,9 @@ class PlayerCharacter(models.Model):
     birthplace_lat = models.FloatField()
     birthplace_lon = models.FloatField()
     birthplace_tz = models.CharField(max_length=50, blank=True)
+    # current_lat = models.FloatField()
+    # current_lon = models.FloatField()
+    # current_tz = models.CharField(max_length=50, blank=True)
     is_dst = models.BooleanField(null=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/')
     autobiography = models.TextField(blank=True)
@@ -20,6 +27,14 @@ class PlayerCharacter(models.Model):
     creation_date = models.DateTimeField(default=datetime.now, blank=True)
     is_werman = models.BooleanField(default=False)
     is_wifman = models.BooleanField(default=False)
+    private_bio = models.TextField(max_length=280, blank=True)
+    public_bio = models.TextField(max_length=140, blank=True)
+    is_private = models.BooleanField(default=True)
+    last_active = models.DateTimeField(default=timezone.now)
+    experiences = models.IntegerField(null=True)
+    friends = models.ManyToManyField('self', through='socials.Friendship', symmetrical=True, blank=True)
+    accolades = models.ManyToManyField(
+        'Accolade', through='PlayerAccolade', blank=True, related_name='characters')
     
     def clean(self):
         # Validate latitude
@@ -66,4 +81,16 @@ class PlayerCharacter(models.Model):
         houses = self.get_houses()
 
         return get_element_totals(planet_positions, houses)
-        
+
+class Accolade(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
+class PlayerAccolade(models.Model):
+    player = models.ForeignKey(PlayerCharacter, on_delete=models.CASCADE)
+    accolade = models.ForeignKey(Accolade, on_delete=models.CASCADE)
+    date_unlocked = models.DateTimeField(auto_now_add=True)
