@@ -1,16 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load sass_tags %}
 
-{% block title %}Home{% endblock %}
-{% block content %}
-<section>
-    <h3>Welcome to the</h3>
-    <h1>Disco</h1>
-    <h1>Inferno</h1>
-    <h2 class="icon-title">
-        <i class="fa-solid fa-fire fa-2x"></i>
-    </h2>
+{% block title %} | Home{% endblock %}
+
+{% block header %}
+<section class="index-title">
+    <div class="index-home-title">
+        <h3>Welcome to the</h3>
+        <h1>Disco</h1>
+        <h1>Inferno</h1>
+        <h2 class="icon-title">
+            <i class="fa-solid fa-fire fa-2x"></i>
+        </h2>
+    </div>
 </section>
+{% endblock %}
+
+{% block content %}
+
 
 <!-- <section class="link-wrapper">
     <span class="link-span">
@@ -24,9 +32,9 @@
 <section id="hook-section" class="section hook-section">
     <ul class="link-wrapper">
         {% if user.is_authenticated %}
-            <a href="{% url 'wheel' %}" class="nav-link">
+            <!-- <a href="{% url 'wheel' %}" class="nav-link">
                 @{{ user.username }}'s Wheel
-            </a>
+            </a> -->
         {% else %}
             <a class="nav-link" href="wheel">Your Wheel</a>
         </ul>

@@ -9,31 +9,21 @@
  <link rel="stylesheet" href="{% sass_src 'styles/wheel.scss' %}" />
 {% endblock %}
 
-{% block content %}
-<section>
+{% block header %}
+<section class="title">
     <div class="title-wrapper">
         <div class="wheel-title">
-            <h2 class="the-title">{{ user.username }}'s</h2>
+            <h2 class="the-title">@{{ user.username }}'s</h2>
             <h1 class="main-title">Wheel</h1>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block content %}
 
 <!-- Breadcrumb -->
-<section id="bc">
-    <div class="container breadcrumb-container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{% url 'index' %}">
-                        <i class="fa-solid fa-fire"></i>
-                    </a>
-                </li>
-                <li class="breadcrumb-item active">@{{ user.username }}'s Wheel</li>
-            </ol>
-        </nav>
-    </div>
-</section>
+{% include 'partials/_breadcrumb.html' %}
 
 <section class="wheel" id="section-wheel">
     <div class="container canvas-container" id="wheel-canvas-container">

@@ -137,7 +137,7 @@ def get_element_totals(planet_positions, houses):
         # Comment out & pass to remove time bonus
         # time_bonus = 1
         pass
-    element_counts['Time'] = time_score + time_bonus
+    element_counts['Time'] = time_score + time_bonus - 1
     
     # Space logic
     occupied_signs = [s['name'] for s in sign_options if sign_counts[s['name']] > 0]
@@ -177,6 +177,6 @@ def get_element_totals(planet_positions, houses):
         # Comment out & pass to remove space bonus
         # space_bonus = 1
         pass
-    element_counts['Space'] = max_seq_len + space_bonus
+    element_counts['Space'] = max_seq_len + space_bonus - 1
     
     return element_counts

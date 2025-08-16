@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load sass_tags %}
+
+{% block title %} | Profile{% endblock %}
+
+{% block extrastyle %}
+ <!-- <link rel="stylesheet" href="{% sass_src 'styles/wheel.scss' %}" /> -->
+{% endblock %}
+
+{% block header %}
+<section class="title">
+    <div class="title-wrapper">
+        <div class="profile-title">
+            <h2 class="the-title">@{{ user.username }}'s</h2>
+            <!-- <h2 class="the-title">Your</h2> -->
+            <h1 class="main-title">Profile</h1>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+{% include 'partials/_breadcrumb.html' %}
+
+<section class="profile">
+    <div class="container profile-container">
+        {% include 'partials/_wheel-inner.html' %}
+        {% include 'partials/_wheel-outer.html' %}
+    </div>
+</section>
+
+<script src="{% static 'scripts/aspect.js' %}?v={{ timestamp }}"></script>
+<script src="{% static 'scripts/tooltip.js' %}?v={{ timestamp }}"></script>
+<!-- <script src="{% static 'scripts/syzygy.js' %}?v={{ timestamp }}"></script> -->
+<script src="{% static 'scripts/wheel.js' %}?v={{ timestamp }}"></script>
+
+{% endblock %}

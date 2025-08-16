@@ -63,8 +63,14 @@ def wheel(request):
             'aspectDetails': aspect_options,
             'constellationDetails': constellation_options,
             'current_house_system': house_system,
-
         }
+        
+        breadcrumbs = [
+            {'name': 'Home', 'url': reverse(
+                'index'), 'icon': 'fa-solid fa-fire'},
+            {'name': f"{request.user.username}'s Wheel",
+             'url': '', 'icon': 'fas fa-dharmachakra'},
+        ]
 
         # Pass to template
         context = {
@@ -72,6 +78,7 @@ def wheel(request):
             'timestamp': datetime.now().timestamp(),
             'char': char,
             'current_house_system': house_system,
+            'breadcrumbs': breadcrumbs
         }
         
         return render(request, 'pages/wheel.html', context)

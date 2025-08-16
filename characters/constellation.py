@@ -50,18 +50,18 @@ sign_options = [
 ]
 
 house_options = [
-    {'id': 'house-01', 'symbol': '01', 'name': 'Ascendant (Asc.)', 'meaning': 'self, appearance, beginnings, personality'},
-    {'id': 'house-02', 'symbol': '02', 'name': 'House of Value', 'meaning': 'possessions, resources, values, self-worth'},
-    {'id': 'house-03', 'symbol': '03', 'name': 'House of Communications', 'meaning': 'communication, siblings, local travel, education'},
-    {'id': 'house-04', 'symbol': '04', 'name': 'Imum Coeli (I.C.)', 'meaning': 'home, family, roots, foundations, security'},
-    {'id': 'house-05', 'symbol': '05', 'name': 'House of Pleasure', 'meaning': 'creativity, romance, children, recreation'},
-    {'id': 'house-06', 'symbol': '06', 'name': 'House of Health', 'meaning': 'health, service, work, daily routine'},
-    {'id': 'house-07', 'symbol': '07', 'name': 'Descendant (Desc.)', 'meaning': 'partnerships, marriage, contracts, open enemies'},
-    {'id': 'house-08', 'symbol': '08', 'name': 'House of Transformation', 'meaning': 'shared resources, death, rebirth, transformation'},
-    {'id': 'house-09', 'symbol': '09', 'name': 'House of Philosophy', 'meaning': 'higher education, philosophy, travel, expansion'},
-    {'id': 'house-10', 'symbol': '10', 'name': 'Medium Coeli (M.C.)', 'meaning': 'career, reputation, public status, authority'},
-    {'id': 'house-11', 'symbol': '11', 'name': 'House of Community', 'meaning': 'friends, groups, hopes, wishes, humanitarian pursuits'},
-    {'id': 'house-12', 'symbol': '12', 'name': 'House of Unconscious', 'meaning': 'hidden things, spirituality, isolation, self-undoing'},
+    {'id': 'house-01', 'symbol': '01', 'name': 'House of Self', 'meaning': 'self, appearance, beginnings, personality'},
+    {'id': 'house-02', 'symbol': '02', 'name': 'House of Worth', 'meaning': 'possessions, resources, values, self-worth'},
+    {'id': 'house-03', 'symbol': '03', 'name': 'House of Education', 'meaning': 'communication, siblings, local travel, education'},
+    {'id': 'house-04', 'symbol': '04', 'name': 'House of Home', 'meaning': 'home, family, roots, foundations, security'},
+    {'id': 'house-05', 'symbol': '05', 'name': 'House of Creativity', 'meaning': 'creativity, romance, children, recreation'},
+    {'id': 'house-06', 'symbol': '06', 'name': 'House of Service', 'meaning': 'health, service, work, daily routine'},
+    {'id': 'house-07', 'symbol': '07', 'name': 'House of Cooperation', 'meaning': 'partnerships, marriage, contracts, open enemies'},
+    {'id': 'house-08', 'symbol': '08', 'name': 'House of Regeneration', 'meaning': 'shared resources, death, rebirth, transformation'},
+    {'id': 'house-09', 'symbol': '09', 'name': 'House of Enterprise', 'meaning': 'higher education, philosophy, travel, expansion'},
+    {'id': 'house-10', 'symbol': '10', 'name': 'House of Career', 'meaning': 'career, reputation, public status, authority'},
+    {'id': 'house-11', 'symbol': '11', 'name': 'House of Reward', 'meaning': 'friends, groups, hopes, wishes, humanitarian pursuits'},
+    {'id': 'house-12', 'symbol': '12', 'name': 'House of Reprisal', 'meaning': 'hidden things, spirituality, isolation, self-undoing'},
 ]
 
 moon_point_options = [

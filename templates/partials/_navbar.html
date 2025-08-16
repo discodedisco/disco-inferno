@@ -4,7 +4,13 @@
             {% if user.is_authenticated %}
                 <li class="nav-item{% if 'wheel' in request.path %} hidden{% endif %}">
                     <a href="{% url 'wheel' %}" class="nav-link">
-                        @{{ user.username }}'s Wheel
+                         <i class="fas fa-dharmachakra"></i> Wheel
+                        <!-- @{{ user.username }}'s Wheel -->
+                    </a>
+                </li>
+                <li class="nav-item{% if 'profile' in request.path %} hidden{% endif %}">
+                    <a href="{% url 'profile' %}" class="nav-link">
+                        <i class="fas fa-portrait"></i> Profile
                     </a>
                 </li>
                 <li class="nav-item{% if 'login' in request.path %} active{% endif %}">

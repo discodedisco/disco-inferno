@@ -2,14 +2,21 @@
 {% load static %}
 {% load sass_tags %}
 
-{% block title %}New Player{% endblock %}
+{% block title %} | New Player Start{% endblock %}
 
 {% block extrastyle %}
 <!-- <link rel="stylesheet" href="{% sass_src 'styles/geocode.scss' %}"> -->
 {% endblock %}
 
 {% block header %}
-<h1>New Player</h1>
+    <section class="title">
+        <div class="title-wrapper">
+            <div class="login-title">
+                <h2 class="the-title">Welcome!</h2>
+                <h1 class="main-title">New Player Start:</h1>
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
 {% block content %}

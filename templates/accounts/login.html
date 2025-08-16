@@ -1,19 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load sass_tags %}
 
 {% block title %} | Login to spin up your Wheel {% endblock %}
 
 {% block extrastyle %}
 {% endblock %}
 
-{% block content %}
-<section>
-    <div class="title-wrapper">
-        <div class="login-title">
-            <h2 class="the-title">Welcome back!</h2>
-            <h1 class="main-title">Return Player Login:</h1>
+{% block header %}
+    <section class="title">
+        <div class="title-wrapper">
+            <div class="login-title">
+                <h2 class="the-title">Welcome back!</h2>
+                <h1 class="main-title">Return Player Login:</h1>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+{% endblock %}
+
+{% block content %}
 <section id="login" class="login-section">
     <div class="container">
         <div class="card">

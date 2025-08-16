@@ -1,0 +1,26 @@
+<section id="bc">
+    <div class="container breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% for crumb in breadcrumbs %}
+                    <li class="breadcrumb-item{% if forloop.last %} active{% endif %}">
+                        {% if not forloop.last %}
+                            <a href="{% url 'index' %}">
+                                {% if crumb.icon %}
+                                    <i class="{{ crumb.icon }}"></i>
+                                {% endif %}
+                                <!-- {{ crumb.name }} -->
+                            </a>
+                        {% else %}
+                            {% if crumb.icon %}
+                                <i class="{{ crumb.icon }}"></i>
+                            {% endif %}
+                            <!-- {{ crumb.name }} -->
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                <!-- <li class="breadcrumb-item active">@{{ user.username }}'s Wheel</li> -->
+            </ol>
+        </nav>
+    </div>
+</section>
