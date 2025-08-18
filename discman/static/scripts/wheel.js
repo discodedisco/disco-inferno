@@ -665,9 +665,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Self': 'rgba(var(--priRd), 1)',
                 'Worth': 'rgba(var(--priOr), 1)',
                 'Education': 'rgba(var(--priYl), 1)',
-                'Home': 'rgba(var(--priLm), 1)',
-                'Creativity': 'rgba(var(--priGn), 1)',
-                'Service': 'rgba(var(--priTk), 1)',
+                'Family': 'rgba(var(--priLm), 1)',
+                'Creation': 'rgba(var(--priGn), 1)',
+                'Ritual': 'rgba(var(--priTk), 1)',
                 'Cooperation': 'rgba(var(--priCy), 1)',
                 'Regeneration': 'rgba(var(--priBl), 1)',
                 'Enterprise': 'rgba(var(--priId), 1)',
@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ;
             
             // Convert pie data
-            const distinctOrder = ['Self', 'Worth', 'Education', 'Home', 'Creativity', 'Service', 'Cooperation', 'Regeneration', 'Enterprise', 'Career', 'Reward', 'Reprisal'];
+            const distinctOrder = ['Self', 'Worth', 'Education', 'Family', 'Creation', 'Ritual', 'Cooperation', 'Regeneration', 'Enterprise', 'Career', 'Reward', 'Reprisal'];
             const pieData = pie(
                 distinctOrder
                     .map(key => ({
