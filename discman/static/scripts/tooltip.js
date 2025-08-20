@@ -94,6 +94,11 @@ const wheelTooltips = (function () {
         return 1;
     }
 
+    function getPlanetsAtPosition(x, y) {
+        const elements = document.elementFromPoint(x, y);
+        return elements.filter(el => el.classList.contains('planet'));
+    }
+
     function getPlanetsInSign(sign) {
         const result = [];
         const planets = window.wheelData.planets;

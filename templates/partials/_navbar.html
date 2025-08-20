@@ -1,5 +1,7 @@
 <section id="navbar">
     <div class="container nav-container">
+        <!-- Messages -->
+        {% include 'partials/_messages.html' %}
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
                 <li class="nav-item{% if 'wheel' in request.path %} hidden{% endif %}">

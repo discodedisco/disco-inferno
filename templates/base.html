@@ -9,6 +9,7 @@
         <meta name="author" content="Disco DeDisco" />
         <meta name="robots" content="noindex, nofollow" />
         <link rel="stylesheet" href="{% sass_src 'styles/base.scss' %}" />
+        <link rel="stylesheet" href="{% sass_src 'styles/messages.scss' %}" />
         <link rel="stylesheet" href="https://use.typekit.net/xyl4lwg.css" />
         <link
             rel="stylesheet"
@@ -17,7 +18,8 @@
         {% block extrastyle %}{% endblock %}
         <title>Disco Inferno | {% block title %}{% endblock %}</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-        <script src="{% static 'scripts/base.js' %}" defer></script>
+        <script src="{% static 'scripts/base.js' %}?v={{ timestamp }}" defer></script>
+        <script src="{% static 'scripts/messages.js' %}?v={{ timestamp }}" defer></script>
     </head>
     
     <!-- Main Body -->
@@ -36,8 +38,6 @@
         <div class="main-content">
             {% block content %} {% endblock%}
         </div>
-        <!-- Messages -->
-        {% include 'partials/_messages.html' %}
         <!-- Footer -->
         {% include 'partials/_footer.html' %}
     </body>

@@ -1,0 +1,190 @@
+section .messages {
+    .messages-draggable-btn, .messages-modal {
+        position: fixed;
+        z-index: 2200;
+        will-change: left, top;
+    }
+
+    .messages-draggable-btn {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 2200;
+        width: 3.5rem;
+        height: 3.5rem;
+        background: rgba(var(--sexTi), 1);
+        color: rgba(var(--priAd), 1);
+        border-radius: 50%;
+        box-shadow: 0 0.125rem 0.75rem rgba(var(--priTi), 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        transition: 0.1s;
+        &:active { cursor: grabbing; }
+        i {
+            padding-top: 0.25rem;
+        }
+    }
+
+    .messages-modal {
+        position: fixed;
+        z-index: 2100;
+        top: 2rem;
+        left: 2rem;
+        min-width: 400px;
+        max-width: 900px;
+        width: 90vw;
+        background: rgba(var(--sexTi), 1);
+        color: rgba(var(--priAd), 1);
+        border-radius: 0 0 0.75rem 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 0.125rem 1.5rem rgba(var(--priTi), 0.5);
+        display: none;
+        flex-direction: column;
+        transition: 0.1s;
+        .messages-bar {
+            transition: 0.1s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0.55rem;
+            border-bottom: 1px solid rgba(var(--priYl), 0.25);
+            z-index: 2100;
+            border-radius: 0 0 0.75rem 0.75rem;
+            .messages-menu-btn {
+                margin: auto 1rem;
+                font-size: 1.5rem;
+                color: rgba(var(--priAd), 1);
+                cursor: pointer;
+            }
+            .messages-title {
+                flex: 1;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding-left: 3rem;
+            }
+        }
+        .messages-thread-list {
+            // display: none;
+            // opacity: 0;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 100%;
+            z-index: 1899;
+            visibility: hidden;
+            flex-direction: column;
+            max-height: 300px;
+            overflow: hidden;
+            background: rgba(var(--sexTi), 1);
+            box-shadow: 0 0.25rem 1rem rgba(var(--priTi), 0.1);
+            border-radius: 0.75rem 0.75rem 0 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            .thread-item {
+                display: flex;
+                overflow: hidden;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 1rem;
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid rgba(var(--priYl), 0.1);
+                cursor: pointer;
+                z-index: 1900;
+                &:hover {
+                    background: rgba(var(--sexAd), 0.75);
+                    overflow: hidden;
+                }
+                .close-thread-btn {
+                    margin: auto 1rem;
+                    font-size: 1rem;
+                    color: rgba(var(--terRd), 1);
+                    cursor: pointer;
+                }
+            }
+            .thread-item:first-child {
+                border-top-left-radius: 0.75rem;
+                border-top-right-radius: 0.75rem;
+                background: inherit;
+                position: relative;
+                z-index: 1;
+            }
+            .thread-item:first-child:hover {
+                background: rgba(var(--sexAd), 0.75);
+            }
+        }
+        .messages-thread-list.open {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            pointer-events: auto !important;
+            // min-height: 3rem !important;
+            visibility: visible;
+            z-index: 2098;
+        }
+        .messages-thread-list .thread-item:last-child::after {
+            content: '';
+            display: block;
+            height: 1.5rem; // match modal's border-radius
+            margin: -1.5rem;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            background: inherit;
+        }
+        .messages-thread-bar {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            .thread-window {
+                background: rgba(var(--sexTi), 1);
+                color: rgba(var(--priTi), 1);
+                border-radius: 0.5rem;
+                margin: 1rem;
+                min-width: 250px;
+                max-width: 350px;
+                flex: 0 0 auto;
+                box-shadow: 0 0.125rem 0.5rem rgba(var(--priOr), 0.1);
+                .thread-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.5rem 1rem;
+                    font-weight: bold;
+                    .close-thread-btn {
+                        font-size: 1rem;
+                        color: rgba(var(--terRd), 1);
+                        cursor: pointer;
+                    }
+                }
+                .thread-messages {
+                    max-height: 200px;
+                    overflow-y: auto;
+                    padding: 0.5rem 1rem;
+                }
+            }
+        }
+    }
+    .messages-modal .messages-thread-list.open {
+        overflow: visible;
+    }
+    .messages-modal.open-threads {
+        overflow: visible;
+    }
+    .messages-modal.active { display: flex; }
+}
+
+@media (max-width: 578px) {
+    section .messages {
+        .messages-modal {
+            min-width: 200px;
+            width: 85vw;
+            .messages-bar {
+                padding: 0.25rem;
+                .messages-title {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+    }
+}

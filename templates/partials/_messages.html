@@ -1,5 +1,32 @@
-<section class="messages" style="visibility: hidden;">
-    <div class="container message-container">
-
+<section class="messages">
+    <div id="messages-draggable-btn" class="messages-draggable-btn">
+        <i class="fas fa-message fa-2x"></i>
+    </div>
+    <div id="messages-modal" class="messages-modal">
+        <div id="messages-thread-list" class="messages-thread-list">
+            <!-- <div class="thread-item">Test Thread</div> -->
+            {% for thread in threads %}
+            <div class="thread-item" data-thread-id="{{ thread.id }}">
+                <span>{{ thread.title }}</span>
+                <div class="close-thread-btn" title="Close">&times;</div>
+            </div>
+            {% empty %}
+            <div class="thread-item">
+                <i class="fas fa-circle-exclamation"></i> No threads yet!
+            </div>
+            {% endfor %}
+            <div class="thread-item">
+                <i class="fas fa-circle-plus"></i> New message thread
+            </div>
+        </div>
+        <div class="messages-bar">
+            <span class="messages-title">Messages</span>
+            <span id="messages-menu-btn" class="messages-menu-btn">
+                <i class="fas fa-bars"></i>
+            </span>
+        </div>
+        <div id="messages-thread-bar" class="messages-thread-bar">
+            <!-- Script injects open threads here -->
+        </div>
     </div>
 </section>
